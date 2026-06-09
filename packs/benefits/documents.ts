@@ -70,6 +70,10 @@ export const benefitsDocuments: DocumentSpec[] = [
         text: "If you also dispute the amount, file Form SSA-561 (reconsideration) as well.",
         citationId: CID.remedyRecon,
       },
+      {
+        id: "no-fee",
+        text: "There is no fee — filing a waiver or appeal with SSA is always free.",
+      },
     ],
     citationId: CID.remedyWaiver,
   },
@@ -101,6 +105,10 @@ export const benefitsDocuments: DocumentSpec[] = [
         citationId: CID.remedyRate,
       },
       { id: "keep-copy", text: "Keep a copy and note the date you filed." },
+      {
+        id: "no-fee",
+        text: "There is no fee to ask SSA to lower your monthly withholding.",
+      },
     ],
     citationId: CID.remedyRate,
   },
@@ -138,6 +146,10 @@ export const benefitsDocuments: DocumentSpec[] = [
         citationId: CID.remedyRecon,
       },
       { id: "keep-copy", text: "Keep a copy and note the date you filed." },
+      {
+        id: "no-fee",
+        text: "There is no fee to file a reconsideration, and you can file it online at ssa.gov.",
+      },
     ],
     citationId: CID.remedyRecon,
   },
