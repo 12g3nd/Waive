@@ -3,9 +3,9 @@ import { ShieldCheck } from "lucide-react";
 import { ResultCardPreview } from "./result-card-preview";
 
 const STATS = [
-  { num: "60s", label: "avg. decode time" },
-  { num: "3", label: "domains covered" },
-  { num: "70+", label: "tests passing" },
+  { num: "60s", label: "avg. read time" },
+  { num: "3", label: "jurisdictions — more to come!" },
+  { num: "100%", label: "answers with a source" },
   { num: "0", label: "guesses made" },
 ];
 
@@ -15,7 +15,7 @@ export function HeroSection() {
       <div className="animate-fade-up">
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground">
           <ShieldCheck className="size-3.5 text-primary" />
-          Information &amp; document prep — not legal advice
+          Help with information and forms — not legal advice
         </div>
 
         <h1 className="mb-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl">

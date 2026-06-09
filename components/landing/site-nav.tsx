@@ -28,7 +28,7 @@ export function SiteNav() {
           href="#try"
           className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
         >
-          Try a sample
+          See an example
         </a>
         <Link
           href="/app"
