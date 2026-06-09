@@ -44,6 +44,10 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        highlight: {
+          DEFAULT: "hsl(var(--highlight))",
+          foreground: "hsl(var(--highlight-foreground))",
+        },
         // Semantic tokens for the clock / urgency states
         urgent: "hsl(var(--urgent))",
         warn: "hsl(var(--warn))",
@@ -79,16 +83,17 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
+          '"Public Sans"',
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
           "Segoe UI",
           "Roboto",
-          "Helvetica Neue",
-          "Arial",
           "sans-serif",
         ],
+        display: ['"Fraunces"', "Georgia", "Cambria", "Times New Roman", "serif"],
         mono: [
+          '"IBM Plex Mono"',
           "ui-monospace",
           "SFMono-Regular",
           "Menlo",

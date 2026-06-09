@@ -27,3 +27,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local artifacts
+/.playwright-mcp/
+dev-server.log
+*.local.png

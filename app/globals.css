@@ -3,55 +3,110 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 40% 98%;
-  --foreground: 222 47% 11%;
+  /* Civic-editorial palette: warm parchment → calm clarity, ink text, emerald relief. */
+  --background: 40 38% 95%;
+  --foreground: 222 22% 13%;
 
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --card: 40 44% 98%;
+  --card-foreground: 222 22% 13%;
 
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
+  /* Relief / action — the escape hatch. Deep emerald-teal. */
+  --primary: 168 72% 23%;
+  --primary-foreground: 40 44% 98%;
 
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222 47% 11%;
+  --secondary: 40 28% 90%;
+  --secondary-foreground: 222 22% 18%;
 
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 40 24% 91%;
+  --muted-foreground: 222 10% 38%;
 
-  --accent: 210 40% 94%;
-  --accent-foreground: 222 47% 11%;
+  --accent: 40 30% 89%;
+  --accent-foreground: 222 22% 18%;
 
-  --destructive: 0 72% 51%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 0 70% 47%;
+  --destructive-foreground: 40 44% 98%;
 
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 53%;
+  --border: 38 22% 84%;
+  --input: 38 22% 84%;
+  --ring: 168 72% 23%;
 
-  /* Urgency semantics for the deadline clock */
-  --urgent: 0 72% 51%; /* red   */
-  --warn: 32 95% 44%; /* amber */
-  --safe: 142 71% 38%; /* green */
+  /* Highlighter — the presumption "catch" / jaw-drop moment. */
+  --highlight: 43 96% 60%;
+  --highlight-foreground: 32 70% 14%;
 
-  --radius: 0.75rem;
+  /* Deadline-clock urgency scale. */
+  --urgent: 0 74% 48%;
+  --warn: 32 92% 46%;
+  --safe: 158 56% 33%;
+
+  --radius: 0.8rem;
 }
 
 * {
   border-color: hsl(var(--border));
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings: "ss01" 1, "cv05" 1;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Subtle paper-to-clarity background used on the reveal screen */
-.bg-grid {
-  background-image: radial-gradient(
-    hsl(var(--border)) 1px,
-    transparent 1px
+/* Paper grain + dot grid: the "official notice" texture that calms into clarity. */
+.bg-paper {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(hsl(38 22% 80% / 0.5) 0.5px, transparent 0.5px),
+    radial-gradient(hsl(40 30% 99%) 0%, hsl(40 38% 95%) 70%);
+  background-size: 22px 22px, 100% 100%;
+  background-position: 0 0, center;
+}
+
+/* Hand-drawn highlighter sweep behind the presumption catch. */
+.marker {
+  background-image: linear-gradient(
+    104deg,
+    transparent 0.5%,
+    hsl(var(--highlight) / 0.75) 1.5%,
+    hsl(var(--highlight) / 0.9) 96%,
+    transparent 99.5%
   );
-  background-size: 22px 22px;
+  border-radius: 0.2em;
+  padding: 0 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes drawIn {
+  from {
+    stroke-dashoffset: var(--dash, 999);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-pulseRing {
+    animation: none !important;
+  }
 }
