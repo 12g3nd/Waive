@@ -1,72 +1,78 @@
 import type { NoticeExtraction, RemedyDecision, UserFacts } from "@/engine";
-import { ACID } from "./constants";
+import type { DebtJurisdiction } from "./jurisdictions";
 import { checkAnswerDefenses, hasStrongDefence } from "./defenses";
 
-const altDoNothing = {
-  id: "do-nothing",
-  label: "Do nothing",
-  whyNot: "This is exactly what the plaintiff is counting on — silence becomes a default judgment and then garnishment.",
-  citationId: ACID.defaultJudgment,
-};
-const altSettle = {
-  id: "settle",
-  label: "Negotiate / settle with the plaintiff",
-  whyNot:
-    "Possible — but never acknowledge the debt in writing or pay before checking the limitation date, because that can restart the 2-year clock.",
-  citationId: ACID.acknowledgment,
-};
+function docLabel(j: DebtJurisdiction): string {
+  return `${j.responseDoc.name}${j.responseDoc.formNumber ? ` (${j.responseDoc.formNumber})` : ""}`;
+}
 
 /**
- * Routing for an Ontario debt claim. In every branch the action is the same — file
- * a Defence within 20 days — but the posture differs, and integrity is preserved:
- * someone who genuinely owes the debt is not handed a manufactured defence; they
- * admit it and propose affordable terms, which still beats a default judgment.
+ * Routing for a debt claim, parameterized by jurisdiction. In every branch the
+ * action is to respond on time; integrity is preserved — someone who genuinely owes
+ * the debt is not handed a manufactured defence, but is shown how responding still
+ * protects them from a default judgment.
  */
 export function routeAnswerRemedy(
   e: NoticeExtraction,
   f: UserFacts,
+  j: DebtJurisdiction,
 ): RemedyDecision {
-  const defenses = checkAnswerDefenses(e, f);
+  const defenses = checkAnswerDefenses(e, f, j);
   const strong = hasStrongDefence(defenses);
   const disputes = f.answers["disputesDebt"] === true;
   const admits = f.answers["admitsOwes"] === true;
+  const doc = docLabel(j);
+
+  const altDoNothing = {
+    id: "do-nothing",
+    label: "Do nothing",
+    whyNot: `This is what the plaintiff is counting on — silence becomes a default judgment and then garnishment.`,
+    citationId: j.citations.default,
+  };
+  const altSettle = {
+    id: "settle",
+    label: "Negotiate / settle with the plaintiff",
+    whyNot:
+      "Possible — but never acknowledge the debt in writing or pay before checking the limitation date, because that can restart the clock.",
+    citationId: j.citations.acknowledgment,
+  };
 
   if (strong || disputes) {
     return {
       selected: {
         id: "dispute",
-        label: "Dispute the claim — file a Defence (Form 9A)",
-        why: "You have real grounds to contest this — your Defence denies the claim and raises your defences (such as the limitation period or putting a debt buyer to proof). Filing within 20 days forces the merits to be heard instead of losing by default.",
-        citationId: ACID.defence20,
+        label: `Dispute the claim — file your ${doc}`,
+        why: `You have real grounds to contest this — your ${j.responseDoc.name} denies the claim and raises your defences (such as the ${j.limitationYears}-year limitation period or putting a debt buyer to proof). Filing on time forces the merits to be heard instead of losing by default.`,
+        citationId: j.citations.deadline,
       },
       alternatives: [altSettle, altDoNothing],
-      documentId: "defence",
+      documentId: "response",
     };
   }
 
   if (admits) {
     return {
       selected: {
-        id: "admit-propose",
-        label: "Admit the debt and propose affordable terms — Defence (Form 9A)",
-        why: "You agree you owe this, so we won't manufacture a defence. But filing a Defence that admits the debt and proposes a monthly amount you can afford protects you from a harsh default judgment.",
-        citationId: ACID.proposeTerms,
+        id: "admit-respond",
+        label: `Respond and protect yourself — file your ${doc}`,
+        why: `You agree you owe this, so we won't manufacture a defence. But filing your ${j.responseDoc.name} on time stops a harsh default judgment and lets you arrange terms you can manage.`,
+        citationId: j.citations.responseForm,
       },
       alternatives: [altSettle, altDoNothing],
-      documentId: "defence",
+      documentId: "response",
       integrityNote:
-        "You indicated you genuinely owe this debt, so Waive is not inventing a defence. The honest, protective move is to admit it and propose terms you can manage — which still avoids losing by default.",
+        "You indicated you genuinely owe this debt, so Waive is not inventing a defence. The honest, protective move is to respond and arrange terms you can manage — which still avoids losing by default.",
     };
   }
 
   return {
     selected: {
       id: "preserve",
-      label: "File a Defence to protect your rights — Form 9A",
-      why: "Even if you're not sure yet, filing a Defence within 20 days stops an automatic default judgment and keeps every option open while you get the dates checked and seek advice.",
-      citationId: ACID.defence20,
+      label: `File your ${doc} to protect your rights`,
+      why: `Even if you're not sure yet, filing your ${j.responseDoc.name} on time stops an automatic default judgment and keeps every option open while you get the dates checked and seek advice.`,
+      citationId: j.citations.deadline,
     },
     alternatives: [altSettle, altDoNothing],
-    documentId: "defence",
+    documentId: "response",
   };
 }

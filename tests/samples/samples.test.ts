@@ -32,7 +32,9 @@ interface Expectation {
 const EXPECT: Record<string, Expectation> = {
   "ssdi-not-at-fault": { documentId: "ssa-632", selected: "waiver", minCatches: 1, hasIntegrityNote: false, level: "high" },
   "ssdi-at-fault": { documentId: "repayment", selected: "repay", minCatches: 0, hasIntegrityNote: true, level: "high" },
-  "debt-time-barred": { documentId: "defence", selected: "dispute", minCatches: 1, hasIntegrityNote: false, level: "high" },
+  "debt-on": { documentId: "response", selected: "dispute", minCatches: 1, hasIntegrityNote: false, level: "high" },
+  "debt-bc": { documentId: "response", selected: "dispute", minCatches: 1, hasIntegrityNote: false, level: "high" },
+  "debt-ca": { documentId: "response", selected: "dispute", minCatches: 1, hasIntegrityNote: false, level: "high" },
 };
 
 describe("judge's-choice samples (golden)", () => {
@@ -42,7 +44,8 @@ describe("judge's-choice samples (golden)", () => {
       const anchor = e.noticeDate ?? e.serviceOrReceiptDate;
       expect(anchor && isValidISODate(anchor)).toBeTruthy();
       expect(anchor! < TODAY).toBe(true); // notice is in the past → live countdown
-      expect(e.domain).toBe(s.packId);
+      // The pack handles the sample's domain (benefits, or answer-<jurisdiction>).
+      expect(s.packId === e.domain || s.packId.startsWith(`${e.domain}-`)).toBe(true);
       expect(s.imagePath).toMatch(/\.svg$/);
     }
   });
@@ -68,7 +71,7 @@ describe("judge's-choice samples (golden)", () => {
   }
 
   it("the cross-domain debt sample fires the time-barred defence", async () => {
-    const sample = getSample("debt-time-barred")!;
+    const sample = getSample("debt-on")!;
     const result = await runPipeline(
       {
         packId: sample.packId,

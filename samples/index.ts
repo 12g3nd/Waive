@@ -1,4 +1,5 @@
 import { addDays, toISODate, type NoticeExtraction, type UserFacts } from "@/engine";
+import { DEBT_JURISDICTIONS, type DebtJurisdiction } from "@/packs/answer";
 
 export interface Sample {
   id: string;
@@ -6,26 +7,14 @@ export interface Sample {
   title: string;
   blurb: string;
   badge: string;
-  /** Tailwind accent used on the badge/card. */
   tone: "primary" | "urgent" | "highlight";
-  /** Rendered notice image for the vision path + card thumbnail. */
   imagePath?: string;
-  /** Precomputed extraction (offline path) — dates filled fresh per request. */
   buildExtraction: (todayISO: string) => NoticeExtraction;
-  /** Recommended intake answers; some dates are relative to today, so it's a fn. */
   buildFacts: (todayISO: string) => UserFacts;
 }
 
-/**
- * Judge's-choice synthetic notices. Dates are computed relative to "now" so the
- * countdown clock is always live and urgent on stage.
- *
- *  (a) clean not-at-fault SSDI overpayment    → waiver can cancel the debt
- *  (b) at-fault SSDI overpayment, can repay    → integrity routing (no waiver)
- *  (c) Ontario debt claim on time-barred debt  → THE CROSS-DOMAIN REVEAL
- *      (same engine, different country + injustice)
- */
-export const SAMPLES: Sample[] = [
+// ─── Benefits samples (SSA, U.S. federal) ───────────────────────────────────
+const benefitsSamples: Sample[] = [
   {
     id: "ssdi-not-at-fault",
     packId: "benefits",
@@ -35,16 +24,16 @@ export const SAMPLES: Sample[] = [
     badge: "not-at-fault → waiver",
     tone: "primary",
     imagePath: "/samples/ssdi-not-at-fault.svg",
-    buildExtraction: (todayISO) => ({
+    buildExtraction: (today) => ({
       domain: "benefits",
       issuer: "Social Security Administration",
       recipientName: "Jordan Rivera",
       claimType: "SSDI overpayment",
       amount: 9120,
       currency: "USD",
-      noticeDate: addDays(todayISO, -21), // pause window ~9 days out → urgent clock
+      noticeDate: addDays(today, -21),
       serviceOrReceiptDate: null,
-      rawDates: [{ label: "Notice date", dateISO: addDays(todayISO, -21) }],
+      rawDates: [{ label: "Notice date", dateISO: addDays(today, -21) }],
       partyOnOtherSide: "SSA Office of Central Operations",
       identifiers: { noticeNumber: "OP-44821", ssnLast4: "••6789" },
       rawText:
@@ -73,16 +62,16 @@ export const SAMPLES: Sample[] = [
     badge: "integrity routing",
     tone: "highlight",
     imagePath: "/samples/ssdi-at-fault.svg",
-    buildExtraction: (todayISO) => ({
+    buildExtraction: (today) => ({
       domain: "benefits",
       issuer: "Social Security Administration",
       recipientName: "Marcus Bell",
       claimType: "SSDI overpayment",
       amount: 9120,
       currency: "USD",
-      noticeDate: addDays(todayISO, -21),
+      noticeDate: addDays(today, -21),
       serviceOrReceiptDate: null,
-      rawDates: [{ label: "Notice date", dateISO: addDays(todayISO, -21) }],
+      rawDates: [{ label: "Notice date", dateISO: addDays(today, -21) }],
       partyOnOtherSide: "SSA Office of Central Operations",
       identifiers: { noticeNumber: "OP-44907", ssnLast4: "••3312" },
       rawText:
@@ -102,41 +91,74 @@ export const SAMPLES: Sample[] = [
       },
     }),
   },
-  {
-    id: "debt-time-barred",
-    packId: "answer",
-    title: "Debt lawsuit — Ontario, time-barred",
-    blurb:
-      "The SAME engine, a different country and injustice: a debt buyer sues on a 3-year-old debt. The 2-year limit can end the case.",
-    badge: "cross-domain reveal",
+];
+
+// ─── Debt samples (one per jurisdiction — the cross-domain + cross-jurisdiction reveal)
+const DEBT_META: Record<DebtJurisdiction["id"], { defendant: string; blurb: string; badge: string; image: string }> = {
+  ON: {
+    defendant: "Priya Sharma",
+    blurb: "A debt buyer sues on a 3-year-old debt. Ontario: 20 days to file a Defence; the 2-year limit can end the case.",
+    badge: "Canada · Ontario",
+    image: "/samples/debt-claim-ontario.svg",
+  },
+  BC: {
+    defendant: "Daniel Tremblay",
+    blurb: "The SAME engine, B.C. rules: 14 days to file a Reply; 2-year limit; make the buyer prove it owns the debt.",
+    badge: "Canada · B.C.",
+    image: "/samples/debt-claim-bc.svg",
+  },
+  CA: {
+    defendant: "Marcus Whitfield",
+    blurb: "The SAME engine, U.S. rules: 30 days to Answer; 4-year limit; California's Fair Debt Buying Practices Act.",
+    badge: "USA · California",
+    image: "/samples/debt-claim-california.svg",
+  },
+};
+
+function makeDebtSample(j: DebtJurisdiction): Sample {
+  const meta = DEBT_META[j.id];
+  const moneyText =
+    j.currency === "USD" ? `$${j.sample.amount.toFixed(2)}` : `CA$${j.sample.amount.toFixed(2)}`;
+  return {
+    id: `debt-${j.id.toLowerCase()}`,
+    packId: j.packId,
+    title: `Debt lawsuit — ${j.label}`,
+    blurb: meta.blurb,
+    badge: meta.badge,
     tone: "urgent",
-    imagePath: "/samples/debt-claim-ontario.svg",
-    buildExtraction: (todayISO) => ({
-      domain: "answer",
-      issuer: "Superior Court of Justice (Small Claims Court), Toronto",
-      recipientName: "Priya Sharma",
-      claimType: "credit-card debt claim",
-      amount: 4380.55,
-      currency: "CAD",
-      noticeDate: null,
-      serviceOrReceiptDate: addDays(todayISO, -15), // Defence due ~5 days out → urgent
-      rawDates: [{ label: "Served", dateISO: addDays(todayISO, -15) }],
-      partyOnOtherSide: "Velocity Receivables Inc. (assignee of original creditor)",
-      identifiers: { claimNumber: "SC-24-0098765", court: "Toronto" },
-      rawText:
-        "SAMPLE — NOT A REAL NOTICE. Plaintiff's Claim (Form 7A). Velocity Receivables Inc. claims $4,380.55 plus interest and costs for an unpaid credit-card account assigned to it. You must file a Defence within 20 days or the plaintiff may obtain default judgment.",
-      fieldConfidence: { issuer: 0.95, serviceOrReceiptDate: 0.93, amount: 0.94, claimType: 0.9 },
-    }),
-    buildFacts: (todayISO) => ({
+    imagePath: meta.image,
+    buildExtraction: (today) => {
+      const served = addDays(today, -(j.responseDays - 6)); // deadline ~6 days out → urgent
+      return {
+        domain: "answer",
+        issuer: j.court,
+        recipientName: meta.defendant,
+        claimType: "credit-card debt claim",
+        amount: j.sample.amount,
+        currency: j.currency,
+        noticeDate: null,
+        serviceOrReceiptDate: served,
+        rawDates: [{ label: "Served", dateISO: served }],
+        partyOnOtherSide: j.sample.plaintiff,
+        identifiers: { claimNumber: j.sample.claimNo, jurisdiction: j.region },
+        rawText: `SAMPLE — NOT A REAL NOTICE. The plaintiff claims ${moneyText} for an unpaid credit-card account assigned to it. You must respond within ${j.responseDays} days or the plaintiff may obtain default judgment.`,
+        fieldConfidence: { issuer: 0.95, serviceOrReceiptDate: 0.93, amount: 0.94, claimType: 0.9 },
+      };
+    },
+    buildFacts: (today) => ({
       answers: {
         disputesDebt: true,
         plaintiffIsDebtBuyer: true,
-        // Last payment ~3 years before service → past the 2-year limit → time-barred.
-        lastActivityDate: addDays(todayISO, -1110),
+        lastActivityDate: addDays(today, -j.sample.lastActivityDaysAgo),
         admitsOwes: false,
       },
     }),
-  },
+  };
+}
+
+export const SAMPLES: Sample[] = [
+  ...benefitsSamples,
+  ...DEBT_JURISDICTIONS.map(makeDebtSample),
 ];
 
 export function getSample(id: string): Sample | undefined {

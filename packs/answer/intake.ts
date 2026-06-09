@@ -9,7 +9,7 @@ export const answerIntake: IntakeQuestion[] = [
   {
     id: "lastActivityDate",
     prompt: "When did you last make a payment on this debt, or last acknowledge it in writing?",
-    help: "Your best estimate. In Ontario a debt is usually unenforceable about 2 years after this date.",
+    help: "Your best estimate. A debt is usually unenforceable a set number of years after this date (the limitation period — it varies by province/state).",
     type: "date",
   },
   {

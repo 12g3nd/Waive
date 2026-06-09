@@ -104,6 +104,14 @@ body {
   }
 }
 
+/* "ai" gradient in the Waive wordmark — signals AI authorship without shouting. */
+.ai-letters {
+  background: linear-gradient(125deg, hsl(var(--primary)) 0%, hsl(43 96% 48%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-pulseRing {

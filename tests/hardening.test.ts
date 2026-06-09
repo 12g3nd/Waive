@@ -88,7 +88,7 @@ describe("hardening — escalation & edge cases", () => {
   it("escalates an Ontario claim with no service or notice date", async () => {
     const r = await runPipeline(
       {
-        packId: "answer",
+        packId: "answer-on",
         userFacts: { answers: {} },
         source: {
           kind: "extraction",
@@ -129,8 +129,13 @@ describe("hardening — escalation & edge cases", () => {
   });
 
   it("keeps both packs registered and domain-blind through the same engine", async () => {
-    expect(buildRegistry().list().map((p) => p.id).sort()).toEqual(["answer", "benefits"]);
+    expect(buildRegistry().list().map((p) => p.id).sort()).toEqual([
+      "answer-bc",
+      "answer-ca",
+      "answer-on",
+      "benefits",
+    ]);
     expect(benefitsPack.jurisdiction).toBe("US-SSA");
-    expect(answerPack.jurisdiction).toBe("ON-CA");
+    expect(answerPack.jurisdiction).toBe("CA-ON");
   });
 });

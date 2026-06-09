@@ -41,9 +41,11 @@ The non-negotiable design — and the reason it's trustworthy:
 4. **Integrity over engagement.** If the person genuinely owes it, Waive routes to the
    honest path and says so — no frivolous waivers, no manufactured defences.
 
-We demo it deep on SSA overpayments, then run the **same code** on an Ontario debt
-lawsuit — a different country *and* injustice — to prove it generalizes. Adding an
-injustice is writing a rule pack: config, not a rebuild.
+We demo it deep on SSA overpayments, then run the **same code** on debt lawsuits
+across **three jurisdictions and two countries** — Ontario, British Columbia, and
+California — each a verified config profile (its own deadline, limitation period,
+court forms, and citations). Adding an injustice, a province, or a U.S. state is
+config, not a rebuild.
 
 ## Social impact
 

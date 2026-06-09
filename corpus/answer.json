@@ -11,7 +11,7 @@
   {
     "id": "ans-default-judgment",
     "domain": "answer",
-    "topic": "What happens if you miss the deadline: default judgment",
+    "topic": "What happens if you miss the deadline: default judgment (Ontario)",
     "summary": "If you do not file a Defence within 20 days, the plaintiff can note you in default and ask the court for a default judgment — you lose without the merits ever being heard, which can lead to wage garnishment.",
     "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, r. 11 (default proceedings)",
     "sourceTitle": "O. Reg. 258/98 — Rules of the Small Claims Court (Rule 11)",
@@ -29,8 +29,8 @@
   {
     "id": "ans-acknowledgment",
     "domain": "answer",
-    "topic": "What can restart the 2-year clock: a written acknowledgment or payment",
-    "summary": "A written acknowledgment of the debt, or in some cases a payment, made before the limitation period expires can restart the 2-year clock. That is why the date of your last payment or written acknowledgment matters when judging whether a debt is time-barred.",
+    "topic": "What can restart the Ontario 2-year clock: a written acknowledgment or payment",
+    "summary": "A written acknowledgment of the debt, or in some cases a payment, made before the limitation period expires can restart the 2-year clock. That is why the date of your last payment or written acknowledgment matters when judging whether an Ontario debt is time-barred.",
     "officialCitation": "Limitations Act, 2002, S.O. 2002, c. 24, Sched. B, s. 13",
     "sourceTitle": "Limitations Act, 2002 — acknowledgment of liability (s. 13)",
     "sourceUrl": "https://www.ontario.ca/laws/statute/02l24"
@@ -38,7 +38,7 @@
   {
     "id": "ans-assignment-standing",
     "domain": "answer",
-    "topic": "Make a debt buyer prove it owns the debt (chain of assignment)",
+    "topic": "Make a debt buyer prove it owns the debt (Ontario)",
     "summary": "When the plaintiff is a debt buyer rather than the original creditor, it must be able to prove it actually owns your debt and that it was properly assigned to it. You can put the plaintiff to strict proof of the assignment and the chain of ownership; gaps are a real defence.",
     "officialCitation": "Conveyancing and Law of Property Act, R.S.O. 1990, c. C.34, s. 53 (absolute assignment)",
     "sourceTitle": "Conveyancing and Law of Property Act — assignment of debts (s. 53)",
@@ -47,7 +47,7 @@
   {
     "id": "ans-propose-terms",
     "domain": "answer",
-    "topic": "Honest path: admit what you owe and propose terms of payment",
+    "topic": "Honest path: admit what you owe and propose terms of payment (Ontario)",
     "summary": "If you genuinely owe the debt and simply need affordable terms, the Defence (Form 9A) lets you admit the claim and propose a payment schedule you can manage. Filing this still protects you from a harsh default judgment.",
     "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, Form 9A (Defence — proposal of terms of payment)",
     "sourceTitle": "O. Reg. 258/98 — Defence (Form 9A), proposal of terms",
@@ -56,10 +56,120 @@
   {
     "id": "ans-defence-form-9a",
     "domain": "answer",
-    "topic": "The Defence (Form 9A)",
+    "topic": "The Defence (Form 9A) — Ontario",
     "summary": "Form 9A is the official Defence used to respond to a Plaintiff's Claim in Ontario Small Claims Court. It is where you say what you admit or deny, raise any defences (such as the limitation period), and, if you admit the debt, propose terms of payment.",
     "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, Form 9A",
     "sourceTitle": "Ontario Court Services — Small Claims Court Forms (Form 9A, Defence)",
     "sourceUrl": "https://ontariocourtforms.on.ca/en/rules-of-the-small-claims-court-forms/"
+  },
+
+  {
+    "id": "ans-bc-reply-14-day",
+    "domain": "answer",
+    "topic": "14-day deadline to file a Reply in BC Small Claims",
+    "summary": "If you are served in British Columbia with a Notice of Claim in Provincial Court Small Claims, you have 14 days to file a Reply (Form 2) — 30 days if you were served outside BC. Filing on time is what stops you from losing automatically.",
+    "officialCitation": "Small Claims Rules, B.C. Reg. 261/93, r. 3 (reply within 14 days)",
+    "sourceTitle": "B.C. Reg. 261/93 — Small Claims Rules (Rule 3, Reply)",
+    "sourceUrl": "https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/261_93_01"
+  },
+  {
+    "id": "ans-bc-default",
+    "domain": "answer",
+    "topic": "What happens if you miss the deadline: default order (BC)",
+    "summary": "If you do not file a Reply within the time allowed, the registrar can make a default order against you — you lose without the merits being heard, which can lead to enforcement against your wages or assets.",
+    "officialCitation": "Small Claims Rules, B.C. Reg. 261/93, r. 3 (default order where no reply filed)",
+    "sourceTitle": "B.C. Reg. 261/93 — Small Claims Rules (Rule 3)",
+    "sourceUrl": "https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/261_93_01"
+  },
+  {
+    "id": "ans-bc-limitation",
+    "domain": "answer",
+    "topic": "Time-barred defence: BC's 2-year basic limitation period",
+    "summary": "British Columbia has a single 2-year basic limitation period — a court proceeding generally cannot be started more than 2 years after the claim was discovered. For most debts that is roughly 2 years after the last payment or written acknowledgment.",
+    "officialCitation": "Limitation Act, S.B.C. 2012, c. 13, s. 6 (basic limitation period)",
+    "sourceTitle": "Limitation Act (BC) — basic limitation period (s. 6)",
+    "sourceUrl": "https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/12013_01"
+  },
+  {
+    "id": "ans-bc-acknowledgment",
+    "domain": "answer",
+    "topic": "What can restart the BC 2-year clock: a written acknowledgment or payment",
+    "summary": "An acknowledgment of liability for a debt — in writing, or by making a payment — made before the limitation period expires can restart BC's 2-year clock. The date of your last payment or written acknowledgment is what matters.",
+    "officialCitation": "Limitation Act, S.B.C. 2012, c. 13, s. 24 (effect of acknowledgment)",
+    "sourceTitle": "Limitation Act (BC) — acknowledgment (s. 24)",
+    "sourceUrl": "https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/12013_01"
+  },
+  {
+    "id": "ans-bc-standing",
+    "domain": "answer",
+    "topic": "Make a debt buyer prove it owns the debt (BC)",
+    "summary": "When the plaintiff is a debt buyer, BC's Law and Equity Act requires an assignment to be absolute, in writing, and with written notice to you before the assignee can enforce it. Put the plaintiff to strict proof of the assignment and the chain of ownership.",
+    "officialCitation": "Law and Equity Act, R.S.B.C. 1996, c. 253, s. 36 (absolute assignment of a debt)",
+    "sourceTitle": "Law and Equity Act (BC) — assignment of debts (s. 36)",
+    "sourceUrl": "https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/96253_01"
+  },
+  {
+    "id": "ans-bc-reply-form",
+    "domain": "answer",
+    "topic": "The Reply (Form 2) — British Columbia",
+    "summary": "Form 2 is the Reply used to respond to a Notice of Claim in BC Provincial Court Small Claims. It is where you say what you admit or deny, raise any defences (such as the limitation period), and, if you admit the debt, propose how you will pay.",
+    "officialCitation": "Small Claims Rules, B.C. Reg. 261/93, Form 2 (Reply)",
+    "sourceTitle": "B.C. Reg. 261/93 — Small Claims Rules (Form 2, Reply)",
+    "sourceUrl": "https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/261_93_01"
+  },
+
+  {
+    "id": "ans-ca-response-30-day",
+    "domain": "answer",
+    "topic": "30-day deadline to respond to a California complaint",
+    "summary": "If you are served with a summons and complaint in California, you have 30 days to file a written response (an Answer) with the court. Filing on time is what stops you from losing automatically.",
+    "officialCitation": "Cal. Code Civ. Proc. § 412.20(a)(3) (30 days to respond after service)",
+    "sourceTitle": "California Code of Civil Procedure § 412.20",
+    "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CCP&sectionNum=412.20."
+  },
+  {
+    "id": "ans-ca-default",
+    "domain": "answer",
+    "topic": "What happens if you miss the deadline: default judgment (California)",
+    "summary": "If you do not respond within 30 days, the plaintiff can ask the court to enter your default and then a default judgment — you lose without the merits being heard, which can lead to wage garnishment or bank levies.",
+    "officialCitation": "Cal. Code Civ. Proc. § 585 (default judgment)",
+    "sourceTitle": "California Code of Civil Procedure § 585",
+    "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CCP&sectionNum=585."
+  },
+  {
+    "id": "ans-ca-limitation",
+    "domain": "answer",
+    "topic": "Time-barred defence: California's 4-year limit on written-contract / credit-card debt",
+    "summary": "In California, an action on a written contract must generally be filed within 4 years. Courts treat most credit-card debt as a written contract, so a credit-card lawsuit filed more than 4 years after the breach (commonly the last payment or charge-off) may be time-barred.",
+    "officialCitation": "Cal. Code Civ. Proc. § 337 (4-year limit, written contracts)",
+    "sourceTitle": "California Code of Civil Procedure § 337",
+    "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CCP&sectionNum=337."
+  },
+  {
+    "id": "ans-ca-acknowledgment",
+    "domain": "answer",
+    "topic": "What can restart the California clock: a new written promise",
+    "summary": "In California, the limitation period can be restarted by a new promise to pay or an acknowledgment of the debt — but it must be in writing and signed. An oral promise does not restart the clock. The date of your last payment or signed acknowledgment matters.",
+    "officialCitation": "Cal. Code Civ. Proc. § 360 (acknowledgment or new promise must be in writing)",
+    "sourceTitle": "California Code of Civil Procedure § 360",
+    "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CCP&sectionNum=360."
+  },
+  {
+    "id": "ans-ca-standing",
+    "domain": "answer",
+    "topic": "Make a debt buyer prove it owns the debt — California Fair Debt Buying Practices Act",
+    "summary": "California's Fair Debt Buying Practices Act requires a debt buyer to actually possess proof it owns the debt before collecting or suing — the charge-off balance, the date of default, the original creditor, and documentation of the agreement. Demand it; without that proof the case can fail.",
+    "officialCitation": "California Fair Debt Buying Practices Act, Cal. Civ. Code §§ 1788.50–1788.52",
+    "sourceTitle": "California Civil Code — Fair Debt Buying Practices (Title 1.6C.5)",
+    "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=CIV&division=3.&title=1.6C.5.&part=4."
+  },
+  {
+    "id": "ans-ca-answer-form",
+    "domain": "answer",
+    "topic": "The Answer (Form PLD-C-010) — California",
+    "summary": "PLD-C-010 is the Judicial Council Answer—Contract form used to respond to a contract or debt complaint in California Superior Court. It is where you deny the claim, assert affirmative defences (such as the statute of limitations), and require the plaintiff to prove its case.",
+    "officialCitation": "Judicial Council of California, form PLD-C-010 (Answer—Contract)",
+    "sourceTitle": "California Courts — Answer—Contract (PLD-C-010)",
+    "sourceUrl": "https://www.courts.ca.gov/documents/pldc010.pdf"
   }
 ]

@@ -186,6 +186,9 @@ export default function HomePage() {
     <main className="min-h-screen bg-paper">
       <div className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
         <header className="mb-10 text-center">
+          <p className="mb-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            W<span className="ai-letters">ai</span>ve
+          </p>
           <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
             <ShieldCheck className="size-3.5 text-primary" />
             Information &amp; document prep, not legal advice

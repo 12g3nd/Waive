@@ -27,8 +27,11 @@ lawsuit to prove it generalizes.
 - **Debt claims (`answer` — the proof-of-generality domain).** A person is sued
   (often by a debt buyer on old debt), doesn't understand the claim or the deadline,
   doesn't file a defence, and **loses by default** — then faces garnishment, even
-  when the debt was time-barred, paid, or not theirs. This build configures the
-  `answer` pack for **Ontario, Canada** (Small Claims Court).
+  when the debt was time-barred, paid, or not theirs. This build ships **three
+  jurisdictions across Canada and the U.S.** — **Ontario** (20-day Defence, 2-yr
+  limit), **British Columbia** (14-day Reply, 2-yr limit), and **California** (30-day
+  Answer, 4-yr limit) — each a verified *config profile*, not new code. Same engine,
+  same UI.
 
 Same shape every time: **notice + short deadline + hidden remedy → automatic loss by
 silence.** Adding a new injustice is **writing a new rule pack — config, not a
@@ -96,7 +99,9 @@ interface; the LLM only translates and drafts.
 /engine       Backstop — domain-blind core: types, pipeline, date math, citation resolver,
               confidence grading, deterministic fallback. No domain logic. No `any`.
 /packs/benefits  SSA overpayment RulePack (built deep — the demo hero)
-/packs/answer    Ontario debt-claim RulePack (built thin — proves generality)
+/packs/answer    Debt-claim RulePack, generated per jurisdiction from a verified
+                 profile (Ontario, British Columbia, California) — proves generality
+                 across domains AND jurisdictions
 /corpus       citation-tagged rule snippets (JSON) + combined resolver
 /samples      judge's-choice synthetic notices (data; dates computed live)
 /public/samples  watermarked "SAMPLE — NOT A REAL NOTICE" notice artwork
@@ -182,8 +187,12 @@ The engine is domain-blind. To add a new injustice you implement the
 5. **`tests/packs/<id>.test.ts`** — golden tests for the deadline math and each
    presumption/defence.
 
-That's the whole story the `answer` pack tells: a different **country** (Canada) and
-a different **injustice** (a debt lawsuit) run through the identical pipeline.
+That's the whole story the `answer` pack tells: a different **injustice** (a debt
+lawsuit) — and within it, three **jurisdictions** across two countries — run through
+the identical pipeline. Each jurisdiction is a `DebtJurisdiction` profile
+([packs/answer/jurisdictions.ts](packs/answer/jurisdictions.ts)) with its verified
+deadline, limitation period, court/forms, and citations; `makeDebtPack(profile)`
+turns it into a pack. Adding Alberta or New York is one more profile.
 
 ---
 
@@ -215,6 +224,11 @@ load-bearing citations against official sources:
   rules).
 - **Ontario**: Limitations Act, 2002 (ss. 4, 5, 13), Rules of the Small Claims Court
   O. Reg. 258/98 (r. 9.01 Defence, r. 11 default), and CLPA s. 53 (assignment).
+- **British Columbia**: Limitation Act, SBC 2012 (ss. 6, 24), Small Claims Rules
+  B.C. Reg. 261/93 (r. 3 Reply/default), and Law and Equity Act s. 36 (assignment).
+- **California**: Code of Civil Procedure §§ 412.20 (30-day response), 585 (default),
+  337 (4-yr limit), 360 (acknowledgment), and the Fair Debt Buying Practices Act
+  (Civ. Code §§ 1788.50–1788.52).
 
 **Outstanding `TODO_CITATION`: none.** Every citation rendered in the UI resolves to
 a real, verified source (a test enforces this — see
