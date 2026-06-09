@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { DeadlineClock } from "@/components/deadline-clock";
+import { AddToCalendar } from "@/components/add-to-calendar";
 import { ExplanationPanel } from "@/components/explanation-panel";
 import { RemedyPanel } from "@/components/remedy-panel";
 import { PresumptionBanner } from "@/components/presumption-banner";
@@ -127,15 +128,18 @@ export function ResultView({
       {/* Decoded-notice band: the dread, turned into a clock + the facts. */}
       <Card className="animate-fade-up overflow-hidden" style={delay(0)}>
         <CardContent className="grid items-center gap-6 p-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-          <div className="flex justify-center border-b border-border pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-6">
+          <div className="flex flex-col items-center justify-center gap-4 border-b border-border pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-6">
             {primary ? (
-              <DeadlineClock
-                dateISO={primary.dateISO}
-                label={primary.label}
-                description={deadlines.pauseWindow?.description}
-                windowDays={windowDays}
-                isProtected={primary.protected}
-              />
+              <>
+                <DeadlineClock
+                  dateISO={primary.dateISO}
+                  label={primary.label}
+                  description={deadlines.pauseWindow?.description}
+                  windowDays={windowDays}
+                  isProtected={primary.protected}
+                />
+                <AddToCalendar result={result} />
+              </>
             ) : (
               <div className="max-w-xs text-center">
                 <p className="font-display text-2xl font-semibold text-urgent">No clock yet</p>
