@@ -145,6 +145,23 @@ judge's-choice samples ship precomputed extractions, and explanation/drafting fa
 back to deterministic, citation-grounded text. Set `LLM_OFFLINE=1` to force this.
 Tests never touch a model.
 
+### Live demo (zero-setup, runs anywhere)
+
+Because of the offline fallback, Waive deploys to any Node host (e.g. Vercel) with a
+single env var and **no model** — the judge's-choice samples run end-to-end, the
+deterministic engine shows its work, and the grounded Q&A answers from the corpus.
+
+Deploy to Vercel:
+
+1. Import the repo at [vercel.com/new](https://vercel.com/new) (framework auto-detects
+   as Next.js — no extra config).
+2. Set one environment variable: **`LLM_OFFLINE=1`**.
+3. Deploy. The sample board, clock, remedy routing, citations, and "Ask about your
+   notice" all work. *(Live image upload, EN→ES translation, and model-polished text
+   need a local Ollama and so run only on a local machine.)*
+
+`npm run build` is the build command; nothing else is required.
+
 ---
 
 ## The scalability story — add an injustice in ~5 files, zero engine changes
