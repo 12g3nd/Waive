@@ -1,0 +1,173 @@
+[
+  {
+    "id": "ssa-30-day-pause",
+    "domain": "benefits",
+    "topic": "30-day protected pause: appeal or waiver within 30 days stops collection",
+    "summary": "If you ask SSA to reconsider the overpayment (appeal) or to waive it within 30 days of the date on the notice, SSA will not start taking money out of your benefits until it makes a decision on your request. This is the protective window: act inside it and nothing is collected while your case is reviewed.",
+    "officialCitation": "SSA, 'Resolve an overpayment' (ssa.gov) & notice insert Form SSA-3105",
+    "sourceTitle": "SSA — Resolve an overpayment",
+    "sourceUrl": "https://www.ssa.gov/manage-benefits/resolve-overpayment"
+  },
+  {
+    "id": "ssa-90-day-withholding-50",
+    "domain": "benefits",
+    "topic": "50% Title II default withholding begins at 90 days (effective April 25, 2025)",
+    "summary": "For Social Security (Title II / SSDI and related) overpayment notices issued on or after April 25, 2025, SSA's default is to withhold 50% of the monthly benefit to recover the overpayment. That 50% withholding begins unless, within 90 days, the person requests a lower repayment rate, a reconsideration, or a waiver. Acting in time keeps half the monthly check from disappearing.",
+    "officialCitation": "SSA Emergency Message EM-25029 REV (effective Apr. 25, 2025)",
+    "sourceTitle": "EM-25029 REV — Change to Title II Overpayment Default Benefit Withholding Rate to 50 Percent",
+    "sourceUrl": "https://secure.ssa.gov/apps10/reference.nsf/links/08282025031929PM"
+  },
+  {
+    "id": "ssa-recon-60-day",
+    "domain": "benefits",
+    "topic": "60-day deadline to request reconsideration (with 5-day mailing presumption)",
+    "summary": "To formally dispute that you were overpaid or the amount, you file a Request for Reconsideration. The deadline is 60 days after you receive the notice; SSA presumes you received it 5 days after the date on the notice unless you show otherwise. Filing late requires showing good cause.",
+    "officialCitation": "20 C.F.R. § 404.909 (time to request reconsideration); § 404.901 (5-day receipt presumption)",
+    "sourceTitle": "20 CFR 404.909 — Time and place of filing request for reconsideration",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.909"
+  },
+  {
+    "id": "ssa-561-reconsideration",
+    "domain": "benefits",
+    "topic": "Remedy: dispute the overpayment — Form SSA-561 (Request for Reconsideration)",
+    "summary": "If you do not agree that you were overpaid, or you think the amount is wrong, the right tool is Form SSA-561, Request for Reconsideration. It asks SSA to review the determination that you owe the money.",
+    "officialCitation": "Form SSA-561-U2; 20 C.F.R. § 404.907 (reconsideration)",
+    "sourceTitle": "SSA Form SSA-561 — Request for Reconsideration",
+    "sourceUrl": "https://www.ssa.gov/forms/ssa-561.html"
+  },
+  {
+    "id": "ssa-632-waiver",
+    "domain": "benefits",
+    "topic": "Remedy: cancel the debt — Form SSA-632 (Request for Waiver of Overpayment Recovery)",
+    "summary": "A waiver can cancel the overpayment entirely. SSA grants it when you were not at fault in causing the overpayment AND paying it back would either defeat the purpose of the benefits (cause financial hardship) or be against equity and good conscience. You request it on Form SSA-632-BK.",
+    "officialCitation": "Form SSA-632-BK; 20 C.F.R. § 404.506; POMS GN 02250.230",
+    "sourceTitle": "SSA Form SSA-632 — Request for Waiver of Overpayment Recovery",
+    "sourceUrl": "https://www.ssa.gov/forms/ssa-632.html"
+  },
+  {
+    "id": "ssa-634-rate",
+    "domain": "benefits",
+    "topic": "Remedy: lower the monthly withholding — Form SSA-634 (Request for Change in Overpayment Recovery Rate)",
+    "summary": "If you agree you owe the money but cannot afford the default withholding, you can ask SSA to take a smaller amount each month. You request the lower rate on Form SSA-634.",
+    "officialCitation": "Form SSA-634; 20 C.F.R. § 404.502 (rate of recovery)",
+    "sourceTitle": "SSA Form SSA-634 — Request for Change in Overpayment Recovery Rate",
+    "sourceUrl": "https://www.ssa.gov/forms/ssa-634.pdf"
+  },
+  {
+    "id": "ssa-repayment",
+    "domain": "benefits",
+    "topic": "Honest path: repay in full or set up an installment plan",
+    "summary": "If you agree you owe the money and can afford it, the honest path is to repay it — in full online, or by asking SSA for an installment plan you can manage. This is the right route when a waiver would not be appropriate.",
+    "officialCitation": "SSA, 'Resolve an overpayment' — repayment / installment options (ssa.gov)",
+    "sourceTitle": "SSA — Resolve an overpayment",
+    "sourceUrl": "https://www.ssa.gov/manage-benefits/resolve-overpayment"
+  },
+  {
+    "id": "ssa-fault-standard",
+    "domain": "benefits",
+    "topic": "What 'fault' means — and the personal circumstances SSA must weigh",
+    "summary": "An overpayment is your fault only if it came from an incorrect statement you knew or should have known was wrong, a failure to report something you knew or should have known was material, or accepting a payment you knew or could have been expected to know was wrong. SSA must consider your age, intelligence, education, and any physical, mental, or language limitations.",
+    "officialCitation": "20 C.F.R. § 404.507 (Fault)",
+    "sourceTitle": "20 CFR 404.507 — Fault",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.507"
+  },
+  {
+    "id": "ssa-without-fault-510g",
+    "domain": "benefits",
+    "topic": "Not at fault: you reported the change and the checks kept coming unchanged",
+    "summary": "When you reported the event that caused the overpayment (such as starting work or a change in your situation) and SSA kept paying you the same amount anyway, you are treated as without fault for continuing to accept those payments in good faith. The agency's failure to act on your report is not your fault.",
+    "officialCitation": "20 C.F.R. § 404.510(g)",
+    "sourceTitle": "20 CFR 404.510 — When an individual is 'without fault' in a deduction overpayment",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-510b",
+    "domain": "benefits",
+    "topic": "Not at fault: you relied on incorrect information from an official source",
+    "summary": "If you relied on wrong information about the rules from an official Social Security source (or a connected government agency) and that reliance led to the overpayment, you are treated as without fault.",
+    "officialCitation": "20 C.F.R. § 404.510(b); see also § 404.510a",
+    "sourceTitle": "20 CFR 404.510 — 'Without fault' (reliance on official information)",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-510a-net",
+    "domain": "benefits",
+    "topic": "Not at fault: you reasonably believed only take-home (net) pay counted",
+    "summary": "If you reasonably believed that only your net take-home pay — not gross earnings — counted toward the earnings limit, that misunderstanding can make you without fault for the resulting overpayment.",
+    "officialCitation": "20 C.F.R. § 404.510(a)",
+    "sourceTitle": "20 CFR 404.510 — 'Without fault' (net vs. gross earnings)",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-510h-bonus",
+    "domain": "benefits",
+    "topic": "Not at fault: you did not know a bonus / vacation / similar pay counted as earnings",
+    "summary": "If you did not know that a bonus, vacation pay, severance, or similar payment counted as earnings for the limit, that lack of knowledge can make you without fault.",
+    "officialCitation": "20 C.F.R. § 404.510(h)",
+    "sourceTitle": "20 CFR 404.510 — 'Without fault' (bonus / vacation pay)",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-510f-retro",
+    "domain": "benefits",
+    "topic": "Not at fault: a retroactive raise, employer error, or extra payday pushed you over",
+    "summary": "If you were unaware your earnings exceeded the limit because of a retroactive pay increase, a higher-than-expected pay rate, an employer's failure to restrict your hours, or an unusual extra payday in a month, you can be treated as without fault.",
+    "officialCitation": "20 C.F.R. § 404.510(f)",
+    "sourceTitle": "20 CFR 404.510 — 'Without fault' (unexpected earnings)",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-510k-aux",
+    "domain": "benefits",
+    "topic": "Not at fault: you are a family beneficiary who did not know about the earner's deductions",
+    "summary": "If you receive benefits on someone else's record (for example, as a family member) and did not know that the primary earner's work caused deductions, you can be treated as without fault for the overpayment to you.",
+    "officialCitation": "20 C.F.R. § 404.510(k)",
+    "sourceTitle": "20 CFR 404.510 — 'Without fault' (auxiliary beneficiary)",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-510n-general",
+    "domain": "benefits",
+    "topic": "Not at fault: you did not understand the rules, or unusual circumstances made the violation unclear",
+    "summary": "A general catch-all: if your failure to understand the deduction rules — given your circumstances — or other unusual and unavoidable circumstances clearly show you were unaware you were violating the limit, you can be treated as without fault. SSA must weigh your personal circumstances here too.",
+    "officialCitation": "20 C.F.R. § 404.510(n); see also § 404.507",
+    "sourceTitle": "20 CFR 404.510 — 'Without fault' (general / unusual circumstances)",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.510"
+  },
+  {
+    "id": "ssa-without-fault-pandemic",
+    "domain": "benefits",
+    "topic": "Not at fault: overpayments during the COVID-19 pandemic period are presumed without fault",
+    "summary": "SSA's rules presume a person is without fault for a qualifying overpayment that occurred during the COVID-19 pandemic period, unless there is fraud, similar fault, or misuse of benefits by a representative payee. (Confirm the exact pandemic-period dates for the individual case.)",
+    "officialCitation": "20 C.F.R. § 404.506; § 404.507 (pandemic-period provision)",
+    "sourceTitle": "20 CFR 404.506 / 404.507 — pandemic-period without-fault presumption",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.506"
+  },
+  {
+    "id": "ssa-substantiation",
+    "domain": "benefits",
+    "topic": "SSA cannot produce records explaining the overpayment",
+    "summary": "SSA must be able to establish that an overpayment happened and how much it was. If the agency cannot produce records that explain the reason or the amount, that is a strong basis to dispute the overpayment on reconsideration, and it undercuts any claim that you were at fault for something the agency itself cannot document.",
+    "officialCitation": "TODO_CITATION (SSA's burden to establish fact/amount of overpayment; verify exact POMS GN 02201/GN 02250 section)",
+    "sourceTitle": "SSA POMS — overpayment development (section to be verified)",
+    "sourceUrl": "https://secure.ssa.gov/poms.nsf/lnx/0202201001"
+  },
+  {
+    "id": "ssa-hardship-defeat-purpose",
+    "domain": "benefits",
+    "topic": "Waiver's second prong: recovery would defeat the purpose of the benefits (hardship)",
+    "summary": "The second half of the waiver test asks whether paying the money back would defeat the purpose of the benefits — broadly, whether it would leave you unable to meet ordinary and necessary living expenses. This depends on your specific income, expenses, and assets, and is a judgment call best reviewed by an advocate.",
+    "officialCitation": "20 C.F.R. § 404.508 (defeat the purpose of Title II)",
+    "sourceTitle": "20 CFR 404.508 — Defeat the purpose of Title II",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.508"
+  },
+  {
+    "id": "ssa-equity-good-conscience",
+    "domain": "benefits",
+    "topic": "Waiver's second prong (alternative): recovery would be against equity and good conscience",
+    "summary": "Even without financial hardship, a waiver can apply when making you repay would be against equity and good conscience — for example, if you changed your position for the worse or gave up a right in reliance on the payments. This is also a judgment call best reviewed by an advocate.",
+    "officialCitation": "20 C.F.R. § 404.509 (against equity and good conscience)",
+    "sourceTitle": "20 CFR 404.509 — Against equity and good conscience",
+    "sourceUrl": "https://www.law.cornell.edu/cfr/text/20/404.509"
+  }
+]
