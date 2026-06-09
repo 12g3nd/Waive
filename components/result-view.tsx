@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { RotateCcw, Building2, Hash, CircleDollarSign, User } from "lucide-react";
 import type { PipelineResult } from "@/engine";
-import { diffDays } from "@/engine/dates";
+import { diffDays, humanDate } from "@/engine/dates";
 import { formatMoney } from "@/engine/format";
 import type { LlmStatus } from "@/lib/llm";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,35 @@ import { PresumptionBanner } from "@/components/presumption-banner";
 import { DocumentPreview } from "@/components/document-preview";
 import { CitationsPanel } from "@/components/citations-panel";
 import { ConfidencePanel } from "@/components/confidence-panel";
+import { AskPanel } from "@/components/ask-panel";
 import { LanguageToggle } from "@/components/language-toggle";
+
+const ASK_SUGGESTIONS: Record<string, string[]> = {
+  benefits: [
+    "Can this debt be cancelled?",
+    "What happens if I do nothing?",
+    "How do I know if I'm at fault?",
+  ],
+  answer: [
+    "Can this debt be too old to collect?",
+    "What if I miss the deadline?",
+    "Do they have to prove they own it?",
+  ],
+};
+
+function buildGrounding(result: PipelineResult): string {
+  const e = result.extraction;
+  const primary =
+    result.deadlines.deadlines.find((d) => d.id === result.deadlines.primaryDeadlineId) ??
+    result.deadlines.deadlines[0];
+  const parts = [`This is a ${e.claimType} from ${e.issuer}.`];
+  if (primary) parts.push(`Key deadline: ${primary.label} on ${humanDate(primary.dateISO)}.`);
+  parts.push(`Routed remedy: ${result.remedy.selected.label} — ${result.remedy.selected.why}`);
+  if (result.presumptions.catches.length) {
+    parts.push(`Findings: ${result.presumptions.catches.map((c) => c.headline).join(" ")}`);
+  }
+  return parts.join(" ");
+}
 
 interface ResultViewProps {
   result: PipelineResult;
@@ -159,6 +187,14 @@ export function ResultView({
         <div className="space-y-6">
           <div className="animate-fade-up" style={delay(2)}>
             <ConfidencePanel confidence={result.confidence} />
+          </div>
+          <div className="animate-fade-up" style={delay(3)}>
+            <AskPanel
+              domain={result.domain}
+              language={language}
+              grounding={buildGrounding(result)}
+              suggestions={ASK_SUGGESTIONS[result.domain] ?? ["What does this mean?", "What is my deadline?"]}
+            />
           </div>
           {refineSlot && (
             <div className="animate-fade-up" style={delay(3)}>
