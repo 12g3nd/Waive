@@ -71,6 +71,36 @@ export const benefitsDocuments: DocumentSpec[] = [
         citationId: CID.remedyRecon,
       },
     ],
+    filing: {
+      whereToSend:
+        "Your local Social Security office — the one named on your overpayment notice.",
+      channels: [
+        {
+          method: "in-person",
+          label: "In person",
+          detail: "Bring the signed form and your supporting proof to your local SSA office.",
+        },
+        {
+          method: "mail",
+          label: "By mail",
+          detail:
+            "Mail it to your local SSA office (address on your notice, or look it up with the office locator).",
+          url: "https://www.ssa.gov/locator",
+        },
+        {
+          method: "fax",
+          label: "By fax",
+          detail: "Some offices accept faxes — call first to confirm the right number.",
+        },
+        {
+          method: "phone",
+          label: "Need help?",
+          detail: "Call SSA at 1-800-772-1213 (TTY 1-800-325-0778).",
+        },
+      ],
+      fee: { summary: "There is no fee — filing a waiver or appeal with SSA is always free." },
+      citationId: CID.remedyWaiver,
+    },
     citationId: CID.remedyWaiver,
   },
   {
@@ -102,6 +132,31 @@ export const benefitsDocuments: DocumentSpec[] = [
       },
       { id: "keep-copy", text: "Keep a copy and note the date you filed." },
     ],
+    filing: {
+      whereToSend: "Your local Social Security office — the one named on your notice.",
+      channels: [
+        {
+          method: "in-person",
+          label: "In person",
+          detail:
+            "Bring the signed form and proof of your income and expenses to your local SSA office.",
+        },
+        {
+          method: "mail",
+          label: "By mail",
+          detail:
+            "Mail it to your local SSA office (address on your notice, or use the office locator).",
+          url: "https://www.ssa.gov/locator",
+        },
+        {
+          method: "phone",
+          label: "Need help?",
+          detail: "Call SSA at 1-800-772-1213 (TTY 1-800-325-0778).",
+        },
+      ],
+      fee: { summary: "There is no fee to ask SSA to lower your monthly withholding." },
+      citationId: CID.remedyRate,
+    },
     citationId: CID.remedyRate,
   },
   {
@@ -139,6 +194,36 @@ export const benefitsDocuments: DocumentSpec[] = [
       },
       { id: "keep-copy", text: "Keep a copy and note the date you filed." },
     ],
+    filing: {
+      whereToSend: "Your local Social Security office — or file your appeal online.",
+      channels: [
+        {
+          method: "online",
+          label: "Online",
+          detail: "File your appeal online at ssa.gov.",
+          url: "https://www.ssa.gov/apply/appeal-decision-we-made",
+        },
+        {
+          method: "mail",
+          label: "By mail",
+          detail:
+            "Mail the signed form to your local SSA office (address on your notice, or use the locator).",
+          url: "https://www.ssa.gov/locator",
+        },
+        {
+          method: "in-person",
+          label: "In person",
+          detail: "Take it to your local SSA office.",
+        },
+        {
+          method: "phone",
+          label: "Need help?",
+          detail: "Call SSA at 1-800-772-1213 (TTY 1-800-325-0778).",
+        },
+      ],
+      fee: { summary: "There is no fee to file a reconsideration." },
+      citationId: CID.remedyRecon,
+    },
     citationId: CID.remedyRecon,
   },
   {
@@ -175,6 +260,31 @@ export const benefitsDocuments: DocumentSpec[] = [
       { id: "confirmation", text: "Get and keep written confirmation of any plan you set up." },
       { id: "records", text: "Keep records of every payment you make." },
     ],
+    filing: {
+      whereToSend:
+        "Pay SSA directly — always include your claim/notice number so the payment is credited correctly.",
+      channels: [
+        {
+          method: "online",
+          label: "Online",
+          detail:
+            "Pay at pay.gov (search 'SSA overpayment'), or through your personal my Social Security account.",
+          url: "https://www.pay.gov",
+        },
+        {
+          method: "phone",
+          label: "By phone",
+          detail: "Call 1-800-772-1213 to set up a monthly installment plan you can afford.",
+        },
+        {
+          method: "mail",
+          label: "By mail",
+          detail: "Send a check to SSA with your claim/notice number written on it.",
+        },
+      ],
+      fee: { summary: "No filing fee — this is about paying the balance, not filing a form." },
+      citationId: CID.remedyRepay,
+    },
     citationId: CID.remedyRepay,
   },
 ];

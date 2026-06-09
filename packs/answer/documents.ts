@@ -52,6 +52,32 @@ export function makeAnswerDocuments(j: DebtJurisdiction): DocumentSpec[] {
           citationId: j.citations.default,
         },
       ],
+      filing: {
+        whereToSend: `The ${j.court} that issued your claim — the court office named at the top of the papers you were served.`,
+        channels: [
+          {
+            method: "in-person",
+            label: "In person",
+            detail: `Take your completed ${j.responseDoc.name} to the court office that issued the claim, and serve a copy on the plaintiff as the rules require.`,
+          },
+          {
+            method: "mail",
+            label: "By mail",
+            detail: `Deliver or mail it to the court office named on the claim. Keep proof you filed and served it.`,
+          },
+          {
+            method: "online",
+            label: "Online (if available)",
+            detail: `Some courts let you file online — check the website of the ${j.court}.`,
+          },
+        ],
+        fee: {
+          summary: `A court filing fee usually applies to file your ${j.responseDoc.name}.`,
+          feeWaiver:
+            "If you can't afford the fee, you can ask the court to waive it — request a fee waiver when you file.",
+        },
+        citationId: j.citations.deadline,
+      },
       citationId: j.citations.responseForm,
     },
   ];

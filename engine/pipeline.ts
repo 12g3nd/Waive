@@ -78,6 +78,7 @@ export async function runPipeline(
     presumptions,
     explanation,
     draftedDocument,
+    filing: spec.filing ?? null,
     citations,
     confidence,
     usedModel: usedModel || explanation.source === "llm" || draftedDocument.source === "llm",
