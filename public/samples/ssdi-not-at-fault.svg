@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="880" viewBox="0 0 680 880" font-family="'Public Sans', Arial, sans-serif">
+  <rect width="680" height="880" fill="#ffffff"/>
+  <rect x="0" y="0" width="680" height="880" fill="none" stroke="#e5e2da" stroke-width="2"/>
+
+  <!-- letterhead -->
+  <g transform="translate(48,44)">
+    <circle cx="14" cy="14" r="14" fill="#13312a"/>
+    <text x="40" y="13" font-size="15" font-weight="700" fill="#13312a">Social Security Administration</text>
+    <text x="40" y="31" font-size="10.5" fill="#6b6b6b">Office of Central Operations · Important Information</text>
+  </g>
+  <line x1="48" y1="92" x2="632" y2="92" stroke="#13312a" stroke-width="1.5"/>
+
+  <!-- meta -->
+  <g transform="translate(48,120)" font-size="11" fill="#333">
+    <text x="0" y="0">Date: SAMPLE</text>
+    <text x="0" y="18">Claim Number: OP-44821</text>
+    <text x="0" y="36">SSN on file: •••-••-6789</text>
+    <text x="380" y="0" font-weight="600">Notice of Overpayment</text>
+    <text x="380" y="18" fill="#6b6b6b">Form SSA-L4480 (sample)</text>
+  </g>
+
+  <!-- recipient -->
+  <g transform="translate(48,196)" font-size="11.5" fill="#222">
+    <text x="0" y="0" font-weight="600">JORDAN RIVERA</text>
+    <text x="0" y="18">123 Maple Street, Apt 4</text>
+    <text x="0" y="36">Anytown, USA</text>
+  </g>
+
+  <!-- body -->
+  <g transform="translate(48,266)" font-size="12" fill="#1a1a1a">
+    <text x="0" y="0" font-weight="700" font-size="13">We Paid You $9,120.00 Too Much</text>
+    <text x="0" y="28">Our records show we paid you $9,120.00 more than you were due from</text>
+    <text x="0" y="46">benefits on your Social Security disability claim. You told us you returned</text>
+    <text x="0" y="64">to work, but our records were not updated and your payments continued.</text>
+
+    <text x="0" y="100" font-weight="700">What You Should Do</text>
+    <text x="0" y="124">If you agree, you can repay the full amount within 30 days. If you</text>
+    <text x="0" y="142">disagree, you have the right to appeal (Form SSA-561). If it was not your</text>
+    <text x="0" y="160">fault and you cannot afford to repay, you may ask us to waive it</text>
+    <text x="0" y="178">(Form SSA-632). You can also ask us to lower the amount we withhold</text>
+    <text x="0" y="196">each month (Form SSA-634).</text>
+
+    <rect x="-8" y="222" width="560" height="64" fill="#fdeceb" stroke="#e3b3ae"/>
+    <text x="8" y="246" font-weight="700" fill="#9a2b22" font-size="12.5">If you do not respond, we will withhold 50% of your</text>
+    <text x="8" y="266" font-weight="700" fill="#9a2b22" font-size="12.5">monthly benefit until the overpayment is repaid.</text>
+
+    <text x="0" y="322" font-size="11.5">If you ask for an appeal or a waiver within 30 days, we will not begin</text>
+    <text x="0" y="340" font-size="11.5">collecting until we make a decision on your request.</text>
+
+    <text x="0" y="384" font-size="11.5">Sincerely,</text>
+    <text x="0" y="404" font-size="11.5">Social Security Administration</text>
+  </g>
+
+  <!-- watermark -->
+  <g transform="translate(340,440)" opacity="0.12">
+    <text x="0" y="0" font-size="58" font-weight="800" fill="#9a2b22" text-anchor="middle"
+          transform="rotate(-24)">SAMPLE — NOT A REAL NOTICE</text>
+  </g>
+
+  <text x="48" y="852" font-size="9.5" fill="#9a9a9a">Synthetic document generated for the Waive demo. No real person or PII. Not from SSA.</text>
+</svg>
