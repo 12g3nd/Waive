@@ -6,20 +6,24 @@ export interface Sample {
   title: string;
   blurb: string;
   badge: string;
-  /** Tailwind accent class for the badge, e.g. "safe" | "urgent" | "primary". */
+  /** Tailwind accent used on the badge/card. */
   tone: "primary" | "urgent" | "highlight";
-  /** Rendered notice image for the vision path (added in Phase 5). */
+  /** Rendered notice image for the vision path + card thumbnail. */
   imagePath?: string;
-  /** Precomputed extraction (offline path) — dates are filled fresh per request. */
+  /** Precomputed extraction (offline path) — dates filled fresh per request. */
   buildExtraction: (todayISO: string) => NoticeExtraction;
-  presetFacts: UserFacts;
+  /** Recommended intake answers; some dates are relative to today, so it's a fn. */
+  buildFacts: (todayISO: string) => UserFacts;
 }
 
 /**
  * Judge's-choice synthetic notices. Dates are computed relative to "now" so the
- * countdown clock is always live and urgent on stage. The not-at-fault and
- * at-fault SSDI samples are the SAME notice — they differ only in the intake facts
- * that flip the not-at-fault presumption, so the contrast is crisp.
+ * countdown clock is always live and urgent on stage.
+ *
+ *  (a) clean not-at-fault SSDI overpayment    → waiver can cancel the debt
+ *  (b) at-fault SSDI overpayment, can repay    → integrity routing (no waiver)
+ *  (c) Ontario debt claim on time-barred debt  → THE CROSS-DOMAIN REVEAL
+ *      (same engine, different country + injustice)
  */
 export const SAMPLES: Sample[] = [
   {
@@ -47,7 +51,7 @@ export const SAMPLES: Sample[] = [
         "SAMPLE — NOT A REAL NOTICE. Notice of Overpayment. Our records show we paid you $9,120.00 more than you were due. You reported your return to work; our records were not updated. Unless you act, we will withhold 50% of your monthly benefit.",
       fieldConfidence: { issuer: 0.97, noticeDate: 0.95, amount: 0.94, claimType: 0.92 },
     }),
-    presetFacts: {
+    buildFacts: () => ({
       answers: {
         disputesOwes: false,
         timelyReported: true,
@@ -58,7 +62,7 @@ export const SAMPLES: Sample[] = [
         monthlyIncome: 1610,
         monthlyExpenses: 1880,
       },
-    },
+    }),
   },
   {
     id: "ssdi-at-fault",
@@ -85,7 +89,7 @@ export const SAMPLES: Sample[] = [
         "SAMPLE — NOT A REAL NOTICE. Notice of Overpayment. Our records show we paid you $9,120.00 more than you were due after you began working above the limit. Unless you act, we will withhold 50% of your monthly benefit.",
       fieldConfidence: { issuer: 0.97, noticeDate: 0.95, amount: 0.94, claimType: 0.92 },
     }),
-    presetFacts: {
+    buildFacts: () => ({
       answers: {
         disputesOwes: false,
         timelyReported: false,
@@ -96,7 +100,42 @@ export const SAMPLES: Sample[] = [
         monthlyIncome: 5200,
         monthlyExpenses: 2600,
       },
-    },
+    }),
+  },
+  {
+    id: "debt-time-barred",
+    packId: "answer",
+    title: "Debt lawsuit — Ontario, time-barred",
+    blurb:
+      "The SAME engine, a different country and injustice: a debt buyer sues on a 3-year-old debt. The 2-year limit can end the case.",
+    badge: "cross-domain reveal",
+    tone: "urgent",
+    imagePath: "/samples/debt-claim-ontario.svg",
+    buildExtraction: (todayISO) => ({
+      domain: "answer",
+      issuer: "Superior Court of Justice (Small Claims Court), Toronto",
+      recipientName: "Priya Sharma",
+      claimType: "credit-card debt claim",
+      amount: 4380.55,
+      currency: "CAD",
+      noticeDate: null,
+      serviceOrReceiptDate: addDays(todayISO, -15), // Defence due ~5 days out → urgent
+      rawDates: [{ label: "Served", dateISO: addDays(todayISO, -15) }],
+      partyOnOtherSide: "Velocity Receivables Inc. (assignee of original creditor)",
+      identifiers: { claimNumber: "SC-24-0098765", court: "Toronto" },
+      rawText:
+        "SAMPLE — NOT A REAL NOTICE. Plaintiff's Claim (Form 7A). Velocity Receivables Inc. claims $4,380.55 plus interest and costs for an unpaid credit-card account assigned to it. You must file a Defence within 20 days or the plaintiff may obtain default judgment.",
+      fieldConfidence: { issuer: 0.95, serviceOrReceiptDate: 0.93, amount: 0.94, claimType: 0.9 },
+    }),
+    buildFacts: (todayISO) => ({
+      answers: {
+        disputesDebt: true,
+        plaintiffIsDebtBuyer: true,
+        // Last payment ~3 years before service → past the 2-year limit → time-barred.
+        lastActivityDate: addDays(todayISO, -1110),
+        admitsOwes: false,
+      },
+    }),
   },
 ];
 

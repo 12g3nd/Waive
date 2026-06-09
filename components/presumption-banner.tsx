@@ -23,7 +23,7 @@ export function PresumptionBanner({ presumptions, citations }: PresumptionBanner
       <div className="flex items-center gap-2 border-b border-highlight/40 bg-highlight/25 px-5 py-2.5">
         <Sparkles className="size-4 text-highlight-foreground" />
         <span className="text-xs font-bold uppercase tracking-widest text-highlight-foreground">
-          The catch SSA hopes you miss
+          The catch they’re counting on you to miss
         </span>
       </div>
       <ul className="divide-y divide-highlight/30">

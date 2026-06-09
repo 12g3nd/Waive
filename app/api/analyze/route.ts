@@ -37,10 +37,11 @@ export async function POST(req: Request) {
         );
       }
       packId = sample.packId;
+      const today = todayISO();
       input = {
         packId: sample.packId,
-        userFacts: sample.presetFacts,
-        source: { kind: "extraction", extraction: sample.buildExtraction(todayISO()) },
+        userFacts: sample.buildFacts(today),
+        source: { kind: "extraction", extraction: sample.buildExtraction(today) },
         language: body.language ?? "en",
       };
     } else {

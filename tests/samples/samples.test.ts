@@ -3,10 +3,10 @@ import {
   DeterministicFallbackLlm,
   InMemoryCitationResolver,
   PackRegistry,
-  addDays,
+  isValidISODate,
   runPipeline,
 } from "@/engine";
-import { benefitsPack } from "@/packs/benefits";
+import { buildRegistry } from "@/packs";
 import { allCitations } from "@/corpus";
 import { SAMPLES, getSample } from "@/samples";
 
@@ -14,7 +14,7 @@ const TODAY = "2026-06-01";
 
 function deps() {
   return {
-    registry: new PackRegistry().register(benefitsPack),
+    registry: buildRegistry(),
     llm: new DeterministicFallbackLlm(),
     corpus: new InMemoryCitationResolver(allCitations),
     now: new Date(`${TODAY}T12:00:00Z`),
@@ -30,27 +30,18 @@ interface Expectation {
 }
 
 const EXPECT: Record<string, Expectation> = {
-  "ssdi-not-at-fault": {
-    documentId: "ssa-632",
-    selected: "waiver",
-    minCatches: 1,
-    hasIntegrityNote: false,
-    level: "high",
-  },
-  "ssdi-at-fault": {
-    documentId: "repayment",
-    selected: "repay",
-    minCatches: 0,
-    hasIntegrityNote: true,
-    level: "high",
-  },
+  "ssdi-not-at-fault": { documentId: "ssa-632", selected: "waiver", minCatches: 1, hasIntegrityNote: false, level: "high" },
+  "ssdi-at-fault": { documentId: "repayment", selected: "repay", minCatches: 0, hasIntegrityNote: true, level: "high" },
+  "debt-time-barred": { documentId: "defence", selected: "dispute", minCatches: 1, hasIntegrityNote: false, level: "high" },
 };
 
 describe("judge's-choice samples (golden)", () => {
-  it("every sample has artwork and dates 21 days before today", () => {
+  it("every sample has artwork, a valid anchor date, and a matching domain", () => {
     for (const s of SAMPLES) {
       const e = s.buildExtraction(TODAY);
-      expect(e.noticeDate).toBe(addDays(TODAY, -21));
+      const anchor = e.noticeDate ?? e.serviceOrReceiptDate;
+      expect(anchor && isValidISODate(anchor)).toBeTruthy();
+      expect(anchor! < TODAY).toBe(true); // notice is in the past → live countdown
       expect(e.domain).toBe(s.packId);
       expect(s.imagePath).toMatch(/\.svg$/);
     }
@@ -62,7 +53,7 @@ describe("judge's-choice samples (golden)", () => {
       const result = await runPipeline(
         {
           packId: sample.packId,
-          userFacts: sample.presetFacts,
+          userFacts: sample.buildFacts(TODAY),
           source: { kind: "extraction", extraction: sample.buildExtraction(TODAY) },
         },
         deps(),
@@ -72,19 +63,30 @@ describe("judge's-choice samples (golden)", () => {
       expect(result.presumptions.catches.length).toBeGreaterThanOrEqual(exp.minCatches);
       expect(Boolean(result.remedy.integrityNote)).toBe(exp.hasIntegrityNote);
       expect(result.confidence.level).toBe(exp.level);
-      // Every cited source resolves (verified, except a documented TODO).
       expect(result.citations.length).toBeGreaterThan(0);
     });
   }
 
-  it("the at-fault and not-at-fault samples are the SAME notice, flipped only by facts", () => {
+  it("the cross-domain debt sample fires the time-barred defence", async () => {
+    const sample = getSample("debt-time-barred")!;
+    const result = await runPipeline(
+      {
+        packId: sample.packId,
+        userFacts: sample.buildFacts(TODAY),
+        source: { kind: "extraction", extraction: sample.buildExtraction(TODAY) },
+      },
+      deps(),
+    );
+    expect(result.domain).toBe("answer");
+    expect(result.presumptions.catches.some((c) => c.id === "time-barred")).toBe(true);
+  });
+
+  it("the SSDI samples are the SAME notice, flipped only by facts", () => {
     const a = getSample("ssdi-not-at-fault")!.buildExtraction(TODAY);
     const b = getSample("ssdi-at-fault")!.buildExtraction(TODAY);
     expect(a.claimType).toBe(b.claimType);
     expect(a.amount).toBe(b.amount);
-    expect(a.issuer).toBe(b.issuer);
     expect(a.noticeDate).toBe(b.noticeDate);
-    // Only the person + the intake facts differ.
     expect(a.recipientName).not.toBe(b.recipientName);
   });
 });

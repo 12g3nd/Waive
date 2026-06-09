@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="880" viewBox="0 0 680 880" font-family="'Public Sans', Arial, sans-serif">
+  <rect width="680" height="880" fill="#ffffff"/>
+  <rect x="0" y="0" width="680" height="880" fill="none" stroke="#e5e2da" stroke-width="2"/>
+
+  <!-- court heading -->
+  <g transform="translate(48,48)" text-anchor="middle">
+    <text x="292" y="0" font-size="13" font-weight="700" fill="#1a1a1a">ONTARIO SUPERIOR COURT OF JUSTICE</text>
+    <text x="292" y="20" font-size="12" font-weight="600" fill="#1a1a1a">(SMALL CLAIMS COURT) — TORONTO</text>
+    <text x="292" y="40" font-size="10.5" fill="#6b6b6b">Plaintiff's Claim — Form 7A</text>
+  </g>
+  <line x1="48" y1="108" x2="632" y2="108" stroke="#1a1a1a" stroke-width="1.2"/>
+
+  <g transform="translate(48,134)" font-size="11" fill="#333">
+    <text x="0" y="0">Claim No.: SC-24-0098765</text>
+    <text x="380" y="0">Date served: SAMPLE</text>
+  </g>
+
+  <!-- parties -->
+  <g transform="translate(48,176)" font-size="11.5" fill="#222">
+    <text x="0" y="0" font-weight="700">BETWEEN:</text>
+    <text x="0" y="22">VELOCITY RECEIVABLES INC.</text>
+    <text x="0" y="38" font-size="10" fill="#6b6b6b">(assignee of the original creditor)</text>
+    <text x="300" y="22" font-style="italic" fill="#6b6b6b">Plaintiff</text>
+    <text x="0" y="64" font-weight="700">- and -</text>
+    <text x="0" y="86">PRIYA SHARMA</text>
+    <text x="300" y="86" font-style="italic" fill="#6b6b6b">Defendant</text>
+  </g>
+
+  <!-- body -->
+  <g transform="translate(48,300)" font-size="12" fill="#1a1a1a">
+    <text x="0" y="0" font-weight="700">THE PLAINTIFF'S CLAIM IS FOR:</text>
+    <text x="0" y="26">1. The sum of $4,380.55 for an unpaid credit-card account that was</text>
+    <text x="0" y="44">   assigned to the plaintiff by the original creditor.</text>
+    <text x="0" y="68">2. Pre- and post-judgment interest and the costs of this action.</text>
+
+    <rect x="-8" y="96" width="560" height="66" fill="#fdeceb" stroke="#e3b3ae"/>
+    <text x="8" y="120" font-weight="700" fill="#9a2b22" font-size="12.5">You have TWENTY (20) DAYS to file a Defence (Form 9A).</text>
+    <text x="8" y="142" font-weight="700" fill="#9a2b22" font-size="12.5">If you do not, default judgment may be entered against you.</text>
+
+    <text x="0" y="200" font-size="11.5">The last payment shown on this account was made several years ago.</text>
+    <text x="0" y="232" font-size="11.5">Issued by the Clerk of the Court.</text>
+  </g>
+
+  <!-- watermark -->
+  <g transform="translate(340,470)" opacity="0.12">
+    <text x="0" y="0" font-size="56" font-weight="800" fill="#9a2b22" text-anchor="middle"
+          transform="rotate(-24)">SAMPLE — NOT A REAL NOTICE</text>
+  </g>
+
+  <text x="48" y="852" font-size="9.5" fill="#9a9a9a">Synthetic document generated for the Waive demo. No real person or PII. Not a real court document.</text>
+</svg>

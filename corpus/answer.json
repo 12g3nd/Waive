@@ -1,0 +1,65 @@
+[
+  {
+    "id": "ans-defence-20-day",
+    "domain": "answer",
+    "topic": "20-day deadline to file a Defence in Ontario Small Claims Court",
+    "summary": "If you are served with a Plaintiff's Claim (Form 7A) in Ontario Small Claims Court, you have 20 days to file a Defence (Form 9A) with the court. Filing on time is what stops you from losing automatically.",
+    "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, r. 9.01",
+    "sourceTitle": "O. Reg. 258/98 — Rules of the Small Claims Court (Rule 9, Defence)",
+    "sourceUrl": "https://www.ontario.ca/laws/regulation/980258"
+  },
+  {
+    "id": "ans-default-judgment",
+    "domain": "answer",
+    "topic": "What happens if you miss the deadline: default judgment",
+    "summary": "If you do not file a Defence within 20 days, the plaintiff can note you in default and ask the court for a default judgment — you lose without the merits ever being heard, which can lead to wage garnishment.",
+    "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, r. 11 (default proceedings)",
+    "sourceTitle": "O. Reg. 258/98 — Rules of the Small Claims Court (Rule 11)",
+    "sourceUrl": "https://www.ontario.ca/laws/regulation/980258"
+  },
+  {
+    "id": "ans-limitation-2yr",
+    "domain": "answer",
+    "topic": "Time-barred defence: Ontario's 2-year basic limitation period",
+    "summary": "In Ontario, a proceeding generally cannot be started more than 2 years after the day the claim was discovered. For most debts that means roughly 2 years after the last payment or written acknowledgment. If the claim was started too late, raising the limitation as a defence can get the case dismissed.",
+    "officialCitation": "Limitations Act, 2002, S.O. 2002, c. 24, Sched. B, ss. 4 & 5",
+    "sourceTitle": "Limitations Act, 2002 — basic limitation period & discovery",
+    "sourceUrl": "https://www.ontario.ca/laws/statute/02l24"
+  },
+  {
+    "id": "ans-acknowledgment",
+    "domain": "answer",
+    "topic": "What can restart the 2-year clock: a written acknowledgment or payment",
+    "summary": "A written acknowledgment of the debt, or in some cases a payment, made before the limitation period expires can restart the 2-year clock. That is why the date of your last payment or written acknowledgment matters when judging whether a debt is time-barred.",
+    "officialCitation": "Limitations Act, 2002, S.O. 2002, c. 24, Sched. B, s. 13",
+    "sourceTitle": "Limitations Act, 2002 — acknowledgment of liability (s. 13)",
+    "sourceUrl": "https://www.ontario.ca/laws/statute/02l24"
+  },
+  {
+    "id": "ans-assignment-standing",
+    "domain": "answer",
+    "topic": "Make a debt buyer prove it owns the debt (chain of assignment)",
+    "summary": "When the plaintiff is a debt buyer rather than the original creditor, it must be able to prove it actually owns your debt and that it was properly assigned to it. You can put the plaintiff to strict proof of the assignment and the chain of ownership; gaps are a real defence.",
+    "officialCitation": "Conveyancing and Law of Property Act, R.S.O. 1990, c. C.34, s. 53 (absolute assignment)",
+    "sourceTitle": "Conveyancing and Law of Property Act — assignment of debts (s. 53)",
+    "sourceUrl": "https://www.ontario.ca/laws/statute/90c34"
+  },
+  {
+    "id": "ans-propose-terms",
+    "domain": "answer",
+    "topic": "Honest path: admit what you owe and propose terms of payment",
+    "summary": "If you genuinely owe the debt and simply need affordable terms, the Defence (Form 9A) lets you admit the claim and propose a payment schedule you can manage. Filing this still protects you from a harsh default judgment.",
+    "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, Form 9A (Defence — proposal of terms of payment)",
+    "sourceTitle": "O. Reg. 258/98 — Defence (Form 9A), proposal of terms",
+    "sourceUrl": "https://ontariocourtforms.on.ca/en/rules-of-the-small-claims-court-forms/"
+  },
+  {
+    "id": "ans-defence-form-9a",
+    "domain": "answer",
+    "topic": "The Defence (Form 9A)",
+    "summary": "Form 9A is the official Defence used to respond to a Plaintiff's Claim in Ontario Small Claims Court. It is where you say what you admit or deny, raise any defences (such as the limitation period), and, if you admit the debt, propose terms of payment.",
+    "officialCitation": "Rules of the Small Claims Court, O. Reg. 258/98, Form 9A",
+    "sourceTitle": "Ontario Court Services — Small Claims Court Forms (Form 9A, Defence)",
+    "sourceUrl": "https://ontariocourtforms.on.ca/en/rules-of-the-small-claims-court-forms/"
+  }
+]
