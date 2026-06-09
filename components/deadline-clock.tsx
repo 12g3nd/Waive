@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Lock } from "lucide-react";
-import { daysUntil, humanDate } from "@/engine/dates";
+import { daysUntilLocal, humanDate } from "@/engine/dates";
 import { cn } from "@/lib/utils";
 
 interface DeadlineClockProps {
@@ -40,7 +40,7 @@ export function DeadlineClock({
   // Compute on the client so the countdown is live and never mismatches SSR.
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
   useEffect(() => {
-    setDaysLeft(daysUntil(dateISO, new Date()));
+    setDaysLeft(daysUntilLocal(dateISO));
   }, [dateISO]);
 
   const R = 92;
