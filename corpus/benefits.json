@@ -146,11 +146,11 @@
   {
     "id": "ssa-substantiation",
     "domain": "benefits",
-    "topic": "SSA cannot produce records explaining the overpayment",
-    "summary": "SSA must be able to establish that an overpayment happened and how much it was. If the agency cannot produce records that explain the reason or the amount, that is a strong basis to dispute the overpayment on reconsideration, and it undercuts any claim that you were at fault for something the agency itself cannot document.",
-    "officialCitation": "TODO_CITATION (SSA's burden to establish fact/amount of overpayment; verify exact POMS GN 02201/GN 02250 section)",
-    "sourceTitle": "SSA POMS — overpayment development (section to be verified)",
-    "sourceUrl": "https://secure.ssa.gov/poms.nsf/lnx/0202201001"
+    "topic": "SSA must explain how the overpayment happened and how the amount was calculated",
+    "summary": "SSA's own rules require it to explain how an overpayment occurred and how the amount was determined. The fact and the amount of an overpayment are appealable determinations you can dispute on reconsideration (SSA-561). If the agency cannot clearly explain or document the reason or the amount, that is a strong basis to challenge it — and it undercuts any claim that you were at fault for something the agency itself cannot account for.",
+    "officialCitation": "SSA POMS GN 02201.017 (Explanation of a Title II Overpayment); GN 02201.003 (Determining the Amount); GN 02201.025 (Reconsideration)",
+    "sourceTitle": "SSA POMS GN 02201.017 — Explanation of a Title II Overpayment",
+    "sourceUrl": "https://secure.ssa.gov/apps10/poms.nsf/lnx/0202201017"
   },
   {
     "id": "ssa-hardship-defeat-purpose",

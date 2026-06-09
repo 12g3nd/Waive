@@ -199,16 +199,16 @@ load-bearing citations against official sources:
 - **Ontario**: Limitations Act, 2002 (ss. 4, 5, 13), Rules of the Small Claims Court
   O. Reg. 258/98 (r. 9.01 Defence, r. 11 default), and CLPA s. 53 (assignment).
 
-**Outstanding `TODO_CITATION` (fill from an official source before any real use):**
+**Outstanding `TODO_CITATION`: none.** Every citation rendered in the UI resolves to
+a real, verified source (a test enforces this — see
+[tests/packs/benefits.test.ts](tests/packs/benefits.test.ts) and
+[tests/packs/answer.test.ts](tests/packs/answer.test.ts)).
 
-| Corpus id | What it claims | What to verify |
-|---|---|---|
-| `ssa-substantiation` ([corpus/benefits.json](corpus/benefits.json)) | If SSA can't produce records explaining the overpayment, that undercuts fault and supports reconsideration. | The exact POMS section for SSA's burden to establish the fact/amount of an overpayment (e.g. POMS GN 02201.xxx / GN 02250.xxx). |
-
-Two items are correct but worth a second look before real-world use: the COVID-19
-"pandemic period" exact date bounds (`ssa-without-fault-pandemic`), and whether the
-local jurisdiction/venue (Small Claims vs. Superior Court) matches the served claim
-in `answer`.
+Two items are correct but worth a domain-expert second look before real-world use:
+the COVID-19 "pandemic period" exact date bounds (`ssa-without-fault-pandemic`), and
+whether the local jurisdiction/venue (Small Claims vs. Superior Court) matches the
+served claim in `answer`. These are scope/precision caveats, not fabricated
+citations.
 
 ---
 

@@ -199,11 +199,11 @@ describe("benefits corpus integrity", () => {
     for (const id of ids) expect(resolver.has(id), `unresolved: ${id}`).toBe(true);
   });
 
-  it("has exactly one documented TODO_CITATION (the SSA substantiation rule)", () => {
+  it("has no unverified TODO_CITATION entries — every benefits claim is sourced", () => {
     const unverified = (benefitsCorpus as { id: string; officialCitation: string }[]).filter(
       (e) => !isVerified(e.officialCitation),
     );
-    expect(unverified.map((e) => e.id)).toEqual(["ssa-substantiation"]);
+    expect(unverified.map((e) => e.id)).toEqual([]);
   });
 });
 
@@ -231,8 +231,8 @@ describe("benefits end-to-end via runPipeline", () => {
     expect(result.presumptions.catches[0]?.strength).toBe("automatic");
     expect(result.draftedDocument.body.length).toBeGreaterThan(0);
     expect(result.confidence.level).toBe("high");
-    // All resolved citations except the documented substantiation TODO are verified.
+    // Every resolved citation is verified (no TODO_CITATION placeholders).
     const unverified = result.citations.filter((c) => !c.verified).map((c) => c.id);
-    expect(unverified.every((id) => id === "ssa-substantiation")).toBe(true);
+    expect(unverified).toEqual([]);
   });
 });
