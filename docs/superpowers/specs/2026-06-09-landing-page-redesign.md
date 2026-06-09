@@ -194,6 +194,8 @@ All motion respects `prefers-reduced-motion: reduce` (already handled in `global
 
 ## Component Interfaces
 
+The new `app/page.tsx` landing page must be a **Server Component** (no `"use client"` directive at the top level). Individual sections that need scroll-based animations use `"use client"` themselves. The existing `app/app/page.tsx` (moved tool) keeps its existing `"use client"` directive unchanged.
+
 ```typescript
 // components/landing/result-card-preview.tsx
 // No props — static preview with hardcoded SSA sample data

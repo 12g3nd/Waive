@@ -1,0 +1,38 @@
+<h2>How should the site be structured?</h2>
+<p class="subtitle">This is the most foundational choice — everything else flows from it.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Immersive Single Page (polished scroll experience)</h3>
+      <p>Keep the current one-page structure but add richly designed sections: a dramatic hero with animated stats, a "How it works" scroll sequence, the tool itself, and a footer. A judge scrolls and discovers — no navigation needed. Like a premium product launch page.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Tells the full story before the tool appears</li><li>Maximum visual impact on first impression</li><li>No routing complexity</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Long scroll; tool is "below the fold"</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Marketing Page + Tool (two distinct experiences)</h3>
+      <p>The landing page is a pure marketing/storytelling experience (hero, problem, how-it-works, sample cases). A clear "Try it now" CTA takes the judge to a dedicated <code>/app</code> page with the tool. Two very different but equally polished pages.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Each page can be fully optimized for its purpose</li><li>Landing page can be stunning without clutter</li><li>Judges see the pitch before the tool</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Extra navigation hop before the tool</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Polish-only — Upgrade what's there</h3>
+      <p>No structural changes. The tool is still front-and-center on load. Improvements are entirely about visual richness: better typography, animations, micro-interactions, a richer results page. Fastest to build; lowest risk to the working app.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Fastest; no routing changes</li><li>Zero risk to the working pipeline</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>First impression is still "just a tool" with no story</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing Page Sections</title>
+<script src="/helper.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 24px 32px 80px; }
+  h2 { font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 6px; text-align: center; }
+  .subtitle { text-align: center; color: #aaa; font-size: 0.88rem; margin-bottom: 28px; }
+
+  .layouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto; }
+
+  .layout { border-radius: 12px; border: 2px solid #2a2a4a; background: #12121e; cursor: pointer; transition: border-color 0.2s, transform 0.15s; overflow: hidden; }
+  .layout:hover { transform: translateY(-3px); border-color: #444; }
+  .layout.selected { border-color: #c8a020; }
+
+  .layout-title { padding: 14px 16px 10px; font-weight: 700; font-size: 0.95rem; color: #f5f0e8; border-bottom: 1px solid #2a2a4a; }
+  .layout-desc { padding: 10px 16px 14px; font-size: 0.75rem; color: #aaa; line-height: 1.5; }
+
+  /* Page wireframe inside card */
+  .page-map { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .section-block {
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .icon { font-size: 0.85rem; }
+  .tag { font-size: 0.6rem; font-weight: 500; padding: 1px 6px; border-radius: 99px; margin-left: auto; }
+
+  /* Section color coding */
+  .s-hero    { background: rgba(14,90,74,0.25); color: #7de8c8; border: 1px solid rgba(14,90,74,0.4); }
+  .s-story   { background: rgba(200,160,32,0.18); color: #f0d070; border: 1px solid rgba(200,160,32,0.3); }
+  .s-how     { background: rgba(80,100,200,0.18); color: #a0b0f0; border: 1px solid rgba(80,100,200,0.3); }
+  .s-demo    { background: rgba(14,90,74,0.35); color: #7de8c8; border: 1px solid rgba(14,90,74,0.5); }
+  .s-trust   { background: rgba(160,160,160,0.12); color: #ccc; border: 1px solid rgba(160,160,160,0.2); }
+  .s-feat    { background: rgba(120,80,200,0.18); color: #c0a0f0; border: 1px solid rgba(120,80,200,0.3); }
+  .s-faq     { background: rgba(160,160,160,0.10); color: #bbb; border: 1px solid rgba(160,160,160,0.15); }
+  .s-footer  { background: rgba(30,30,50,0.6); color: #888; border: 1px solid rgba(80,80,120,0.2); }
+
+  .tag-new   { background: #0e5a4a; color: #7de8c8; }
+  .tag-key   { background: #7a6010; color: #f0d070; }
+  .tag-wow   { background: #4a3090; color: #c0a0f0; }
+
+  .sel-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #0d0d18; border-top: 1px solid #2a2a4a; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: #aaa; z-index: 100; }
+  .sel-bar #sel { color: #c8a020; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h2>What sections should the landing page have?</h2>
+<p class="subtitle">Color = section type. Green = tool/CTA. Gold = story/emotional. Purple = "wow" factor. Gray = trust/utility.</p>
+
+<div class="layouts">
+
+  <!-- Option A: Tight & Punchy -->
+  <div class="layout" data-choice="a" onclick="pick(this)">
+    <div class="layout-title">A — Tight & Punchy</div>
+    <div class="page-map">
+      <div class="section-block s-hero"><span class="icon">✦</span> Hero — dramatic headline + stats bar <span class="tag tag-key">above fold</span></div>
+      <div class="section-block s-how"><span class="icon">→</span> How it works — animated 3-step</div>
+      <div class="section-block s-demo"><span class="icon">⬡</span> Interactive sample notices <span class="tag tag-new">CTA</span></div>
+      <div class="section-block s-trust"><span class="icon">◈</span> Trust strip — citations, tested code</div>
+      <div class="section-block s-footer"><span class="icon">—</span> Footer</div>
+    </div>
+    <div class="layout-desc">5 tight sections. Fast scroll to "Try it." A judge sees the pitch and hits the tool within 60 seconds. Best if the tool itself does the impressive work.</div>
+  </div>
+
+  <!-- Option B: Full Narrative -->
+  <div class="layout" data-choice="b" onclick="pick(this)">
+    <div class="layout-title">B — Full Narrative ✦ Recommended</div>
+    <div class="page-map">
+      <div class="section-block s-hero"><span class="icon">✦</span> Hero — headline + wordmark + CTA bar <span class="tag tag-key">above fold</span></div>
+      <div class="section-block s-story"><span class="icon">❝</span> The problem — human story + stakes</div>
+      <div class="section-block s-how"><span class="icon">→</span> How it works — 3-step animated flow</div>
+      <div class="section-block s-feat"><span class="icon">◉</span> What makes it different — determinism <span class="tag tag-wow">wow</span></div>
+      <div class="section-block s-demo"><span class="icon">⬡</span> Try it now — sample board CTA <span class="tag tag-new">CTA</span></div>
+      <div class="section-block s-trust"><span class="icon">◈</span> Trust signals — code, citations, tests</div>
+      <div class="section-block s-footer"><span class="icon">—</span> Footer — tagline + disclaimer</div>
+    </div>
+    <div class="layout-desc">7 sections. Tells the full story — why it matters, how it works, why to trust it — before asking the judge to try it. Gives ~3 minutes of rich exploration.</div>
+  </div>
+
+  <!-- Option C: Deep Dive -->
+  <div class="layout" data-choice="c" onclick="pick(this)">
+    <div class="layout-title">C — Deep Dive</div>
+    <div class="page-map">
+      <div class="section-block s-hero"><span class="icon">✦</span> Hero — animated + stats bar <span class="tag tag-key">above fold</span></div>
+      <div class="section-block s-story"><span class="icon">❝</span> The problem — human story</div>
+      <div class="section-block s-how"><span class="icon">→</span> How it works — step-by-step</div>
+      <div class="section-block s-feat"><span class="icon">◉</span> The architecture — domain packs <span class="tag tag-wow">wow</span></div>
+      <div class="section-block s-demo"><span class="icon">⬡</span> Interactive sample notices</div>
+      <div class="section-block s-feat"><span class="icon">⚙</span> Under the hood — deterministic engine</div>
+      <div class="section-block s-trust"><span class="icon">◈</span> Trust — citations + tests</div>
+      <div class="section-block s-faq"><span class="icon">?</span> FAQ</div>
+      <div class="section-block s-footer"><span class="icon">—</span> Footer</div>
+    </div>
+    <div class="layout-desc">9 sections. Comprehensive. Impresses a technical judge who wants to understand the system deeply — but risks overwhelming a non-technical one.</div>
+  </div>
+
+</div>
+
+<div class="sel-bar">
+  <span id="sel">No selection yet</span>
+  <span style="color:#555">Click a layout to select · then confirm in terminal</span>
+</div>
+
+<script>
+function pick(el) {
+  document.querySelectorAll('.layout').forEach(l => l.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('sel').textContent = 'Selected: ' + el.querySelector('.layout-title').textContent;
+  if (window.__recordEvent) window.__recordEvent('click', el.dataset.choice, el.querySelector('.layout-title').textContent);
+}
+</script>
+</body>
+</html>
