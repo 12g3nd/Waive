@@ -51,8 +51,9 @@ export function IntakeRefine({ questions, initial = {}, onSubmit, busy }: Intake
                     key={opt.label}
                     type="button"
                     onClick={() => set(q.id, opt.v)}
+                    aria-pressed={answers[q.id] === opt.v}
                     className={cn(
-                      "px-4 py-1 text-sm font-medium transition-colors",
+                      "px-4 py-1 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
                       answers[q.id] === opt.v
                         ? "bg-foreground text-background"
                         : "bg-card text-muted-foreground hover:text-foreground",

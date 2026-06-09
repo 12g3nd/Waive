@@ -28,7 +28,7 @@ export function SampleBoard({ samples, onPick, busy }: SampleBoardProps) {
           disabled={busy}
           onClick={() => onPick(s.id)}
           className={cn(
-            "group flex h-full flex-col gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-22px_rgba(20,20,30,0.4)] disabled:opacity-60",
+            "group flex h-full flex-col gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-22px_rgba(20,20,30,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60",
             TONE_RING[s.tone],
           )}
         >

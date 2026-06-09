@@ -82,7 +82,7 @@ export function ResultView({
   const delay = (i: number) => ({ animationDelay: `${i * 90}ms` });
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+    <div lang={language} className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8 sm:px-6">
       {/* Controls */}
       <div className="flex items-center justify-between gap-3">
         <Badge variant={llm.mode === "ollama" ? "primary" : "outline"}>

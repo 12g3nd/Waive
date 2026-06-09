@@ -31,7 +31,7 @@ export function LanguageToggle({ value, onChange, disabled }: LanguageToggleProp
             title={l.full}
             onClick={() => onChange(l.code)}
             className={cn(
-              "rounded-full px-3 py-1 text-xs font-semibold transition-colors disabled:opacity-50",
+              "rounded-full px-3 py-1 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
               active ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground",
             )}
           >

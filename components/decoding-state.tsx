@@ -39,7 +39,7 @@ export function DecodingState() {
 
       <div className="space-y-1">
         <p className="font-display text-xl font-semibold tracking-tight">Decoding…</p>
-        <p className="text-sm text-muted-foreground transition-opacity" key={i}>
+        <p className="text-sm text-muted-foreground transition-opacity" key={i} aria-live="polite">
           {STEPS[i]}
         </p>
       </div>

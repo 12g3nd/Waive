@@ -83,6 +83,7 @@ export function UploadZone({ onSelect, busy }: UploadZoneProps) {
           ref={inputRef}
           type="file"
           accept="image/*,application/pdf"
+          aria-label="Upload a notice (image or PDF)"
           className="sr-only"
           onChange={(e) => void handleFile(e.target.files?.[0])}
         />

@@ -51,10 +51,21 @@ export function DeadlineClock({
   const remainingFrac = Math.max(0, Math.min(1, days / windowDays));
   const dash = C * remainingFrac;
 
+  const a11yLabel =
+    daysLeft === null
+      ? `Loading countdown to ${label} on ${humanDate(dateISO)}`
+      : urgency === "expired"
+        ? `Deadline passed: ${label} was due ${humanDate(dateISO)}`
+        : `${days} ${days === 1 ? "day" : "days"} left until ${label} on ${humanDate(dateISO)}`;
+
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <div className={cn("relative grid place-items-center rounded-full", tone.ring)}>
-        <svg width="220" height="220" viewBox="0 0 220 220" className="-rotate-90">
+      <div
+        role="img"
+        aria-label={a11yLabel}
+        className={cn("relative grid place-items-center rounded-full", tone.ring)}
+      >
+        <svg width="220" height="220" viewBox="0 0 220 220" className="-rotate-90" aria-hidden="true">
           <circle
             cx="110"
             cy="110"
@@ -75,7 +86,7 @@ export function DeadlineClock({
             style={{ transition: "stroke-dasharray 900ms cubic-bezier(0.16,1,0.3,1), stroke 400ms" }}
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center" aria-hidden="true">
           {daysLeft === null ? (
             <span className="font-display text-2xl text-muted-foreground">…</span>
           ) : urgency === "expired" ? (
