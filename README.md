@@ -5,85 +5,104 @@
 An official notice + a short deadline + a hidden remedy the person never finds in
 time → automatic loss, by silence, before anyone reviews the merits. Waive reads
 the intimidating notice and routes the person to the escape hatch that already
-exists, before their clock runs out.
+exists, **before their clock runs out**.
 
 The domain-blind engine behind Waive is codenamed **Backstop**. It is *one engine,
 not two apps*: a deterministic core plus pluggable **rule packs**. We demo it deep
-on benefit overpayments, then run the *same code* on a debt claim to prove it
-generalizes.
+on Social Security overpayments, then run the *same code* on an Ontario debt
+lawsuit to prove it generalizes.
 
 > **Information and document preparation, not legal advice.** Waive is a
-> force-multiplier for legal-aid orgs and advocates, not a lawyer.
+> force-multiplier for legal-aid orgs and advocates — not a lawyer.
 
 ---
 
-## Why it exists — two injustices, one machine
+## The one machine behind two injustices
 
 - **Benefit overpayments (`benefits` — the hero domain).** Social Security overpays
   someone through *its own* error, then years later demands the money back. Miss the
   short window and SSA claws it back automatically — for SSDI overpayment notices
   issued on/after **April 25, 2025**, SSA withholds **50% of the monthly benefit**
-  until repaid unless the person acts.
-- **Debt claims (`answer` — the proof-of-generality domain).** A person is sued (often
-  by a debt buyer on old debt), doesn't understand the claim or the deadline, doesn't
-  file a defence, and **loses by default** — then faces garnishment, even when the debt
-  was time-barred, paid, or not theirs. This build configures the `answer` pack for
-  **Ontario, Canada** (Small Claims Court).
+  until repaid unless the person acts (EM-25029 REV).
+- **Debt claims (`answer` — the proof-of-generality domain).** A person is sued
+  (often by a debt buyer on old debt), doesn't understand the claim or the deadline,
+  doesn't file a defence, and **loses by default** — then faces garnishment, even
+  when the debt was time-barred, paid, or not theirs. This build configures the
+  `answer` pack for **Ontario, Canada** (Small Claims Court).
 
-Same shape every time. Adding a new injustice is **writing a new rule pack — config,
-not a rebuild.**
+Same shape every time: **notice + short deadline + hidden remedy → automatic loss by
+silence.** Adding a new injustice is **writing a new rule pack — config, not a
+rebuild.**
 
 ---
 
-## Design principles (non-negotiable)
+## Five design principles (this is how the project wins)
 
-1. **High-stakes outputs are deterministic, not generated.** Deadlines, remedy routing,
-   and auto-qualify checks are computed by tested pure functions that **show their work**.
-   The LLM never decides these.
-2. **The LLM is a translator, not an oracle.** It only (a) reads a notice into a schema,
-   (b) explains in plain language / the user's language, (c) drafts form text. It never
-   invents legal conclusions.
+1. **The high-stakes outputs are deterministic, not generated.** Deadlines, remedy
+   routing, and "do you auto-qualify" checks are computed by tested, pure functions
+   that **show their work**. The LLM never decides these.
+2. **The LLM is a translator, not an oracle.** It does exactly three jobs: read the
+   notice into a schema, explain in plain language / the user's language, and draft
+   form text. It never invents legal conclusions. (Here, the deterministic text is
+   built first and the model is only allowed to *rephrase and translate* it.)
 3. **Every legal claim carries a real citation, or it isn't shown.** Claims come from
-   deterministic rule evaluations mapped to a curated corpus. We **never fabricate** a
-   statute, POMS section, form number, or URL — unverified entries are marked
-   `TODO_CITATION`.
-4. **Integrity over engagement.** If the facts say the person genuinely owes the money or
-   was at fault, we route to the honest remedy and say so — no frivolous waivers.
-5. **Information, not legal advice.** Low-confidence cases and genuine judgment calls
-   escalate to "have a legal-aid clinic review this."
+   deterministic rule evaluations mapped to a curated corpus by exact id. We **never
+   fabricate** a statute, POMS section, form number, or URL — unverified entries are
+   marked `TODO_CITATION` (see the list below).
+4. **Integrity over engagement.** If the facts say the person genuinely owes the
+   money or was at fault, Waive routes to the honest remedy and says so — no
+   frivolous waivers, no manufactured defences.
+5. **Information, not legal advice.** Low-confidence reads and genuine judgment calls
+   (e.g. SSA hardship) escalate to "have a legal-aid clinic review this".
 
 ---
 
-## Architecture (the domain-blind pipeline)
+## Architecture — the domain-blind pipeline
 
 ```
 upload → [LLM] extract to NoticeExtraction
        → [deterministic] DeadlineEngine.compute(extraction, pack)
        → [deterministic] RemedyRouter.route(extraction, userFacts, pack)
        → [deterministic] PresumptionChecker.evaluate(extraction, userFacts, pack)
-       → [retrieval]     attach citations from corpus
+       → [retrieval]     attach citations from corpus (exact id mapping)
        → [LLM]           plain-language explanation + draft selected form/letter
        → assemble Result (explanation, clock, routed remedy + alternatives,
                           presumption catches, drafted doc, filing checklist,
                           citations, confidence)
 ```
 
-The engine knows nothing about Social Security or debt — only the `RulePack`
-interface. See [`/engine`](engine/) for the core and [`/packs`](packs/) for packs.
+[`runPipeline`](engine/pipeline.ts) has **zero branches on pack id or domain**. The
+pack supplies all the legal logic through the [`RulePack`](engine/types.ts)
+interface; the LLM only translates and drafts.
+
+### Where the boundary is enforced (in code structure)
+
+| Module | Who does it | Where |
+|---|---|---|
+| Document → `NoticeExtraction` | **LLM (Ollama vision)** | [lib/llm/extraction.ts](lib/llm/extraction.ts) |
+| Deadline computation | **Deterministic** | [packs/*/deadlines.ts](packs/) — pure date math, unit-tested |
+| Remedy routing | **Deterministic** | [packs/*/router.ts](packs/) — decision tree, unit-tested |
+| Not-at-fault / defence presumptions | **Deterministic** | [packs/*/presumptions.ts](packs/), [packs/answer/defenses.ts](packs/answer/defenses.ts) |
+| Plain-language + translation | **LLM (grounded)** | [lib/llm/client.ts](lib/llm/client.ts) |
+| Form/letter drafting | **LLM (grounded)** | [lib/llm/client.ts](lib/llm/client.ts) |
+| Citation attachment | **Deterministic** | [engine/citations.ts](engine/citations.ts) — exact id map, no vector guessing |
 
 ---
 
 ## Repo structure
 
 ```
-/app          Next.js routes + UI
-/engine       Backstop — domain-blind core: pipeline, types, deadline/router/presumption base
+/app          Next.js routes + UI (App Router) + /api/analyze + /api/samples
+/engine       Backstop — domain-blind core: types, pipeline, date math, citation resolver,
+              confidence grading, deterministic fallback. No domain logic. No `any`.
 /packs/benefits  SSA overpayment RulePack (built deep — the demo hero)
 /packs/answer    Ontario debt-claim RulePack (built thin — proves generality)
-/corpus       citation-tagged rule snippets (JSON)
-/samples      seeded synthetic, watermarked notices + expected extractions
-/lib/llm      Ollama client: vision extraction, translation, drafting (+ offline fallback)
-/tests        unit + golden tests for the deterministic modules
+/corpus       citation-tagged rule snippets (JSON) + combined resolver
+/samples      judge's-choice synthetic notices (data; dates computed live)
+/public/samples  watermarked "SAMPLE — NOT A REAL NOTICE" notice artwork
+/lib/llm      Ollama client: vision extraction, grounded translation/drafting, offline fallback
+/components   UI: clock, reveal panels, sample board, upload, intake
+/tests        unit + golden tests for the deterministic modules (70 tests)
 ```
 
 ---
@@ -92,44 +111,117 @@ interface. See [`/engine`](engine/) for the core and [`/packs`](packs/) for pack
 
 ```bash
 npm install
-cp .env.example .env      # adjust Ollama model names if needed
-npm run dev               # http://localhost:3000
-npm test                  # deterministic unit + golden tests
+cp .env.example .env       # adjust Ollama model names if you want live extraction
+npm run dev                # http://localhost:3000
+npm test                   # 70 deterministic unit + golden tests
+npm run build              # production build
 ```
 
-**LLM is local & optional.** Vision extraction / translation / drafting run against a
-local [Ollama](https://ollama.com) server (configure `OLLAMA_BASE_URL`,
-`MODEL_EXTRACT`, `MODEL_DRAFT` in `.env`). If Ollama is unreachable the engine
-**falls back to each sample's precomputed extraction and deterministic-driven draft
-text**, so the full demo runs offline with zero cloud setup. Tests never call a model.
+Then open `http://localhost:3000` and pick a **judge's-choice sample** — the full
+pipeline runs live.
 
-To enable live uploads:
+### The LLM is local and optional
+
+Vision extraction, plain-language explanation, translation, and drafting run against
+a local [Ollama](https://ollama.com) server — **no paid cloud API**. Configure in
+`.env`:
 
 ```bash
-ollama pull llama3.2-vision   # vision extraction
-ollama pull llama3.2          # explanation / translation / drafting
+OLLAMA_BASE_URL=http://localhost:11434
+MODEL_EXTRACT=llama3.2-vision   # any multimodal model: qwen2.5vl, llava, granite3.2-vision …
+MODEL_DRAFT=llama3.2            # any text model: qwen2.5, mistral …
+```
+
+To enable live uploads and model-polished text:
+
+```bash
+ollama pull llama3.2-vision     # reads an uploaded notice image
+ollama pull llama3.2            # explanation / translation / drafting
 ollama serve
 ```
 
+**If Ollama is unreachable or a model is missing, the app still works.** The
+judge's-choice samples ship precomputed extractions, and explanation/drafting fall
+back to deterministic, citation-grounded text. Set `LLM_OFFLINE=1` to force this.
+Tests never touch a model.
+
 ---
 
-## Status
+## The scalability story — add an injustice in ~5 files, zero engine changes
 
-Built phase by phase (see the build plan). Each phase keeps the app runnable and the
-tests green.
+The engine is domain-blind. To add a new injustice you implement the
+[`RulePack`](engine/types.ts) interface; you never touch `runPipeline`.
+
+1. **`packs/<id>/`** — implement `computeDeadlines`, `routeRemedy`,
+   `checkPresumptions`, the `intake` questions, and the `documents` templates.
+   Keep all legal logic deterministic and citation-tagged. Reuse the engine's date
+   math ([`addDays`](engine/dates.ts), `rollForwardToBusinessDay`, …).
+2. **`corpus/<id>.json`** — add a citation entry per rule snippet (paraphrased
+   summary in your own words, a **real verified** `officialCitation` + `sourceUrl`,
+   or a clearly-marked `TODO_CITATION`). Spread it into [corpus/index.ts](corpus/index.ts).
+3. **`packs/index.ts`** — `register(yourPack)`.
+4. **`samples/index.ts`** — add a judge's-choice sample (and watermarked artwork in
+   `public/samples/`).
+5. **`tests/packs/<id>.test.ts`** — golden tests for the deadline math and each
+   presumption/defence.
+
+That's the whole story the `answer` pack tells: a different **country** (Canada) and
+a different **injustice** (a debt lawsuit) run through the identical pipeline.
+
+---
+
+## Testing & explainability
+
+```bash
+npm test
+```
+
+- The deterministic modules have real unit + **golden** tests (fixed input → fixed
+  expected derivation + citations) — the deadline engine and the presumption /
+  defence checkers especially.
+- Every deterministic output exposes a human-readable **derivation string**, so the
+  team can explain any number on stage. "How was this deadline computed?" is a test
+  case, and the UI shows the derivation under **"Show your work"**.
+- Integrity routing is tested: an at-fault SSDI claimant who can pay is **not** sent
+  to a waiver; an admitted Ontario debt is **not** given a manufactured defence.
+
+---
+
+## Citation discipline & the `TODO_CITATION` list
+
+Every legal claim shown in the UI links to a real, verified source. We verified the
+load-bearing citations against official sources:
+
+- **SSA**: forms SSA-561 / SSA-632-BK / SSA-634 (ssa.gov), the 30-day collection
+  hold, EM-25029 REV (50% Title II default, eff. 2025-04-25), and 20 CFR
+  404.506–404.510 / 404.909 (the without-fault, fault, waiver, and reconsideration
+  rules).
+- **Ontario**: Limitations Act, 2002 (ss. 4, 5, 13), Rules of the Small Claims Court
+  O. Reg. 258/98 (r. 9.01 Defence, r. 11 default), and CLPA s. 53 (assignment).
+
+**Outstanding `TODO_CITATION` (fill from an official source before any real use):**
+
+| Corpus id | What it claims | What to verify |
+|---|---|---|
+| `ssa-substantiation` ([corpus/benefits.json](corpus/benefits.json)) | If SSA can't produce records explaining the overpayment, that undercuts fault and supports reconsideration. | The exact POMS section for SSA's burden to establish the fact/amount of an overpayment (e.g. POMS GN 02201.xxx / GN 02250.xxx). |
+
+Two items are correct but worth a second look before real-world use: the COVID-19
+"pandemic period" exact date bounds (`ssa-without-fault-pandemic`), and whether the
+local jurisdiction/venue (Small Claims vs. Superior Court) matches the served claim
+in `answer`.
+
+---
+
+## Status — built phase by phase, green after each
 
 - [x] Phase 0 — Scaffold
-- [ ] Phase 1 — Engine core
-- [ ] Phase 2 — `benefits` pack (deterministic)
-- [ ] Phase 3 — LLM layer (Ollama)
-- [ ] Phase 4 — UI / transformation reveal
-- [ ] Phase 5 — Seed samples + judge's-choice board
-- [ ] Phase 6 — `answer` pack (Ontario) + cross-domain reveal
-- [ ] Phase 7 — Hardening
-- [ ] Phase 8 — Deliverables (full README, DEMO_SCRIPT, citation TODO list)
+- [x] Phase 1 — Engine core (domain-blind)
+- [x] Phase 2 — `benefits` pack (deterministic, citation-backed)
+- [x] Phase 3 — LLM layer (local Ollama, grounded, offline fallback)
+- [x] Phase 4 — UI / transformation reveal
+- [x] Phase 5 — Seed samples + judge's-choice board
+- [x] Phase 6 — `answer` pack (Ontario) + cross-domain reveal
+- [x] Phase 7 — Hardening + accessibility
+- [x] Phase 8 — Deliverables (this README, `DEMO_SCRIPT.md`)
 
-## Outstanding citation verification
-
-Every `TODO_CITATION` placeholder in [`/corpus`](corpus/) must be filled from an
-official source before any real-world use. A running list is maintained here in
-Phase 8.
+See [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) for the 2–3 minute walkthrough.
