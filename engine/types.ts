@@ -112,8 +112,6 @@ export interface DocumentSpec {
   /** Structured sections the drafter fills. Legal content comes from deterministic results. */
   sections: DocumentSection[];
   filingChecklist: ChecklistItem[];
-  /** How and where to actually file this document (the "how to file" step). */
-  filing?: FilingGuide;
   citationId: string;
 }
 
@@ -127,27 +125,6 @@ export interface DocumentSection {
 export interface ChecklistItem {
   id: string;
   text: string;
-  citationId?: string;
-}
-
-/** One concrete way to submit a document (the "how"). */
-export interface FilingChannel {
-  method: "online" | "mail" | "in-person" | "fax" | "phone";
-  label: string; // "By mail", "In person", "Online"
-  detail: string; // plain instructions
-  url?: string; // a real, verified portal/locator (never fabricated)
-}
-
-/**
- * The deterministic "how to file this" guide for a routed document: where it goes,
- * the ways to submit it, and the fee / fee-waiver reality. Specifics that vary by
- * office (exact address, exact fee) are intentionally deferred to "the office named
- * on your notice" rather than fabricated — same citation discipline as everything else.
- */
-export interface FilingGuide {
-  whereToSend: string;
-  channels: FilingChannel[];
-  fee: { summary: string; feeWaiver?: string };
   citationId?: string;
 }
 
@@ -310,8 +287,6 @@ export interface PipelineResult {
   presumptions: PresumptionResult;
   explanation: PlainLanguageExplanation;
   draftedDocument: DraftedDocument;
-  /** How/where to file the routed document; null when the pack provides no guide. */
-  filing: FilingGuide | null;
   citations: ResolvedCitation[];
   confidence: ConfidenceReport;
   /** Whether the model was actually used, or the deterministic fallback. */

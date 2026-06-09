@@ -15,7 +15,6 @@ import { ExplanationPanel } from "@/components/explanation-panel";
 import { RemedyPanel } from "@/components/remedy-panel";
 import { PresumptionBanner } from "@/components/presumption-banner";
 import { DocumentPreview } from "@/components/document-preview";
-import { FilingPanel } from "@/components/filing-panel";
 import { CitationsPanel } from "@/components/citations-panel";
 import { ConfidencePanel } from "@/components/confidence-panel";
 import { AskPanel } from "@/components/ask-panel";
@@ -187,15 +186,6 @@ export function ResultView({
           <div className="animate-fade-up" style={delay(4)}>
             <DocumentPreview doc={result.draftedDocument} citations={result.citations} />
           </div>
-          {result.filing && (
-            <div className="animate-fade-up" style={delay(5)}>
-              <FilingPanel
-                filing={result.filing}
-                deadline={primary ? { label: primary.label, dateISO: primary.dateISO } : undefined}
-                citations={result.citations}
-              />
-            </div>
-          )}
         </div>
 
         <div className="space-y-6">
