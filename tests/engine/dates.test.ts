@@ -3,6 +3,7 @@ import {
   InvalidDateError,
   addDays,
   daysUntil,
+  daysUntilLocal,
   diffDays,
   dayOfWeek,
   fromISODate,
@@ -85,6 +86,17 @@ describe("diffs and countdown", () => {
     expect(daysUntil("2025-05-25", now)).toBe(30);
     expect(daysUntil("2025-04-20", now)).toBe(-5);
     expect(daysUntil("2025-04-25", now)).toBe(0);
+  });
+
+  it("daysUntilLocal counts against the viewer's wall-clock date, not UTC", () => {
+    // Late on June 21 LOCAL time. `new Date(y, m, d, …)` and getFullYear/Month/Date
+    // both use local time, so this is deterministic regardless of the test machine's
+    // timezone — and it is exactly the case where a UTC-based count goes off by one
+    // for viewers west of UTC.
+    const lateLocalEvening = new Date(2026, 5, 21, 23, 30, 0);
+    expect(daysUntilLocal("2026-06-22", lateLocalEvening)).toBe(1);
+    expect(daysUntilLocal("2026-06-21", lateLocalEvening)).toBe(0);
+    expect(daysUntilLocal("2026-06-20", lateLocalEvening)).toBe(-1);
   });
 });
 

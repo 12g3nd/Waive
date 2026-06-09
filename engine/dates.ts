@@ -112,6 +112,29 @@ export function daysUntil(targetISO: string, now: Date): number {
   return diffDays(toISODate(now), targetISO);
 }
 
+/**
+ * Format a Date as "YYYY-MM-DD" using the viewer's LOCAL calendar, not UTC.
+ *
+ * Deadlines are timezone-free calendar dates. A live "days left" countdown must be
+ * measured against the viewer's own wall-clock date — measuring against the UTC date
+ * makes the count jump a day early every evening for anyone west of UTC (i.e. all of
+ * the Americas, the whole target audience). See `daysUntilLocal`.
+ */
+export function toLocalISODate(d: Date): string {
+  const year = d.getFullYear().toString().padStart(4, "0");
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const day = d.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Whole days from the viewer's local "today" until `targetISO`; negative if passed.
+ * Use this for the live UI countdown so the number matches the user's wall calendar.
+ */
+export function daysUntilLocal(targetISO: string, now: Date = new Date()): number {
+  return diffDays(toLocalISODate(now), targetISO);
+}
+
 /** Human-readable date, e.g. "April 25, 2025". Deterministic, locale-independent. */
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
