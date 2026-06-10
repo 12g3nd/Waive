@@ -21,6 +21,11 @@ export class OllamaError extends Error {
   }
 }
 
+/** Bearer auth for Ollama Cloud; empty key (local Ollama) sends no auth header. */
+function authHeaders(cfg: LlmConfig): Record<string, string> {
+  return cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {};
+}
+
 /**
  * One non-streaming chat completion against a local Ollama server. temperature 0
  * for determinism. Throws OllamaError on any transport/HTTP failure so callers can
@@ -35,7 +40,7 @@ export async function ollamaChat(
   try {
     const res = await fetch(`${cfg.baseUrl}/api/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeaders(cfg) },
       signal: controller.signal,
       body: JSON.stringify({
         model: opts.model,
@@ -72,7 +77,10 @@ export async function ollamaAvailable(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(`${cfg.baseUrl}/api/tags`, { signal: controller.signal });
+    const res = await fetch(`${cfg.baseUrl}/api/tags`, {
+      headers: authHeaders(cfg),
+      signal: controller.signal,
+    });
     return res.ok;
   } catch {
     return false;

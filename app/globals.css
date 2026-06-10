@@ -42,6 +42,43 @@
   --radius: 0.8rem;
 }
 
+/* Dark mode: the same civic-editorial palette after hours — deep blue-ink stock,
+   warm parchment text, a brighter emerald so the relief still reads, and the
+   highlighter kept loud. Mirrors the .bg-ink sections the site already uses. */
+.dark {
+  --background: 222 24% 11%;
+  --foreground: 40 36% 92%;
+
+  --card: 222 20% 15%;
+  --card-foreground: 40 36% 92%;
+
+  --primary: 160 58% 42%;
+  --primary-foreground: 40 44% 97%;
+
+  --secondary: 222 16% 19%;
+  --secondary-foreground: 40 30% 90%;
+
+  --muted: 222 16% 17%;
+  --muted-foreground: 40 12% 64%;
+
+  --accent: 222 16% 21%;
+  --accent-foreground: 40 30% 90%;
+
+  --destructive: 0 72% 57%;
+  --destructive-foreground: 40 44% 98%;
+
+  --border: 222 14% 25%;
+  --input: 222 14% 25%;
+  --ring: 160 58% 42%;
+
+  --highlight: 43 96% 62%;
+  --highlight-foreground: 32 80% 12%;
+
+  --urgent: 0 78% 63%;
+  --warn: 38 92% 58%;
+  --safe: 158 58% 52%;
+}
+
 * {
   border-color: hsl(var(--border));
 }
@@ -76,6 +113,16 @@ body {
   background-image:
     radial-gradient(hsl(38 22% 80% / 0.5) 0.5px, transparent 0.5px),
     radial-gradient(hsl(40 30% 99%) 0%, hsl(40 38% 95%) 70%);
+  background-size: 22px 22px, 100% 100%;
+  background-position: 0 0, center;
+}
+
+/* Dark paper keeps the dot-grid + vignette, inverted into the ink stock. */
+.dark .bg-paper {
+  background-color: hsl(222 24% 11%);
+  background-image:
+    radial-gradient(hsl(40 30% 88% / 0.05) 0.5px, transparent 0.5px),
+    radial-gradient(hsl(222 24% 14%) 0%, hsl(222 26% 9%) 70%);
   background-size: 22px 22px, 100% 100%;
   background-position: 0 0, center;
 }

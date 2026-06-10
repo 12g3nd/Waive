@@ -10,6 +10,7 @@ import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-type
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
 import { Wordmark } from "@/components/wordmark";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { SampleBoard } from "@/components/sample-board";
 import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
@@ -53,7 +54,7 @@ function BackLink() {
   return (
     <div className="border-b border-border bg-card/80 backdrop-blur-sm">
       <div aria-hidden className="h-0.5 bg-highlight" />
-      <div className="mx-auto max-w-5xl px-4 py-2 sm:px-6">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 sm:px-6">
         <Link
           href="/"
           className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -61,6 +62,7 @@ function BackLink() {
           <ArrowLeft className="size-3.5" />
           <Wordmark className="text-sm" />
         </Link>
+        <ThemeToggle className="size-8" />
       </div>
     </div>
   );

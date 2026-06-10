@@ -104,6 +104,7 @@ describe("OllamaLlm graceful fallback (no server)", () => {
   it("returns the deterministic explanation when Ollama is unreachable", async () => {
     const llm = new OllamaLlm({
       baseUrl: "http://127.0.0.1:9", // nothing listening — connection refused
+      apiKey: "",
       modelExtract: "x",
       modelDraft: "x",
       timeoutMs: 1_000,
