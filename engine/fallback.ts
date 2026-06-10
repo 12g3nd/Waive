@@ -161,7 +161,7 @@ export function buildDraft(req: DraftRequest): DraftedDocument {
 export class DeterministicFallbackLlm implements LlmPort {
   async extract(_req: ExtractionRequest, _pack: RulePack): Promise<never> {
     throw new LlmUnavailableError(
-      "Vision extraction requires a model (Ollama). In offline mode, run the pipeline from a precomputed extraction instead.",
+      "Ollama is not running — live document reading requires a local model. Start Ollama (ollama serve) and make sure a model is pulled (e.g. ollama pull llama3.2). You can still try a sample notice below — those run fully offline.",
     );
   }
 
