@@ -47,6 +47,14 @@ export function makeAnswerDocuments(j: DebtJurisdiction): DocumentSpec[] {
         },
         { id: "keep-copy", text: "Keep proof of filing and a complete copy of everything." },
         {
+          id: "serve",
+          text: "Serve a copy of your filed response on the plaintiff (or their lawyer) as the court rules require.",
+        },
+        {
+          id: "fee-waiver",
+          text: "A court filing fee usually applies — if you can't afford it, ask the court to waive the fee when you file.",
+        },
+        {
           id: "dont-miss",
           text: `Missing the ${j.responseDays}-day deadline lets the plaintiff take a default judgment — do not miss it.`,
           citationId: j.citations.default,
