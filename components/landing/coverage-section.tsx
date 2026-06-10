@@ -68,7 +68,7 @@ export function CoverageSection() {
         <div className="mb-14 max-w-2xl">
           <p className="eyebrow mb-5 text-primary">Coverage</p>
           <h2 className="font-display text-4xl font-semibold leading-[1.1] text-foreground sm:text-5xl">
-            Two injustices, four jurisdictions,
+            Two injustices, five jurisdictions,
             <br />
             <em className="italic">one engine.</em>
           </h2>
@@ -117,21 +117,6 @@ export function CoverageSection() {
               </dl>
             </article>
           ))}
-        </div>
-
-        <div className="mt-8 flex flex-col gap-2 rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-display text-lg font-semibold text-foreground">
-              Adding Alberta or New York is one more profile.
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Fill in the verified deadline, limitation, court, and citations — no engine change,
-              same UI.
-            </p>
-          </div>
-          <code className="shrink-0 rounded-lg border border-border bg-card px-3 py-2 font-mono text-xs text-foreground/70">
-            packs/answer/jurisdictions.ts
-          </code>
         </div>
       </div>
     </section>

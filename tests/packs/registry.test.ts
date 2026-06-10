@@ -6,12 +6,12 @@ import { buildRegistry } from "@/packs";
  * packs, so guard that they're all present with usable labels.
  */
 describe("pack registry (drives the upload notice-type picker)", () => {
-  it("registers the benefits pack and all three debt jurisdictions", () => {
+  it("registers the benefits pack and all four debt jurisdictions", () => {
     const ids = buildRegistry()
       .list()
       .map((p) => p.id)
       .sort();
-    expect(ids).toEqual(["answer-bc", "answer-ca", "answer-on", "benefits"]);
+    expect(ids).toEqual(["answer-bc", "answer-ca", "answer-on", "answer-qc", "benefits"]);
   });
 
   it("every pack exposes a human-readable display name (not the raw id)", () => {

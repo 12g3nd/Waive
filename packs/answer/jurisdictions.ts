@@ -1,4 +1,4 @@
-import { BC_HOLIDAYS, CALIFORNIA_HOLIDAYS, ONTARIO_HOLIDAYS } from "./holidays";
+import { BC_HOLIDAYS, CALIFORNIA_HOLIDAYS, ONTARIO_HOLIDAYS, QUEBEC_HOLIDAYS } from "./holidays";
 
 /**
  * A debt-claim jurisdiction profile. The whole `answer` pack is generated from one
@@ -7,8 +7,8 @@ import { BC_HOLIDAYS, CALIFORNIA_HOLIDAYS, ONTARIO_HOLIDAYS } from "./holidays";
  * literal: same engine, same UI, config per jurisdiction.
  */
 export interface DebtJurisdiction {
-  id: "ON" | "BC" | "CA";
-  packId: string; // "answer-on" | "answer-bc" | "answer-ca"
+  id: "ON" | "BC" | "CA" | "QC";
+  packId: string; // "answer-on" | "answer-bc" | "answer-ca" | "answer-qc"
   label: string; // "Ontario"
   region: string; // "Ontario, Canada"
   country: "Canada" | "United States";
@@ -122,7 +122,36 @@ export const CALIFORNIA: DebtJurisdiction = {
   sample: { plaintiff: "Meridian Portfolio Acquisitions LLC (debt buyer)", amount: 5215.0, lastActivityDaysAgo: 1850, claimNo: "37-2024-00098765-CL" },
 };
 
-export const DEBT_JURISDICTIONS: DebtJurisdiction[] = [ONTARIO, BRITISH_COLUMBIA, CALIFORNIA];
+export const QUEBEC: DebtJurisdiction = {
+  id: "QC",
+  packId: "answer-qc",
+  label: "Quebec",
+  region: "Quebec, Canada",
+  country: "Canada",
+  court: "Court of Québec (Civil Division)",
+  responseDoc: { name: "Answer to summons" },
+  responseDays: 15,
+  defaultConsequence: "put you in default and ask the court for a judgment by default",
+  limitationYears: 3,
+  currency: "CAD",
+  holidays: QUEBEC_HOLIDAYS,
+  citations: {
+    deadline: "ans-qc-answer-15-day",
+    default: "ans-qc-default",
+    limitation: "ans-qc-limitation",
+    acknowledgment: "ans-qc-acknowledgment",
+    standing: "ans-qc-standing",
+    responseForm: "ans-qc-answer-form",
+  },
+  standing: {
+    headline: "Make the debt buyer prove it actually owns this debt.",
+    explanation:
+      "The plaintiff looks like a debt buyer, not your original creditor. Under Quebec's rules on the assignment of claims, an assignment can be set up against you only once you have acquiesced to it or received it — so the plaintiff must prove a valid assignment and that you were notified. Put it to strict proof; gaps are a real defence.",
+  },
+  sample: { plaintiff: "Société de Recouvrement Boréal inc. (cessionnaire)", amount: 4120.75, lastActivityDaysAgo: 1500, claimNo: "QC-500-22-098765" },
+};
+
+export const DEBT_JURISDICTIONS: DebtJurisdiction[] = [ONTARIO, BRITISH_COLUMBIA, CALIFORNIA, QUEBEC];
 
 export function jurisdictionByPackId(packId: string): DebtJurisdiction | undefined {
   return DEBT_JURISDICTIONS.find((j) => j.packId === packId);

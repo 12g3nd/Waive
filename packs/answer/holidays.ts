@@ -49,3 +49,18 @@ export const CALIFORNIA_HOLIDAYS: ReadonlySet<string> = new Set<string>([
   "2026-05-25", "2026-07-03", "2026-09-07", "2026-11-11", "2026-11-26",
   "2026-11-27", "2026-12-25",
 ]);
+
+export const QUEBEC_HOLIDAYS: ReadonlySet<string> = new Set<string>([
+  // 2025 — Quebec statutory / court holidays (observed)
+  "2025-01-01", // New Year's Day
+  "2025-04-18", // Good Friday
+  "2025-05-19", // National Patriots' Day (Journée nationale des patriotes)
+  "2025-06-24", // Saint-Jean-Baptiste (Quebec National Holiday)
+  "2025-07-01", // Canada Day
+  "2025-09-01", // Labour Day
+  "2025-10-13", // Thanksgiving
+  "2025-12-25", // Christmas
+  // 2026
+  "2026-01-01", "2026-04-03", "2026-05-18", "2026-06-24", "2026-07-01",
+  "2026-09-07", "2026-10-12", "2026-12-25",
+]);
