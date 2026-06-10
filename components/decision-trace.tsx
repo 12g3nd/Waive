@@ -89,7 +89,7 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
               The model only reads your notice into fields. Every deadline, route, and catch below
-              is computed by tested code and traces to a real source — nothing here is guessed.
+              is computed by tested code and traces to a real source, nothing here is guessed.
             </p>
           </div>
         </div>
@@ -215,7 +215,7 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
           </span>
           {confidence.escalate && (
             <span className="text-muted-foreground">
-              · Low-confidence read — flagged for a legal-aid clinic to review.
+              Low-confidence read, flagged for a legal-aid clinic to review.
             </span>
           )}
         </div>
