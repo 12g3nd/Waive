@@ -1,6 +1,7 @@
 "use client";
 
 import { useId } from "react";
+import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { NoticeType } from "@/lib/notice-types";
 
@@ -18,9 +19,37 @@ function typeOf(types: NoticeType[], packId: string): NoticeType | undefined {
   );
 }
 
+/** Info icon revealing "common things to notice" on hover or keyboard focus. */
+function NoticeTips({ tips }: { tips: string[] }) {
+  if (tips.length === 0) return null;
+  return (
+    <span className="group/tip relative shrink-0">
+      <button
+        type="button"
+        aria-label="Common things to notice"
+        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <Info className="size-4" />
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute right-0 top-8 z-20 w-64 rounded-lg border border-border bg-card p-3 text-left text-xs leading-relaxed text-foreground/80 opacity-0 shadow-lg transition-opacity duration-150 group-hover/tip:opacity-100 group-focus-within/tip:opacity-100"
+      >
+        <span className="mb-1.5 block font-semibold text-foreground">Common things to notice</span>
+        <ul className="list-disc space-y-1 pl-4">
+          {tips.map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ul>
+      </span>
+    </span>
+  );
+}
+
 /**
  * Two-part notice selector: first the type (what happened), then — only when the
- * type spans jurisdictions — the location. The resolved value is always a packId.
+ * type spans jurisdictions — the location. Each type carries a hover tip of common
+ * things to look for. The resolved value is always a packId.
  */
 export function NoticeTypePicker({ types, value, onChange, disabled }: NoticeTypePickerProps) {
   const locationId = useId();
@@ -47,20 +76,30 @@ export function NoticeTypePicker({ types, value, onChange, disabled }: NoticeTyp
           {types.map((t) => {
             const active = t.domain === activeType.domain;
             return (
-              <button
+              <div
                 key={t.domain}
-                type="button"
-                onClick={() => selectType(t)}
-                aria-pressed={active}
                 className={cn(
-                  "rounded-xl border p-3 text-left text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
+                  "relative flex items-start gap-1 rounded-xl border pr-1 transition-colors",
                   active
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                    ? "border-primary bg-primary/10"
+                    : "border-border bg-card hover:border-primary/50",
                 )}
               >
-                {t.label}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => selectType(t)}
+                  aria-pressed={active}
+                  className={cn(
+                    "flex-1 rounded-xl p-3 text-left text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {t.label}
+                </button>
+                <div className="pt-1.5">
+                  <NoticeTips tips={t.tips} />
+                </div>
+              </div>
             );
           })}
         </div>
