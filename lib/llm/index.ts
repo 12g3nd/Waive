@@ -26,14 +26,14 @@ export async function getLlm(
   const config = { baseUrl: cfg.baseUrl, modelExtract: cfg.modelExtract, modelDraft: cfg.modelDraft };
   if (cfg.forceOffline) {
     return {
-      llm: new DeterministicFallbackLlm(),
+      llm: new DeterministicFallbackLlm("forced"),
       status: { mode: "offline", reason: "LLM_OFFLINE is set", config },
     };
   }
   const up = await ollamaAvailable(cfg);
   if (!up) {
     return {
-      llm: new DeterministicFallbackLlm(),
+      llm: new DeterministicFallbackLlm("unreachable"),
       status: {
         mode: "offline",
         reason: `Ollama not reachable at ${cfg.baseUrl}; using deterministic fallback`,
