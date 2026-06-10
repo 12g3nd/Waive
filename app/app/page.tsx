@@ -6,13 +6,14 @@ import Link from "next/link";
 import { ArrowLeft, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import type { IntakeQuestion, NoticeExtraction, NoticeSource, PipelineResult } from "@/engine";
 import type { LlmStatus } from "@/lib/llm";
-import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
+import type { AnalyzeRequest, AnalyzeResponse, PackOption, SampleCard } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
 import { SampleBoard } from "@/components/sample-board";
 import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
 import { IntakeRefine } from "@/components/intake-refine";
+import { NoticeTypePicker } from "@/components/notice-type-picker";
 
 type Origin =
   | { type: "sample"; sampleId: string }
@@ -52,6 +53,8 @@ function BackLink() {
 function AppPage() {
   const searchParams = useSearchParams();
   const [samples, setSamples] = useState<SampleCard[]>([]);
+  const [packs, setPacks] = useState<PackOption[]>([]);
+  const [noticePackId, setNoticePackId] = useState("benefits");
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
@@ -61,6 +64,13 @@ function AppPage() {
       .then((r) => r.json())
       .then((d: { samples: SampleCard[] }) => setSamples(d.samples))
       .catch(() => setSamples([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/packs")
+      .then((r) => r.json())
+      .then((d: { packs: PackOption[] }) => setPacks(d.packs))
+      .catch(() => setPacks([]));
   }, []);
 
   const run = useCallback(
@@ -112,7 +122,7 @@ function AppPage() {
       try {
         const data = await callAnalyze({
           mode: "notice",
-          packId: "benefits",
+          packId: noticePackId,
           userFacts: { answers: {} },
           language,
           source,
@@ -143,7 +153,7 @@ function AppPage() {
         setBusy(false);
       }
     },
-    [language],
+    [language, noticePackId],
   );
 
   const rerun = useCallback(
@@ -257,6 +267,12 @@ function AppPage() {
           </div>
         )}
 
+        <NoticeTypePicker
+          options={packs}
+          value={noticePackId}
+          onChange={setNoticePackId}
+          disabled={busy}
+        />
         <UploadZone onSelect={uploadNotice} busy={busy} />
 
         <div className="my-8 flex items-center gap-3">
