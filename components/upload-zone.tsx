@@ -64,6 +64,11 @@ export function UploadZone({ onSelect, busy }: UploadZoneProps) {
           dragging ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/50",
         )}
       >
+        {/* Crop marks: the corners of the document you're about to scan in. */}
+        <span aria-hidden className="absolute left-3 top-3 h-4 w-4 border-l-2 border-t-2 border-muted-foreground/30 transition-colors group-hover:border-primary/50" />
+        <span aria-hidden className="absolute right-3 top-3 h-4 w-4 border-r-2 border-t-2 border-muted-foreground/30 transition-colors group-hover:border-primary/50" />
+        <span aria-hidden className="absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-muted-foreground/30 transition-colors group-hover:border-primary/50" />
+        <span aria-hidden className="absolute bottom-3 right-3 h-4 w-4 border-b-2 border-r-2 border-muted-foreground/30 transition-colors group-hover:border-primary/50" />
         <div className="grid size-14 place-items-center rounded-full bg-primary/12 text-primary">
           {busy ? <Loader2 className="size-6 animate-spin" /> : <ImageUp className="size-6" />}
         </div>

@@ -48,6 +48,12 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Anchored sections clear the fixed nav when jumped to. */
+[id] {
+  scroll-margin-top: 5rem;
 }
 
 body {
@@ -58,6 +64,12 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Text selection reads like a highlighter pass — on-theme everywhere. */
+::selection {
+  background: hsl(var(--highlight) / 0.55);
+  color: hsl(var(--highlight-foreground));
+}
+
 /* Paper grain + dot grid: the "official notice" texture that calms into clarity. */
 .bg-paper {
   background-color: hsl(var(--background));
@@ -66,6 +78,58 @@ body {
     radial-gradient(hsl(40 30% 99%) 0%, hsl(40 38% 95%) 70%);
   background-size: 22px 22px, 100% 100%;
   background-position: 0 0, center;
+}
+
+/* Ink sections (problem / trust / footer) get a faint plate texture so the
+   dark blocks read as printed stock rather than flat fills. */
+.bg-ink {
+  background-color: hsl(var(--foreground));
+  background-image:
+    radial-gradient(hsl(40 30% 96% / 0.045) 0.5px, transparent 0.5px),
+    linear-gradient(hsl(222 22% 15%), hsl(222 24% 11%));
+  background-size: 26px 26px, 100% 100%;
+}
+
+/* Small-caps section label with a short leading rule — the editorial eyebrow. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.eyebrow::before {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+/* Centered variant gets a matching trailing rule. */
+.eyebrow-center::after {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Rubber-stamp treatment for verdicts: bordered, canted, ink-bled uppercase. */
+.stamp {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 2px solid currentColor;
+  border-radius: 0.25rem;
+  font-family: theme("fontFamily.mono");
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.82 0.18'/%3E%3C/filter%3E%3Crect width='120' height='40' fill='white' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.82 0.18'/%3E%3C/filter%3E%3Crect width='120' height='40' fill='white' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Hand-drawn highlighter sweep behind the presumption catch. */
@@ -113,6 +177,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .animate-fade-up,
   .animate-pulseRing {
     animation: none !important;

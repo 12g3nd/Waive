@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import { cn } from "@/lib/utils";
 
@@ -10,32 +11,37 @@ export function SiteNav() {
   return (
     <nav
       className={cn(
-        "fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-background/90 px-6 backdrop-blur-md transition-transform duration-300 sm:px-10",
+        "fixed left-0 right-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md transition-transform duration-300",
         hidden ? "-translate-y-full" : "translate-y-0",
       )}
     >
-      <Link href="/" className="font-display text-xl font-bold text-foreground">
-        W<span className="ai-letters">ai</span>ve
-      </Link>
-      <div className="flex items-center gap-6">
-        <a
-          href="#how"
-          className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
-        >
-          How it works
-        </a>
-        <a
-          href="#try"
-          className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
-        >
-          See an example
-        </a>
-        <Link
-          href="/app"
-          className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          Open the tool →
+      {/* Highlighter hairline — the legal-pad rule that brands every page. */}
+      <div aria-hidden className="h-0.5 bg-highlight" />
+      <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-6 sm:px-10">
+        <Link href="/" className="font-display text-xl font-bold tracking-tight text-foreground">
+          W<span className="ai-letters">ai</span>ve
         </Link>
+        <div className="flex items-center gap-7">
+          <a
+            href="#how"
+            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
+          >
+            How it works
+          </a>
+          <a
+            href="#try"
+            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
+          >
+            See an example
+          </a>
+          <Link
+            href="/app"
+            className="group inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-110"
+          >
+            Open the tool
+            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
       </div>
     </nav>
   );
