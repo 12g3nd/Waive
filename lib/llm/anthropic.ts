@@ -9,6 +9,7 @@ import {
   type ExtractionRequest,
   type LlmPort,
   type NoticeExtraction,
+  type NoticeSource,
   type PlainLanguageExplanation,
   type RulePack,
 } from "@/engine";
@@ -160,4 +161,41 @@ export class AnthropicLlm implements LlmPort {
       return base; // deterministic-fallback
     }
   }
+}
+
+/**
+ * One-word "what kind of notice is this?" classification used to pre-select the
+ * upload type — or to warn when it isn't a notice we handle. Returns the domain, or
+ * null when Claude can't tell (not an SSA or debt notice). Reads images and PDFs.
+ */
+export async function classifyNoticeWithAnthropic(
+  cfg: LlmConfig,
+  source: NoticeSource,
+  client: Anthropic = new Anthropic({ apiKey: cfg.anthropicApiKey }),
+): Promise<"benefits" | "answer" | null> {
+  const fileBlock: Anthropic.ContentBlockParam =
+    source.kind === "image"
+      ? {
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: source.mediaType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+            data: source.dataBase64,
+          },
+        }
+      : {
+          type: "document",
+          source: { type: "base64", media_type: "application/pdf", data: source.dataBase64 },
+        };
+  const msg = await client.messages.create({
+    model: cfg.anthropicModel,
+    max_tokens: 16,
+    system:
+      "You label a scanned official notice. Reply with exactly one word: 'benefits' if it is a Social Security / SSA overpayment notice, 'answer' if it is a debt-collection lawsuit or court claim, or 'unknown'.",
+    messages: [
+      { role: "user", content: [fileBlock, { type: "text", text: "Which kind of notice is this?" }] },
+    ],
+  });
+  const word = textOf(msg).toLowerCase().match(/benefits|answer|unknown/)?.[0];
+  return word === "benefits" || word === "answer" ? word : null;
 }

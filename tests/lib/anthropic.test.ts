@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type Anthropic from "@anthropic-ai/sdk";
 import { readLlmConfig } from "@/lib/llm/config";
-import { AnthropicLlm } from "@/lib/llm/anthropic";
+import { AnthropicLlm, classifyNoticeWithAnthropic } from "@/lib/llm/anthropic";
 import { benefitsPack } from "@/packs/benefits";
 import type { ExplainRequest, ExtractionRequest, NoticeExtraction } from "@/engine";
 
@@ -101,5 +101,16 @@ describe("AnthropicLlm", () => {
     await expect(
       new AnthropicLlm(cfg, failingClient()).extract(imageReq, benefitsPack),
     ).rejects.toThrow();
+  });
+});
+
+describe("classifyNoticeWithAnthropic", () => {
+  it("maps a one-word reply to a domain, or null when it isn't SSA/debt", async () => {
+    const src = imageReq.source;
+    expect(await classifyNoticeWithAnthropic(cfg, src, clientReturning("benefits"))).toBe("benefits");
+    expect(
+      await classifyNoticeWithAnthropic(cfg, src, clientReturning("This is a debt lawsuit — answer.")),
+    ).toBe("answer");
+    expect(await classifyNoticeWithAnthropic(cfg, src, clientReturning("unknown"))).toBeNull();
   });
 });
