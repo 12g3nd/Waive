@@ -9,6 +9,7 @@ import type { LlmStatus } from "@/lib/llm";
 import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
+import { Wordmark } from "@/components/wordmark";
 import { SampleBoard } from "@/components/sample-board";
 import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
@@ -55,12 +56,10 @@ function BackLink() {
       <div className="mx-auto max-w-5xl px-4 py-2 sm:px-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
-          <span className="font-display font-bold">
-            W<span className="ai-letters">ai</span>ve
-          </span>
+          <Wordmark className="text-sm" />
         </Link>
       </div>
     </div>

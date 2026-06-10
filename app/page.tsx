@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { DifferentiatorSection } from "@/components/landing/differentiator-section";
+import { CoverageSection } from "@/components/landing/coverage-section";
 import { SampleCtaSection } from "@/components/landing/sample-cta-section";
 import { TrustSection } from "@/components/landing/trust-section";
 import { SiteFooter } from "@/components/landing/site-footer";
@@ -27,6 +28,7 @@ export default function LandingPage() {
       <ProblemSection />
       <HowItWorksSection />
       <DifferentiatorSection />
+      <CoverageSection />
       <SampleCtaSection samples={samples} />
       <TrustSection />
       <SiteFooter />

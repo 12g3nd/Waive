@@ -13,6 +13,7 @@ import { DeadlineClock } from "@/components/deadline-clock";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { ExplanationPanel } from "@/components/explanation-panel";
 import { RemedyPanel } from "@/components/remedy-panel";
+import { DecisionTrace } from "@/components/decision-trace";
 import { PresumptionBanner } from "@/components/presumption-banner";
 import { DocumentPreview } from "@/components/document-preview";
 import { CitationsPanel } from "@/components/citations-panel";
@@ -177,11 +178,7 @@ export function ResultView({
             <ExplanationPanel explanation={result.explanation} />
           </div>
           <div className="animate-fade-up" style={delay(3)}>
-            <RemedyPanel
-              remedy={result.remedy}
-              deadlines={result.deadlines}
-              citations={result.citations}
-            />
+            <RemedyPanel remedy={result.remedy} citations={result.citations} />
           </div>
           <div className="animate-fade-up" style={delay(4)}>
             <DocumentPreview doc={result.draftedDocument} citations={result.citations} />
@@ -214,6 +211,11 @@ export function ResultView({
             clinic review your case.
           </p>
         </div>
+      </div>
+
+      {/* The audit layer: the whole deterministic chain, made visible. */}
+      <div className="animate-fade-up" style={delay(5)}>
+        <DecisionTrace result={result} />
       </div>
     </div>
   );

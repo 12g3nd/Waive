@@ -168,14 +168,6 @@ body {
   }
 }
 
-/* "ai" gradient in the Waive wordmark — signals AI authorship without shouting. */
-.ai-letters {
-  background: linear-gradient(125deg, hsl(var(--primary)) 0%, hsl(43 96% 48%) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -183,5 +175,26 @@ body {
   .animate-fade-up,
   .animate-pulseRing {
     animation: none !important;
+  }
+}
+
+/* Print / Save-as-PDF: isolate the drafted filing document so a printout is a
+   clean filing copy — no nav, no panels, no buttons. Triggered by the
+   "Print / PDF" action in the draft card. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-doc,
+  .print-doc * {
+    visibility: visible;
+  }
+  .print-doc {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none !important;
+    box-shadow: none !important;
   }
 }
