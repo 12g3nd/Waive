@@ -72,7 +72,9 @@
   --ring: 160 58% 42%;
 
   --highlight: 43 96% 62%;
-  --highlight-foreground: 32 80% 12%;
+  /* Light, readable yellow: highlight "text" sits on low-opacity yellow over the
+     dark stock (the catch banner, badges, eyebrows), so dark text was illegible. */
+  --highlight-foreground: 43 90% 80%;
 
   --urgent: 0 78% 63%;
   --warn: 38 92% 58%;
