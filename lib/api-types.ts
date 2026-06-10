@@ -18,13 +18,6 @@ export interface SampleCard {
   imagePath?: string;
 }
 
-/** A selectable rule pack for the "what kind of notice is this?" upload picker. */
-export interface PackOption {
-  id: string;
-  displayName: string;
-  jurisdiction?: string;
-}
-
 export type AnalyzeSource =
   | NoticeSource
   | { kind: "extraction"; extraction: NoticeExtraction };

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import type { IntakeQuestion, NoticeExtraction, NoticeSource, PipelineResult } from "@/engine";
 import type { LlmStatus } from "@/lib/llm";
-import type { AnalyzeRequest, AnalyzeResponse, PackOption, SampleCard } from "@/lib/api-types";
+import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
 import { SampleBoard } from "@/components/sample-board";
@@ -14,6 +14,7 @@ import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
 import { IntakeRefine } from "@/components/intake-refine";
 import { NoticeTypePicker } from "@/components/notice-type-picker";
+import type { NoticeType } from "@/lib/notice-types";
 
 type Origin =
   | { type: "sample"; sampleId: string }
@@ -53,7 +54,7 @@ function BackLink() {
 function AppPage() {
   const searchParams = useSearchParams();
   const [samples, setSamples] = useState<SampleCard[]>([]);
-  const [packs, setPacks] = useState<PackOption[]>([]);
+  const [noticeTypes, setNoticeTypes] = useState<NoticeType[]>([]);
   const [noticePackId, setNoticePackId] = useState("benefits");
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [language, setLanguage] = useState("en");
@@ -67,10 +68,10 @@ function AppPage() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/packs")
+    fetch("/api/notice-types")
       .then((r) => r.json())
-      .then((d: { packs: PackOption[] }) => setPacks(d.packs))
-      .catch(() => setPacks([]));
+      .then((d: { noticeTypes: NoticeType[] }) => setNoticeTypes(d.noticeTypes))
+      .catch(() => setNoticeTypes([]));
   }, []);
 
   const run = useCallback(
@@ -268,7 +269,7 @@ function AppPage() {
         )}
 
         <NoticeTypePicker
-          options={packs}
+          types={noticeTypes}
           value={noticePackId}
           onChange={setNoticePackId}
           disabled={busy}
