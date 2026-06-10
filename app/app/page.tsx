@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import type { IntakeQuestion, NoticeExtraction, NoticeSource, PipelineResult } from "@/engine";
 import type { LlmStatus } from "@/lib/llm";
 import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
@@ -50,16 +50,19 @@ function defaultPackIdForDomain(types: NoticeType[], domain: string): string | n
 
 function BackLink() {
   return (
-    <div className="border-b border-border bg-card/80 px-4 py-2 backdrop-blur-sm">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="size-3.5" />
-        <span className="font-display font-bold">
-          W<span className="ai-letters">ai</span>ve
-        </span>
-      </Link>
+    <div className="border-b border-border bg-card/80 backdrop-blur-sm">
+      <div aria-hidden className="h-0.5 bg-highlight" />
+      <div className="mx-auto max-w-5xl px-4 py-2 sm:px-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="size-3.5" />
+          <span className="font-display font-bold">
+            W<span className="ai-letters">ai</span>ve
+          </span>
+        </Link>
+      </div>
     </div>
   );
 }
@@ -268,7 +271,7 @@ function AppPage() {
                 onClick={() => void analyzeNotice(reviewPhase.source)}
                 disabled={busy || reviewPhase.classifying}
               >
-                Analyze this notice →
+                Analyze this notice <ArrowRight />
               </Button>
               <Button variant="ghost" onClick={() => setPhase({ kind: "idle" })} disabled={busy}>
                 Use a different file
@@ -323,17 +326,14 @@ function AppPage() {
       <BackLink />
       <div className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
         <header className="mb-10 text-center">
-          <p className="mb-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            W<span className="ai-letters">ai</span>ve
-          </p>
-          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
             <ShieldCheck className="size-3.5 text-primary" />
             Information &amp; document prep, not legal advice
           </div>
-          <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
+          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
             Drop a notice.
             <br />
-            Watch dread become a plan.
+            Watch dread become <em className="italic">a plan.</em>
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
             An official notice, a short deadline, and a hidden remedy you'd never find in time. Waive
@@ -366,16 +366,16 @@ function AppPage() {
 
         <div className="my-8 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            or pick a sample — judge's choice
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            or pick a sample notice
           </span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
         <SampleBoard samples={samples} onPick={pickSample} busy={busy} />
 
-        <p className="mt-10 text-center text-xs text-muted-foreground">
-          One domain-blind engine ("Backstop") + pluggable rule packs. Same code, different injustice.
+        <p className="mt-10 text-center font-mono text-[11px] tracking-wide text-muted-foreground">
+          One domain-blind engine · pluggable rule packs · same code, different injustice
         </p>
       </div>
     </main>

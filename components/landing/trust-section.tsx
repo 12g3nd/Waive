@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Lock, BookOpen, Cpu, FlaskConical } from "lucide-react";
 import { useInView } from "@/hooks/use-in-view";
 import { cn } from "@/lib/utils";
 
@@ -28,16 +29,16 @@ const STATS = [
     value: 70,
     suffix: "+",
     label: "Tests passing",
-    desc: "Every deadline formula, holiday rule, and remedy route covered",
+    desc: "Every deadline formula, holiday rule, and remedy route verified",
   },
   {
     value: 0,
     suffix: "",
     label: "AI-decided outcomes",
-    desc: "Deadlines and remedies computed by deterministic code only",
+    desc: "Deadlines and remedies are always computed by code, never guessed",
   },
   {
-    value: 3,
+    value: 4,
     suffix: "",
     label: "Jurisdictions",
     desc: "SSA federal, Ontario, British Columbia, California",
@@ -46,15 +47,15 @@ const STATS = [
     value: 100,
     suffix: "%",
     label: "Sources cited",
-    desc: "Every claim traces back to a statute, CFR, POMS, or court rule",
+    desc: "Every claim traces back to a real statute or court rule",
   },
 ];
 
 const PILLS = [
-  { icon: "🔒", text: "Runs on your machine — no data leaves" },
-  { icon: "📖", text: "Information only — not legal advice" },
-  { icon: "⚡", text: "Local AI model via Ollama" },
-  { icon: "🧪", text: "Open source rule packs" },
+  { icon: Lock, text: "Your letter never leaves your device" },
+  { icon: BookOpen, text: "Information only, not legal advice" },
+  { icon: Cpu, text: "Works offline with a local AI model" },
+  { icon: FlaskConical, text: "Open source, see exactly how it works" },
 ];
 
 export function TrustSection() {
@@ -62,29 +63,32 @@ export function TrustSection() {
   const counts = [
     useCountUp(70, inView),
     useCountUp(0, inView),
-    useCountUp(3, inView),
+    useCountUp(4, inView),
     useCountUp(100, inView),
   ];
 
   return (
-    <section className="bg-foreground py-20" ref={ref}>
-      <div className="mx-auto max-w-screen-xl px-6 sm:px-10 text-center">
-        <h2 className="mb-12 font-display text-2xl font-semibold text-primary-foreground">
-          Built for the moment when the stakes are real.
+    <section className="bg-ink py-20" ref={ref}>
+      <div className="mx-auto max-w-screen-xl px-6 text-center sm:px-10">
+        <h2 className="mb-14 font-display text-2xl font-medium text-primary-foreground sm:text-3xl">
+          Numbers that matter <em className="italic text-highlight">when it counts.</em>
         </h2>
 
-        <div className="mb-12 grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="mb-14 grid grid-cols-2 divide-white/10 sm:grid-cols-4 sm:divide-x">
           {STATS.map((s, i) => (
             <div
-              key={i}
-              className={cn(inView ? "animate-fade-up" : "opacity-0")}
+              key={s.label}
+              className={cn("px-4 py-3", inView ? "animate-fade-up" : "opacity-0")}
               style={inView ? { animationDelay: `${i * 80}ms` } : undefined}
             >
-              <p className="font-display text-4xl font-bold text-highlight">
-                {counts[i]}{s.suffix}
+              <p className="font-display text-5xl font-semibold tabular-nums text-highlight">
+                {counts[i]}
+                {s.suffix}
               </p>
-              <p className="mt-1 text-sm font-semibold text-primary-foreground">{s.label}</p>
-              <p className="mt-1 text-xs text-white/45">{s.desc}</p>
+              <p className="mt-2 text-sm font-semibold text-primary-foreground">{s.label}</p>
+              <p className="mx-auto mt-1 max-w-[16rem] text-xs leading-relaxed text-white/45">
+                {s.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -95,7 +99,7 @@ export function TrustSection() {
               key={p.text}
               className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-1.5 text-sm text-white/60"
             >
-              <span aria-hidden>{p.icon}</span>
+              <p.icon className="size-3.5 text-white/40" aria-hidden />
               {p.text}
             </span>
           ))}

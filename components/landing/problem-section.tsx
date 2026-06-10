@@ -10,6 +10,7 @@ const STORIES = [
     outcome: "Lost by silence",
     good: false,
     scenario: "SSA overpayment · waiver was available · 60-day window missed",
+    file: "CASE 01",
   },
   {
     quote:
@@ -17,6 +18,7 @@ const STORIES = [
     outcome: "Lost by silence",
     good: false,
     scenario: "Debt claim · limitations defense available · no response filed",
+    file: "CASE 02",
   },
   {
     quote:
@@ -24,6 +26,7 @@ const STORIES = [
     outcome: "Escape hatch found",
     good: true,
     scenario: "SSA overpayment · SSA-632 filed · waived in full",
+    file: "CASE 03",
   },
 ];
 
@@ -31,52 +34,57 @@ export function ProblemSection() {
   const { ref, inView } = useInView<HTMLElement>();
 
   return (
-    <section id="problem" className="bg-foreground py-24" ref={ref}>
+    <section id="problem" className="bg-ink py-24" ref={ref}>
       <div className="mx-auto max-w-screen-xl px-6 sm:px-10">
-        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-highlight">
-          The problem
-        </p>
-        <h2 className="mb-16 max-w-2xl font-display text-4xl font-bold leading-[1.1] text-primary-foreground">
-          Every year, thousands lose
+        <p className="eyebrow mb-5 text-highlight">The problem</p>
+        <h2 className="mb-16 max-w-2xl font-display text-4xl font-semibold leading-[1.1] text-primary-foreground sm:text-5xl">
+          Real people. Real letters.
           <br />
-          by silence — not by law.
+          Real consequences for <em className="italic text-highlight">not knowing.</em>
         </h2>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           {STORIES.map((story, i) => (
-            <div
+            <article
               key={i}
               className={cn(
-                "rounded-2xl border border-white/10 bg-white/5 p-6",
+                "relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-7",
                 inView ? "animate-fade-up" : "opacity-0",
               )}
               style={inView ? { animationDelay: `${i * 100}ms` } : undefined}
             >
-              <blockquote className="mb-4 font-display text-base italic leading-relaxed text-primary-foreground/90">
-                &ldquo;{story.quote}&rdquo;
+              <div className="mb-4 flex items-center justify-between">
+                <span className="font-mono text-[10px] font-medium tracking-[0.2em] text-white/35">
+                  {story.file}
+                </span>
+                <span aria-hidden className="font-display text-5xl italic leading-none text-white/15">
+                  &ldquo;
+                </span>
+              </div>
+              <blockquote className="mb-6 flex-1 font-display text-base italic leading-relaxed text-primary-foreground/90">
+                {story.quote}
               </blockquote>
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
-                  story.good
-                    ? "border-safe/30 bg-safe/20 text-safe"
-                    : "border-urgent/30 bg-urgent/20 text-red-300",
-                )}
-              >
-                {story.good ? "✓" : "✗"} {story.outcome}
-              </span>
-              <p className="mt-3 text-xs text-white/40">{story.scenario}</p>
-            </div>
+              <div>
+                <span
+                  className={cn("stamp", story.good ? "text-emerald-300" : "text-red-300/90")}
+                >
+                  {story.outcome}
+                </span>
+                <p className="mt-4 border-t border-white/10 pt-3 font-mono text-[11px] leading-relaxed text-white/40">
+                  {story.scenario}
+                </p>
+              </div>
+            </article>
           ))}
         </div>
 
         <div className="mt-16 border-t border-white/10 pt-12 text-center">
-          <p className="font-display text-2xl text-primary-foreground">
-            The remedy was{" "}
-            <span className="text-highlight">always there.</span>
+          <p className="font-display text-2xl text-primary-foreground sm:text-3xl">
+            The law gave you a way out.{" "}
+            <em className="italic text-highlight">Most people never find it.</em>
           </p>
-          <p className="mt-2 text-sm text-white/50">
-            The escape hatch exists in statute. Most people just never find it in time.
+          <p className="mt-3 text-sm text-white/50">
+            Waive exists for the moment you get that letter and don&apos;t know what to do next.
           </p>
         </div>
       </div>
