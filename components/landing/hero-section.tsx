@@ -5,11 +5,7 @@ import { OriginalNoticePreview } from "./original-notice-preview";
 
 const STATS = [
   { num: "60s", label: "avg. read time" },
-<<<<<<< HEAD
-  { num: "4", label: "jurisdictions — more to come" },
-=======
-  { num: "4", label: "jurisdictions, more to come!" },
->>>>>>> 8e74b30 (removed dashes - from UI text)
+  { num: "4", label: "jurisdictions, more to come" },
   { num: "100%", label: "answers with a source" },
   { num: "0", label: "guesses made" },
 ];
