@@ -1,4 +1,3 @@
-import { PDFParse } from "pdf-parse";
 import { isValidISODate, type NoticeExtraction, type RulePack } from "@/engine";
 import type { ExtractionRequest } from "@/engine";
 import type { LlmConfig } from "./config";
@@ -151,6 +150,7 @@ export async function extractWithOllama(
     const buffer = Buffer.from(req.source.dataBase64, "base64");
     let pdfText: string;
     try {
+      const { PDFParse } = await import("pdf-parse");
       const parser = new PDFParse({ data: buffer });
       const result = await parser.getText();
       await parser.destroy();
