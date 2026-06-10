@@ -13,6 +13,8 @@ import { SampleBoard } from "@/components/sample-board";
 import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
 import { IntakeRefine } from "@/components/intake-refine";
+import { NoticeTypePicker } from "@/components/notice-type-picker";
+import type { NoticeType } from "@/lib/notice-types";
 
 type Origin =
   | { type: "sample"; sampleId: string }
@@ -20,6 +22,12 @@ type Origin =
 
 type Phase =
   | { kind: "idle" }
+  | {
+      kind: "review";
+      source: NoticeSource;
+      suggestion: { domain: string; label: string } | null;
+      classifying: boolean;
+    }
   | { kind: "decoding" }
   | { kind: "result"; result: PipelineResult; llm: LlmStatus; intake: IntakeQuestion[]; origin: Origin }
   | { kind: "error"; message: string; code: string };
@@ -31,6 +39,13 @@ async function callAnalyze(req: AnalyzeRequest): Promise<AnalyzeResponse> {
     body: JSON.stringify(req),
   });
   return (await res.json()) as AnalyzeResponse;
+}
+
+/** The default packId for a guessed domain (first jurisdiction when it has several). */
+function defaultPackIdForDomain(types: NoticeType[], domain: string): string | null {
+  const t = types.find((x) => x.domain === domain);
+  if (!t) return null;
+  return t.packId ?? t.locations[0]?.packId ?? null;
 }
 
 function BackLink() {
@@ -52,6 +67,8 @@ function BackLink() {
 function AppPage() {
   const searchParams = useSearchParams();
   const [samples, setSamples] = useState<SampleCard[]>([]);
+  const [noticeTypes, setNoticeTypes] = useState<NoticeType[]>([]);
+  const [noticePackId, setNoticePackId] = useState("benefits");
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
@@ -61,6 +78,13 @@ function AppPage() {
       .then((r) => r.json())
       .then((d: { samples: SampleCard[] }) => setSamples(d.samples))
       .catch(() => setSamples([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/notice-types")
+      .then((r) => r.json())
+      .then((d: { noticeTypes: NoticeType[] }) => setNoticeTypes(d.noticeTypes))
+      .catch(() => setNoticeTypes([]));
   }, []);
 
   const run = useCallback(
@@ -105,14 +129,14 @@ function AppPage() {
     [run, language],
   );
 
-  const uploadNotice = useCallback(
+  const analyzeNotice = useCallback(
     async (source: NoticeSource) => {
       setPhase({ kind: "decoding" });
       setBusy(true);
       try {
         const data = await callAnalyze({
           mode: "notice",
-          packId: "benefits",
+          packId: noticePackId,
           userFacts: { answers: {} },
           language,
           source,
@@ -143,7 +167,38 @@ function AppPage() {
         setBusy(false);
       }
     },
-    [language],
+    [language, noticePackId],
+  );
+
+  // On upload, ask the model (if available) to guess the type, then let the person
+  // confirm before we analyze. Degrades to a plain confirm step when there's no model.
+  const onFileSelected = useCallback(
+    async (source: NoticeSource) => {
+      setPhase({ kind: "review", source, suggestion: null, classifying: true });
+      try {
+        const res = await fetch("/api/classify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ source }),
+        });
+        const data = (await res.json()) as {
+          available: boolean;
+          domain?: string | null;
+          label?: string;
+        };
+        if (data.available && data.domain && data.label) {
+          const pid = defaultPackIdForDomain(noticeTypes, data.domain);
+          if (pid) setNoticePackId(pid);
+          const suggestion = { domain: data.domain, label: data.label };
+          setPhase((p) => (p.kind === "review" ? { ...p, suggestion, classifying: false } : p));
+        } else {
+          setPhase((p) => (p.kind === "review" ? { ...p, classifying: false } : p));
+        }
+      } catch {
+        setPhase((p) => (p.kind === "review" ? { ...p, classifying: false } : p));
+      }
+    },
+    [noticeTypes],
   );
 
   const rerun = useCallback(
@@ -173,6 +228,56 @@ function AppPage() {
   function handleLanguage(lang: string) {
     setLanguage(lang);
     if (phase.kind === "result") void rerun(phase.origin, lang);
+  }
+
+  if (phase.kind === "review") {
+    const reviewPhase = phase;
+    return (
+      <main className="min-h-screen bg-paper">
+        <BackLink />
+        <div className="mx-auto w-full max-w-2xl px-4 py-12 sm:px-6">
+          <div className="space-y-5 rounded-2xl border border-border bg-card p-6">
+            <div>
+              <h1 className="font-display text-2xl font-bold tracking-tight">Check the notice type</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {reviewPhase.classifying
+                  ? "Reading your file to suggest the type…"
+                  : reviewPhase.suggestion
+                    ? "We've pre-selected our best guess — change it below if it's not right."
+                    : "Tell us what kind of notice this is so we apply the right rules."}
+              </p>
+            </div>
+
+            {reviewPhase.suggestion && !reviewPhase.classifying && (
+              <div className="flex items-start gap-2 rounded-xl border border-primary/30 bg-primary/[0.07] p-3 text-sm">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+                <p className="text-foreground/85">This looks like {reviewPhase.suggestion.label}.</p>
+              </div>
+            )}
+
+            <NoticeTypePicker
+              types={noticeTypes}
+              value={noticePackId}
+              onChange={setNoticePackId}
+              disabled={busy}
+            />
+
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="primary"
+                onClick={() => void analyzeNotice(reviewPhase.source)}
+                disabled={busy || reviewPhase.classifying}
+              >
+                Analyze this notice →
+              </Button>
+              <Button variant="ghost" onClick={() => setPhase({ kind: "idle" })} disabled={busy}>
+                Use a different file
+              </Button>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   if (phase.kind === "decoding") {
@@ -257,7 +362,7 @@ function AppPage() {
           </div>
         )}
 
-        <UploadZone onSelect={uploadNotice} busy={busy} />
+        <UploadZone onSelect={onFileSelected} busy={busy} />
 
         <div className="my-8 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
