@@ -16,6 +16,7 @@ describe("notice types (drive the upload picker)", () => {
       "answer-bc",
       "answer-ca",
       "answer-on",
+      "answer-qc",
     ]);
   });
 

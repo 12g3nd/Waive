@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Gavel, Home, Mail, ShieldCheck } from "lucide-react";
+import { ArrowRight, Gavel, Mail, ShieldCheck } from "lucide-react";
 import { ResultCardPreview } from "./result-card-preview";
 import { OriginalNoticePreview } from "./original-notice-preview";
 
 const STATS = [
   { num: "60s", label: "avg. read time" },
-  { num: "4", label: "jurisdictions — more to come" },
+  { num: "5", label: "jurisdictions, more to come" },
   { num: "100%", label: "answers with a source" },
   { num: "0", label: "guesses made" },
 ];
@@ -13,7 +13,6 @@ const STATS = [
 const WHO_ITS_FOR = [
   { icon: Mail, label: "Got an SSA overpayment notice" },
   { icon: Gavel, label: "Served a debt lawsuit" },
-  { icon: Home, label: "Received an eviction notice" },
 ];
 
 export function HeroSection() {
@@ -50,19 +49,18 @@ export function HeroSection() {
           </em>
         </h1>
 
-        <blockquote className="mb-6 max-w-lg border-l-2 border-primary pl-4">
+<blockquote className="mb-6 max-w-lg border-l-2 border-primary pl-4">
           <p className="font-display text-[0.95rem] italic leading-relaxed text-muted-foreground">
-            &ldquo;Waive told me there was a waiver available and drafted the form. I filed it the
-            same day. The overpayment was waived in full.&rdquo;
+            Illustrative: a $9,400 SSA overpayment, decoded in 60 seconds. Waiver path found,
+            Form SSA-632 drafted, 24 days still on the clock.
           </p>
           <footer className="mt-1.5 font-mono text-[11px] font-medium tracking-wide text-foreground/70">
-            — SSA overpayment · escape hatch found
+            example outcome, not a real client
           </footer>
         </blockquote>
-
         <p className="mb-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
           Official notices hide remedies most people never find in time. Waive reads your letter,
-          finds your deadline, and shows you the way out — in under 60 seconds.
+          finds your deadline, and shows you the way out, in under 60 seconds.
         </p>
 
         <div className="mb-8 flex flex-wrap gap-2">

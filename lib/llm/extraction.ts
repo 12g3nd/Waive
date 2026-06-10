@@ -123,29 +123,62 @@ export function normalizeExtraction(raw: unknown, domain: string): NoticeExtract
 }
 
 /**
- * Read an uploaded notice into the schema using a local Ollama vision model.
- * Throws OllamaError on failure — there is no offline substitute for reading an
- * image, so the pipeline only calls this for raw image sources, and the UI can
- * fall back to a precomputed sample if the model is unavailable.
+ * Read an uploaded notice into the schema using a local Ollama model.
+ * Images use a vision model; PDFs have their text extracted first, then a text
+ * model structures the result — so PDFs work without a vision-capable model.
+ * Throws OllamaError on failure.
  */
 export async function extractWithOllama(
   req: ExtractionRequest,
   pack: RulePack,
   cfg: LlmConfig,
 ): Promise<NoticeExtraction> {
-  if (req.source.kind !== "image") {
-    throw new OllamaError(
-      `Live extraction supports image uploads only in this build (got "${req.source.kind}"). Use an image or pick a sample notice.`,
-    );
+  if (req.source.kind === "image") {
+    const content = await ollamaChat(cfg, {
+      model: cfg.modelExtract,
+      format: EXTRACTION_SCHEMA,
+      timeoutMs: cfg.timeoutMs,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userPrompt(req.domainHint), images: [req.source.dataBase64] },
+      ],
+    });
+    return normalizeExtraction(parseJsonLoose(content), pack.id);
   }
-  const content = await ollamaChat(cfg, {
-    model: cfg.modelExtract,
-    format: EXTRACTION_SCHEMA,
-    timeoutMs: cfg.timeoutMs,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: userPrompt(req.domainHint), images: [req.source.dataBase64] },
-    ],
-  });
-  return normalizeExtraction(parseJsonLoose(content), pack.id);
+
+  if (req.source.kind === "pdf") {
+    const buffer = Buffer.from(req.source.dataBase64, "base64");
+    let pdfText: string;
+    try {
+      const { PDFParse } = await import("pdf-parse");
+      const parser = new PDFParse({ data: buffer });
+      const result = await parser.getText();
+      await parser.destroy();
+      pdfText = result.text ?? "";
+    } catch {
+      throw new OllamaError(
+        "Could not extract text from the PDF — it may be corrupted or password-protected.",
+      );
+    }
+    if (!pdfText.trim()) {
+      throw new OllamaError(
+        "No readable text found in the PDF. If it is a scanned document, upload a photo of the page instead.",
+      );
+    }
+    const content = await ollamaChat(cfg, {
+      model: cfg.modelDraft,
+      format: EXTRACTION_SCHEMA,
+      timeoutMs: cfg.timeoutMs,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: `${userPrompt(req.domainHint)}\n\nDocument text (extracted from PDF):\n${pdfText.slice(0, 8_000)}`,
+        },
+      ],
+    });
+    return normalizeExtraction(parseJsonLoose(content), pack.id);
+  }
+
+  throw new OllamaError(`Unsupported source kind: "${(req.source as { kind: string }).kind}".`);
 }

@@ -1,17 +1,19 @@
 /**
  * LLM configuration. Two providers are supported:
- *  - "ollama"    — a local, no-cost vision/text model (the original default).
- *  - "anthropic" — Claude via the Anthropic API, for an online deploy where there
- *                  is no local model. Selected automatically when ANTHROPIC_API_KEY
- *                  is set, or forced with LLM_PROVIDER.
+ *  - "ollama"    — a vision/text model, local by default; point `baseUrl` at
+ *                  https://ollama.com and set `apiKey` for Ollama Cloud (same API).
+ *  - "anthropic" — Claude via the Anthropic API, for an online deploy with no local
+ *                  model. Selected automatically when ANTHROPIC_API_KEY is set, or
+ *                  forced with LLM_PROVIDER.
  */
 export type LlmProvider = "ollama" | "anthropic";
 
 export interface LlmConfig {
   provider: LlmProvider;
   baseUrl: string;
-  modelExtract: string; // vision/multimodal model (ollama)
-  modelDraft: string; // text model for explanation/translation/drafting (ollama)
+  apiKey: string; // empty for local Ollama; required by Ollama Cloud
+  modelExtract: string; // vision/multimodal model
+  modelDraft: string; // text model for explanation/translation/drafting
   timeoutMs: number;
   forceOffline: boolean;
   /** Anthropic API key; when present (and not forced offline) Claude is the default. */
@@ -38,6 +40,7 @@ export function readLlmConfig(
   return {
     provider,
     baseUrl: (env.OLLAMA_BASE_URL || "http://localhost:11434").replace(/\/+$/, ""),
+    apiKey: env.OLLAMA_API_KEY || "",
     modelExtract: env.MODEL_EXTRACT || "llama3.2-vision",
     modelDraft: env.MODEL_DRAFT || "llama3.2",
     timeoutMs: Number.isFinite(timeout) && timeout > 0 ? timeout : 60_000,

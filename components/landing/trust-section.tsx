@@ -9,6 +9,14 @@ function useCountUp(target: number, active: boolean, duration = 1200) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!active) return;
+    // Respect reduced-motion: skip the animation and show the final number.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setCount(target);
+      return;
+    }
     let raf: number;
     const start = performance.now();
     const tick = (now: number) => {
@@ -49,10 +57,10 @@ const STATS = [
     label: "Sources cited",
     desc: "Every claim traces back to a real statute or court rule",
   },
-];
+] as const;
 
 const PILLS = [
-  { icon: Lock, text: "Your letter never leaves your device" },
+  { icon: Lock, text: "Never sent to a paid cloud AI service" },
   { icon: BookOpen, text: "Information only, not legal advice" },
   { icon: Cpu, text: "Works offline with a local AI model" },
   { icon: FlaskConical, text: "Open source, see exactly how it works" },
@@ -60,11 +68,12 @@ const PILLS = [
 
 export function TrustSection() {
   const { ref, inView } = useInView<HTMLElement>();
+  // Derived from STATS so the animated number can never drift from its label.
   const counts = [
-    useCountUp(70, inView),
-    useCountUp(0, inView),
-    useCountUp(4, inView),
-    useCountUp(100, inView),
+    useCountUp(STATS[0].value, inView),
+    useCountUp(STATS[1].value, inView),
+    useCountUp(STATS[2].value, inView),
+    useCountUp(STATS[3].value, inView),
   ];
 
   return (

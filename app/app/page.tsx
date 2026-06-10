@@ -9,6 +9,8 @@ import type { LlmStatus } from "@/lib/llm";
 import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
+import { Wordmark } from "@/components/wordmark";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { SampleBoard } from "@/components/sample-board";
 import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
@@ -53,16 +55,15 @@ function BackLink() {
   return (
     <div className="border-b border-border bg-card/80 backdrop-blur-sm">
       <div aria-hidden className="h-0.5 bg-highlight" />
-      <div className="mx-auto max-w-5xl px-4 py-2 sm:px-6">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 sm:px-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
-          <span className="font-display font-bold">
-            W<span className="ai-letters">ai</span>ve
-          </span>
+          <Wordmark className="text-sm" />
         </Link>
+        <ThemeToggle className="size-8" />
       </div>
     </div>
   );
@@ -254,9 +255,9 @@ function AppPage() {
                 {reviewPhase.classifying
                   ? "Reading your file to suggest the type…"
                   : reviewPhase.unrecognized
-                    ? "We couldn't tell what kind of notice this is — check the file, or pick a type below."
+                    ? "We couldn't tell what kind of notice this is. Check the file, or pick a type below."
                     : reviewPhase.suggestion
-                      ? "We've pre-selected our best guess — change it below if it's not right."
+                      ? "We've pre-selected our best guess, change it below if it's not right."
                       : "Tell us what kind of notice this is so we apply the right rules."}
               </p>
             </div>
@@ -367,7 +368,7 @@ function AppPage() {
           <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground/90">
             <Sparkles className="mr-1 inline size-3.5 text-primary" />
             Deadlines and remedies are computed by tested code that shows its work. The model only
-            translates — it never decides your legal outcome.
+            translates, it never decides your legal outcome.
           </p>
         </header>
 
@@ -377,12 +378,6 @@ function AppPage() {
             <div className="space-y-1 text-sm">
               <p className="font-semibold text-foreground">We couldn't decode that.</p>
               <p className="text-foreground/80">{phase.message}</p>
-              {phase.code === "extraction_failed" && (
-                <p className="text-muted-foreground">
-                  Live reading needs a local vision model (Ollama). You can still try a sample below —
-                  those run fully offline.
-                </p>
-              )}
             </div>
           </div>
         )}

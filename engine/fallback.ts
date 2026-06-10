@@ -159,10 +159,14 @@ export function buildDraft(req: DraftRequest): DraftedDocument {
  * it for raw image/PDF sources, never for precomputed sample extractions.
  */
 export class DeterministicFallbackLlm implements LlmPort {
+  constructor(private readonly offlineReason: "forced" | "unreachable" = "unreachable") {}
+
   async extract(_req: ExtractionRequest, _pack: RulePack): Promise<never> {
-    throw new LlmUnavailableError(
-      "Vision extraction requires a model (Ollama). In offline mode, run the pipeline from a precomputed extraction instead.",
-    );
+    const message =
+      this.offlineReason === "forced"
+        ? "Live document reading is not available in this deployment. Try one of the sample notices below — they run fully offline."
+        : "Ollama is not running — live document reading requires a local model. Run `ollama serve` and pull a model (e.g. `ollama pull llama3.2`), then try again. Or try a sample notice below.";
+    throw new LlmUnavailableError(message);
   }
 
   async explain(req: ExplainRequest): Promise<PlainLanguageExplanation> {

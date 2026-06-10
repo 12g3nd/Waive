@@ -75,7 +75,7 @@ export function UploadZone({ onSelect, busy }: UploadZoneProps) {
         <div className="space-y-1">
           <p className="font-display text-lg font-semibold">Drop your notice here</p>
           <p className="text-sm text-muted-foreground">
-            A photo or PDF of the letter. It’s read locally — nothing leaves your machine without a
+            A photo or PDF of the letter. It’s read locally, nothing leaves your machine without a
             model you control.
           </p>
         </div>

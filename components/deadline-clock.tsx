@@ -93,7 +93,7 @@ export function DeadlineClock({
             <>
               <span className={cn("font-display text-3xl font-bold", tone.text)}>Passed</span>
               <span className="mt-1 max-w-[8rem] text-xs text-muted-foreground">
-                act now — this may need urgent review
+                act now, this may need urgent review
               </span>
             </>
           ) : (

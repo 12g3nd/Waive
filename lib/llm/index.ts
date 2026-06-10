@@ -30,7 +30,7 @@ export async function getLlm(
 ): Promise<{ llm: LlmPort; status: LlmStatus }> {
   if (cfg.forceOffline) {
     return {
-      llm: new DeterministicFallbackLlm(),
+      llm: new DeterministicFallbackLlm("forced"),
       status: {
         mode: "offline",
         reason: "LLM_OFFLINE is set",
@@ -62,7 +62,7 @@ export async function getLlm(
   const up = await ollamaAvailable(cfg);
   if (!up) {
     return {
-      llm: new DeterministicFallbackLlm(),
+      llm: new DeterministicFallbackLlm("unreachable"),
       status: {
         mode: "offline",
         reason: cfg.provider === "anthropic"

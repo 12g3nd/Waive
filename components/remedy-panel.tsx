@@ -1,16 +1,14 @@
-import { CheckCircle2, ChevronDown, Scale, ShieldAlert } from "lucide-react";
-import type { DeadlineResult, RemedyDecision, ResolvedCitation } from "@/engine";
-import { humanDate } from "@/engine/dates";
+import { CheckCircle2, Scale, ShieldAlert } from "lucide-react";
+import type { RemedyDecision, ResolvedCitation } from "@/engine";
 import { Card, CardContent } from "@/components/ui/card";
 import { CitationChip } from "@/components/citation-chip";
 
 interface RemedyPanelProps {
   remedy: RemedyDecision;
-  deadlines: DeadlineResult;
   citations: ResolvedCitation[];
 }
 
-export function RemedyPanel({ remedy, deadlines, citations }: RemedyPanelProps) {
+export function RemedyPanel({ remedy, citations }: RemedyPanelProps) {
   return (
     <Card>
       <CardContent className="space-y-5 p-6">
@@ -58,32 +56,6 @@ export function RemedyPanel({ remedy, deadlines, citations }: RemedyPanelProps) 
               ))}
             </ul>
           </div>
-        )}
-
-        {/* Show your work — every deadline's derivation. */}
-        {deadlines.deadlines.length > 0 && (
-          <details className="group rounded-xl border border-border bg-secondary/30">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 p-3.5 text-sm font-semibold">
-              <span>Show your work — how each deadline was computed</span>
-              <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
-            </summary>
-            <ul className="space-y-3 border-t border-border p-3.5">
-              {deadlines.deadlines.map((d) => (
-                <li key={d.id} className="space-y-1">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-sm font-semibold">{d.label}</span>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {humanDate(d.dateISO)}
-                    </span>
-                  </div>
-                  <p className="rounded-md bg-card p-2 font-mono text-[0.72rem] leading-relaxed text-foreground/75">
-                    {d.rule}
-                  </p>
-                  <CitationChip id={d.citationId} citations={citations} />
-                </li>
-              ))}
-            </ul>
-          </details>
         )}
       </CardContent>
     </Card>

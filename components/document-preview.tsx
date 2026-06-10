@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ClipboardCopy, FileSignature, ListChecks } from "lucide-react";
+import { Check, ClipboardCopy, FileSignature, ListChecks, Printer } from "lucide-react";
 import type { DraftedDocument, ResolvedCitation } from "@/engine";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,9 +41,21 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
   }
 
   return (
-    <Card>
+    <Card className="print-doc">
       <CardContent className="space-y-5 p-6">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+        {/* Print-only letterhead — what a filed copy should carry, not the UI chrome. */}
+        <div className="hidden print:block">
+          <p className="font-display text-xl font-semibold tracking-tight">{doc.title}</p>
+          {doc.formNumber && <p className="text-sm">Form {doc.formNumber}</p>}
+          <p className="mt-1 text-xs leading-relaxed">
+            Prepared with Waive, information and document preparation, not legal advice. Check
+            every detail against your own notice before filing.
+          </p>
+          <hr className="mt-3 border-border" />
+        </div>
+
+        {/* On-screen header + actions (excluded from the printout). */}
+        <div className="flex flex-wrap items-start justify-between gap-3 print:hidden">
           <div className="flex items-center gap-2">
             <FileSignature className="size-5 text-primary" />
             <div>
@@ -59,6 +71,10 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
             <Button variant="outline" size="sm" onClick={copy}>
               {copied ? <Check /> : <ClipboardCopy />}
               {copied ? "Copied" : "Copy"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>
+              <Printer />
+              Print / PDF
             </Button>
           </div>
         </div>

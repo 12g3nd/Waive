@@ -171,5 +171,60 @@
     "officialCitation": "Judicial Council of California, form PLD-C-010 (Answer—Contract)",
     "sourceTitle": "California Courts — Answer—Contract (PLD-C-010)",
     "sourceUrl": "https://www.courts.ca.gov/documents/pldc010.pdf"
+  },
+
+  {
+    "id": "ans-qc-answer-15-day",
+    "domain": "answer",
+    "topic": "15-day deadline to answer a court summons in Quebec",
+    "summary": "If you are served with an originating application (a lawsuit) in Quebec, the summons requires you to answer it within 15 days — telling the court that you intend to defend or negotiate. Answering on time is what stops you from losing automatically.",
+    "officialCitation": "Code of Civil Procedure (Québec), CQLR c. C-25.01, art. 145",
+    "sourceTitle": "Code of Civil Procedure (Québec) — answer to the summons (art. 145)",
+    "sourceUrl": "https://www.legisquebec.gouv.qc.ca/en/document/cs/C-25.01"
+  },
+  {
+    "id": "ans-qc-default",
+    "domain": "answer",
+    "topic": "What happens if you miss the deadline: judgment by default (Quebec)",
+    "summary": "If you do not answer the summons within 15 days, you are in default and the plaintiff can ask the court for a judgment by default — you lose without the merits being heard, which can lead to seizure of your wages or property.",
+    "officialCitation": "Code of Civil Procedure (Québec), CQLR c. C-25.01, art. 180 (default to answer or defend)",
+    "sourceTitle": "Code of Civil Procedure (Québec) — default (art. 180)",
+    "sourceUrl": "https://www.legisquebec.gouv.qc.ca/en/document/cs/C-25.01"
+  },
+  {
+    "id": "ans-qc-limitation",
+    "domain": "answer",
+    "topic": "Time-barred defence: Quebec's 3-year prescription period",
+    "summary": "In Quebec, an action to enforce a personal right — which includes most debts — is prescribed (time-barred) after 3 years. For most debts that is roughly 3 years after the last payment or written acknowledgment. If the lawsuit was filed too late, raising prescription as a defence can end the case.",
+    "officialCitation": "Civil Code of Québec, CQLR c. CCQ-1991, art. 2925 (three-year prescription)",
+    "sourceTitle": "Civil Code of Québec — prescription of personal actions (art. 2925)",
+    "sourceUrl": "https://www.legisquebec.gouv.qc.ca/en/document/cs/CCQ-1991"
+  },
+  {
+    "id": "ans-qc-acknowledgment",
+    "domain": "answer",
+    "topic": "What can restart the Quebec 3-year clock: acknowledging the debt",
+    "summary": "Acknowledging the debt — for example by a written acknowledgment or by making a payment — interrupts prescription and restarts Quebec's 3-year clock. That is why the date of your last payment or acknowledgment matters when judging whether a Quebec debt is time-barred.",
+    "officialCitation": "Civil Code of Québec, CQLR c. CCQ-1991, art. 2898 (interruption by acknowledgment)",
+    "sourceTitle": "Civil Code of Québec — interruption by acknowledgment (art. 2898)",
+    "sourceUrl": "https://www.legisquebec.gouv.qc.ca/en/document/cs/CCQ-1991"
+  },
+  {
+    "id": "ans-qc-standing",
+    "domain": "answer",
+    "topic": "Make a debt buyer prove it owns the debt (Quebec)",
+    "summary": "When the plaintiff is a debt buyer rather than your original creditor, Quebec law requires a valid assignment of the claim, which can be set up against you only once you have acquiesced to it or received it. Put the plaintiff to strict proof of the assignment and that you were notified; gaps are a real defence.",
+    "officialCitation": "Civil Code of Québec, CQLR c. CCQ-1991, arts. 1637 & 1641 (assignment of claims; setting up against the debtor)",
+    "sourceTitle": "Civil Code of Québec — assignment of claims (arts. 1637–1641)",
+    "sourceUrl": "https://www.legisquebec.gouv.qc.ca/en/document/cs/CCQ-1991"
+  },
+  {
+    "id": "ans-qc-answer-form",
+    "domain": "answer",
+    "topic": "The Answer to the summons — Quebec",
+    "summary": "In Quebec you respond to a lawsuit by filing an answer to the summons — a written response stating that you intend to defend and on what basis. It is where you deny the claim and raise your defences (such as prescription), or, if you owe it, propose terms. There is no numbered form; it is a written answer filed with the court office named on the summons.",
+    "officialCitation": "Code of Civil Procedure (Québec), CQLR c. C-25.01, art. 147 (content of the answer)",
+    "sourceTitle": "Code of Civil Procedure (Québec) — the answer (art. 147)",
+    "sourceUrl": "https://www.legisquebec.gouv.qc.ca/en/document/cs/C-25.01"
   }
 ]

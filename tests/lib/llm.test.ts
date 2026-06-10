@@ -105,6 +105,7 @@ describe("OllamaLlm graceful fallback (no server)", () => {
     const llm = new OllamaLlm({
       provider: "ollama",
       baseUrl: "http://127.0.0.1:9", // nothing listening — connection refused
+      apiKey: "",
       modelExtract: "x",
       modelDraft: "x",
       timeoutMs: 1_000,
