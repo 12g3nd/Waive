@@ -17,21 +17,21 @@ const DIFFS = [
     clause: "§ 2",
     title: "Every deadline is verified.",
     desc: "We test every deadline formula against real statutory calendars, including holidays and weekends. If the code says you have 8 days, you have 8 days.",
-    tag: "70+ tests · 0 mocked deadlines",
+    tag: "70+ tests, 0 mocked deadlines",
   },
   {
     icon: Paperclip,
     clause: "§ 3",
     title: "Every claim has a source.",
     desc: "Nothing is made up. Every remedy and deadline we show you traces back to a real statute, regulation, or court rule, and we show you the source so you can verify it yourself.",
-    tag: "100% cited · no fabricated statutes",
+    tag: "100% cited, no fabricated statutes",
   },
   {
     icon: Blocks,
     clause: "§ 4",
     title: "Built to grow with you.",
     desc: "Waive already covers SSA overpayments and debt lawsuits across 4 jurisdictions. New notice types can be added in hours, not months. Evictions, CRA notices, EI denials are next.",
-    tag: "4 jurisdictions · more coming",
+    tag: "4 jurisdictions, more coming",
   },
 ];
 

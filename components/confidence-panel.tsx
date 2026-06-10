@@ -41,7 +41,7 @@ export function ConfidencePanel({ confidence }: ConfidencePanelProps) {
           <LifeBuoy className="mt-0.5 size-4 shrink-0 text-primary" />
           <p className="text-sm text-foreground/85">
             {confidence.escalationReason ??
-              "This case has a genuine judgment call — have a legal-aid clinic review it."}
+              "This case has a genuine judgment call, have a legal-aid clinic review it."}
           </p>
         </div>
       )}

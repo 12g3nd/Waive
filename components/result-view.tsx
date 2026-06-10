@@ -207,7 +207,7 @@ export function ResultView({
           </div>
           <p className="px-1 text-xs leading-relaxed text-muted-foreground">
             Waive is <strong>information and document preparation, not legal advice</strong>. It is a
-            force-multiplier for legal-aid orgs and advocates — not a lawyer. When in doubt, have a
+            force-multiplier for legal-aid orgs and advocates, not a lawyer. When in doubt, have a
             clinic review your case.
           </p>
         </div>

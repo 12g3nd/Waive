@@ -61,7 +61,7 @@ export function AskPanel({ domain, language, grounding, suggestions }: AskPanelP
         <h3 className="font-display text-base font-semibold">Ask about your notice</h3>
       </div>
       <p className="text-sm text-muted-foreground">
-        Answers come only from the verified sources on this page — never invented.
+        Answers come only from the verified sources on this page, never invented.
       </p>
 
       <form
