@@ -353,15 +353,12 @@ function AppPage() {
             <div className="space-y-1 text-sm">
               <p className="font-semibold text-foreground">We couldn't decode that.</p>
               <p className="text-foreground/80">{phase.message}</p>
-<<<<<<< HEAD
-=======
               {phase.code === "extraction_failed" && (
                 <p className="text-muted-foreground">
-                  Live reading needs a local vision model (Ollama). You can still try a sample below, 
+                  Live reading needs a local vision model (Ollama). You can still try a sample below,
                   those run fully offline.
                 </p>
               )}
->>>>>>> 8e74b30 (removed dashes - from UI text)
             </div>
           </div>
         )}
