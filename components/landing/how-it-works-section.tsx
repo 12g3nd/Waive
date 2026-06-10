@@ -9,7 +9,7 @@ const STEPS = [
     num: "01",
     icon: FileText,
     title: "Upload your letter",
-    desc: "Take a photo or upload a PDF of the notice you received. It's read by a local AI model — never sent to a paid third-party cloud service.",
+    desc: "Take a photo or upload a PDF of the notice you received. It's read by a local AI model, never sent to a paid third-party cloud service.",
     tag: "PDF · Photo · Any jurisdiction",
   },
   {

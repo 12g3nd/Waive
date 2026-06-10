@@ -23,7 +23,7 @@ interface CoverageCard {
 // jurisdiction table — the same data the engine runs on.
 const SSA_CARD: CoverageCard = {
   flag: "🇺🇸",
-  region: "United States — Federal",
+  region: "United States, Federal",
   domain: "SSA overpayment",
   rows: [
     { icon: Landmark, label: "Issuer", value: "Social Security Administration" },
@@ -73,7 +73,7 @@ export function CoverageSection() {
             <em className="italic">one engine.</em>
           </h2>
           <p className="mt-5 max-w-xl text-base text-muted-foreground">
-            Each one below is a verified config profile — the court, the form, the deadline, the
+            Each one below is a verified config profile, the court, the form, the deadline, the
             limitation period, and the citations. The engine never changes. These cards are
             rendered straight from the same data the tool runs on.
           </p>
@@ -125,7 +125,7 @@ export function CoverageSection() {
               Adding Alberta or New York is one more profile.
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Fill in the verified deadline, limitation, court, and citations — no engine change,
+              Fill in the verified deadline, limitation, court, and citations, no engine change,
               same UI.
             </p>
           </div>

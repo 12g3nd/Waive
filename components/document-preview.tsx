@@ -48,7 +48,7 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
           <p className="font-display text-xl font-semibold tracking-tight">{doc.title}</p>
           {doc.formNumber && <p className="text-sm">Form {doc.formNumber}</p>}
           <p className="mt-1 text-xs leading-relaxed">
-            Prepared with Waive — information and document preparation, not legal advice. Check
+            Prepared with Waive, information and document preparation, not legal advice. Check
             every detail against your own notice before filing.
           </p>
           <hr className="mt-3 border-border" />

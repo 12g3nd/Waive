@@ -15,14 +15,14 @@ import { SiteFooter } from "@/components/landing/site-footer";
 export const metadata: Metadata = {
   title: "How Waive uses AI",
   description:
-    "An honest, complete account of how AI is used in Waive — as a bounded translator, never as the decision-maker.",
+    "An honest, complete account of how AI is used in Waive, as a bounded translator, never as the decision-maker.",
 };
 
 const PRODUCT_JOBS = [
   {
     icon: ScanLine,
     title: "Reads the notice",
-    body: "A local vision model turns the uploaded letter into structured fields — issuer, dates, amounts, case numbers. It extracts; it never concludes.",
+    body: "A local vision model turns the uploaded letter into structured fields, issuer, dates, amounts, case numbers. It extracts; it never concludes.",
     file: "lib/llm/extraction.ts",
   },
   {
@@ -34,7 +34,7 @@ const PRODUCT_JOBS = [
   {
     icon: MessagesSquare,
     title: "Answers your questions",
-    body: "“Ask about your notice” answers are grounded strictly in the verified citation corpus — never free-form legal advice invented on the spot.",
+    body: "“Ask about your notice” answers are grounded strictly in the verified citation corpus, never free-form legal advice invented on the spot.",
     file: "lib/qa.ts",
   },
 ];
@@ -67,7 +67,7 @@ export default function HowTheAiWorksPage() {
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
           STEMINATE Hacks asks teams to disclose significant use of AI. Here is a complete, honest
-          account — what the AI does in Waive, how the project was built, and the lines the model is
+          account, what the AI does in Waive, how the project was built, and the lines the model is
           never allowed to cross.
         </p>
 
@@ -77,8 +77,8 @@ export default function HowTheAiWorksPage() {
             AI reads. Code decides.
           </h2>
           <p className="mt-3 leading-relaxed text-foreground/80">
-            The high-stakes outputs — your deadline, the remedy you’re routed to, and whether you
-            automatically qualify for a strong escape hatch — are computed by tested, deterministic
+            The high-stakes outputs, your deadline, the remedy you’re routed to, and whether you
+            automatically qualify for a strong escape hatch, are computed by tested, deterministic
             code that shows its work. A model never decides any of them. The AI’s only job is to
             read your letter and rephrase the result so it’s understandable.
           </p>
@@ -87,7 +87,7 @@ export default function HowTheAiWorksPage() {
         {/* In the product. */}
         <section className="mt-14">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
-            In the product — three bounded jobs
+            In the product, three bounded jobs
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {PRODUCT_JOBS.map((job) => (
@@ -108,7 +108,7 @@ export default function HowTheAiWorksPage() {
           <div className="mt-5 flex items-start gap-2.5 rounded-2xl border border-border bg-card p-5">
             <Cpu className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
             <p className="text-sm leading-relaxed text-foreground/80">
-              The model runs <strong>locally via Ollama — no paid cloud API.</strong> If it’s
+              The model runs <strong>locally via Ollama, no paid cloud API.</strong> If it’s
               unavailable, every feature degrades gracefully to deterministic, citation-grounded
               behavior, so the demo runs fully offline. The model is optional by design: your
               deadline never depended on it.
@@ -124,14 +124,14 @@ export default function HowTheAiWorksPage() {
           <p className="mt-3 leading-relaxed text-foreground/80">
             This project was built during the hackathon window with significant help from an AI
             coding assistant (Anthropic’s Claude / Claude Code), under our direction. No pre-existing
-            codebase was used — the repository was created from empty and developed across the event.
+            codebase was used, the repository was created from empty and developed across the event.
           </p>
           <dl className="mt-6 space-y-5">
             <div>
               <dt className="font-semibold text-foreground">What the assistant did</dt>
               <dd className="mt-1 leading-relaxed text-muted-foreground">
                 Scaffolding, most of the implementation code, the unit and golden tests, the UI
-                components, and documentation drafts — guided by our specification and decisions.
+                components, and documentation drafts, guided by our specification and decisions.
               </dd>
             </div>
             <div>
