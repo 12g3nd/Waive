@@ -37,9 +37,9 @@ export function ProblemSection() {
           The problem
         </p>
         <h2 className="mb-16 max-w-2xl font-display text-4xl font-bold leading-[1.1] text-primary-foreground">
-          Every year, thousands lose
+          Real people. Real letters.
           <br />
-          by silence — not by law.
+          Real consequences for not knowing.
         </h2>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -72,12 +72,12 @@ export function ProblemSection() {
 
         <div className="mt-16 border-t border-white/10 pt-12 text-center">
           <p className="font-display text-2xl text-primary-foreground">
-            The remedy was{" "}
-            <span className="text-highlight">always there.</span>
-          </p>
-          <p className="mt-2 text-sm text-white/50">
-            The escape hatch exists in statute. Most people just never find it in time.
-          </p>
+            The law gave you a way out.
+<span className="text-highlight"> Most people never find it.</span>
+</p>
+<p className="mt-2 text-sm text-white/50">
+            Waive exists for the moment you get that letter and don't know what to do next.
+</p>
         </div>
       </div>
     </section>

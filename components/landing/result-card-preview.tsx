@@ -27,7 +27,7 @@ export function ResultCardPreview() {
           <span className="font-bold text-safe">✓</span>
           <div>
             <p className="text-xs font-bold text-safe">Remedy found: Waiver</p>
-            <p className="text-[11px] text-muted-foreground">Fault not required — SSA error likely</p>
+            <p className="text-[11px] text-muted-foreground">Fault not required, SSA error likely</p>
           </div>
         </div>
 
@@ -37,7 +37,7 @@ export function ResultCardPreview() {
             ⚡ Presumption fires
           </p>
           <p className="text-xs text-highlight-foreground/80">
-            Overpayment occurred while SSA had all the facts — shifts burden back
+            Overpayment occurred while SSA had all the facts, shifts burden back
           </p>
         </div>
 

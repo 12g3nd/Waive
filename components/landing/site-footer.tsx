@@ -8,10 +8,10 @@ export function SiteFooter() {
           <Link href="/" className="font-display text-lg font-bold text-primary-foreground">
             W<span className="text-highlight">ai</span>ve
           </Link>
-          <p className="mt-0.5 text-sm text-white/40">Stop losing by silence.</p>
+          <p className="mt-0.5 text-sm text-white/40">Know your rights. Use them.</p>
         </div>
         <p className="max-w-md text-right text-xs leading-relaxed text-white/30">
-          Information and document preparation only — not legal advice. No attorney-client
+          Information and document preparation only, not legal advice. No attorney-client
           relationship is formed. Always consult a qualified attorney for your specific situation.
         </p>
       </div>

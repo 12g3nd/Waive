@@ -6,27 +6,27 @@ import { cn } from "@/lib/utils";
 const DIFFS = [
   {
     icon: "⚖️",
-    title: "The AI only translates. The code decides.",
-    desc: "Every deadline and remedy is computed by deterministic, tested rule packs — never by a language model. The LLM reads your notice and explains the result. It never calculates, infers, or guesses your legal outcome.",
-    tag: "engine/pipeline.ts · 0 AI branches",
+    title: "AI reads. Code decides.",
+    desc: "Your deadline and your options are always calculated by tested code, never guessed by AI. The AI only reads your letter and explains the result in plain English.",
+    tag: "No AI branches in any legal outcome",
   },
   {
     icon: "🧪",
-    title: "70+ tests. Every deadline verified.",
-    desc: "Each deadline formula, holiday exclusion, and remedy route is covered by unit and golden tests. The test suite runs against real statutory calendars — not mocked data.",
-    tag: "70 passing · 0 mocked deadlines",
+    title: "Every deadline is verified.",
+    desc: "We test every deadline formula against real statutory calendars, including holidays and weekends. If the code says you have 8 days, you have 8 days.",
+    tag: "70+ tests · 0 mocked deadlines",
   },
   {
     icon: "📎",
-    title: "Every claim is cited.",
-    desc: "No statement goes unsourced. Every remedy, presumption, and deadline derivation traces back to a statute, CFR section, POMS provision, or court rule — and the source is shown inline.",
-    tag: "corpus/benefits.json · verified",
+    title: "Every claim has a source.",
+    desc: "Nothing is made up. Every remedy and deadline we show you traces back to a real statute, regulation, or court rule, and we show you the source so you can verify it yourself.",
+    tag: "100% cited · no fabricated statutes",
   },
   {
     icon: "🔌",
-    title: "Domain-agnostic by design.",
-    desc: "New notice types plug in as rule packs — no changes to the core engine. SSA overpayments and debt claims in 3 jurisdictions already. A new domain takes hours, not weeks.",
-    tag: "packs/benefits · packs/answer",
+    title: "Built to grow with you.",
+    desc: "Waive already covers SSA overpayments and debt lawsuits across 4 jurisdictions. New notice types can be added in hours, not months. Evictions, CRA notices, EI denials are next.",
+    tag: "4 jurisdictions · more coming",
   },
 ];
 
@@ -44,9 +44,9 @@ export function DifferentiatorSection() {
             What makes it different
           </p>
           <h2 className="font-display text-4xl font-bold leading-[1.1] text-foreground">
-            Built to be trusted,
+            Built for the moment,
             <br />
-            not just impressive.
+            when the stakes are real.
           </h2>
         </div>
 

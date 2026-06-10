@@ -28,16 +28,16 @@ const STATS = [
     value: 70,
     suffix: "+",
     label: "Tests passing",
-    desc: "Every deadline formula, holiday rule, and remedy route covered",
+    desc: "Every deadline formula, holiday rule, and remedy route verified",
   },
   {
     value: 0,
     suffix: "",
     label: "AI-decided outcomes",
-    desc: "Deadlines and remedies computed by deterministic code only",
+    desc: "Deadlines and remedies are always computed by code, never guessed",
   },
   {
-    value: 3,
+    value: 4,
     suffix: "",
     label: "Jurisdictions",
     desc: "SSA federal, Ontario, British Columbia, California",
@@ -46,15 +46,15 @@ const STATS = [
     value: 100,
     suffix: "%",
     label: "Sources cited",
-    desc: "Every claim traces back to a statute, CFR, POMS, or court rule",
+    desc: "Every claim traces back to a real statute or court rule",
   },
 ];
 
 const PILLS = [
-  { icon: "🔒", text: "Runs on your machine — no data leaves" },
-  { icon: "📖", text: "Information only — not legal advice" },
-  { icon: "⚡", text: "Local AI model via Ollama" },
-  { icon: "🧪", text: "Open source rule packs" },
+  { icon: "🔒", text: "Your letter never leaves your device" },
+  { icon: "📖", text: "Information only, not legal advice" },
+  { icon: "⚡", text: "Works offline with a local AI model" },
+  { icon: "🧪", text: "Open source, see exactly how it works" },
 ];
 
 export function TrustSection() {
@@ -70,7 +70,7 @@ export function TrustSection() {
     <section className="bg-foreground py-20" ref={ref}>
       <div className="mx-auto max-w-screen-xl px-6 sm:px-10 text-center">
         <h2 className="mb-12 font-display text-2xl font-semibold text-primary-foreground">
-          Built for the moment when the stakes are real.
+          Numbers that matter when it counts.
         </h2>
 
         <div className="mb-12 grid grid-cols-2 gap-8 sm:grid-cols-4">

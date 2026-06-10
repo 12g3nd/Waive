@@ -6,22 +6,22 @@ import { cn } from "@/lib/utils";
 const STEPS = [
   {
     num: "1",
-    title: "Drop your notice",
-    desc: "Upload a PDF or image of any official letter — SSA, debt claim, court filing. Waive extracts the key facts using a local AI model that runs on your machine.",
-    tag: "PDF · Image · Any jurisdiction",
+    title: "Upload your letter",
+    desc: "Take a photo or upload a PDF of the notice you received. It stays on your device and nothing is sent to a server.",
+    tag: "PDF · Photo · Any jurisdiction",
     tagClass: "border-safe/30 bg-safe/10 text-safe",
   },
   {
     num: "2",
-    title: "Deadlines computed",
-    desc: "Tested, deterministic code calculates your exact deadline — accounting for holidays, weekends, and jurisdiction-specific rules. No AI involved in the math.",
-    tag: "Deterministic · Tested · Cited",
+    title: "We find your deadline",
+    desc: "Waive calculates exactly how many days you have left, accounting for weekends, holidays, and your jurisdiction's rules. No guessing.",
+    tag: "Always calculated by code",
     tagClass: "border-highlight/40 bg-highlight/15 text-highlight-foreground",
   },
   {
     num: "3",
-    title: "Your escape hatch",
-    desc: "The right remedy is routed automatically. A plain-language explanation, the presumptions that fire in your favor, and a ready-to-file draft — all at once.",
+    title: "You get a clear path forward",
+    desc: "We show you what options you have, what to do next, and give you a ready-to-file draft if one applies. Plain English, every time.",
     tag: "Remedy · Draft · Citations",
     tagClass: "border-safe/30 bg-safe/10 text-safe",
   },
@@ -38,9 +38,9 @@ export function HowItWorksSection() {
             How it works
           </p>
           <h2 className="mx-auto max-w-xl font-display text-4xl font-bold leading-[1.1] text-foreground">
-            From intimidating notice
-            <br />
-            to clear action plan.
+            Three steps.
+<br />
+            From confused to confident.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base text-muted-foreground">
             Three steps. Under 60 seconds. No legal knowledge required.
