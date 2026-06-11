@@ -115,8 +115,12 @@ export function ResultView({
     <div lang={language} className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8 sm:px-6">
       {/* Controls */}
       <div className="flex items-center justify-between gap-3">
-        <Badge variant={llm.mode === "ollama" ? "primary" : "outline"}>
-          {llm.mode === "ollama" ? "local model: on" : "offline mode"}
+        <Badge variant={llm.mode === "offline" ? "outline" : "primary"}>
+          {llm.mode === "anthropic"
+            ? "AI: Claude"
+            : llm.mode === "ollama"
+              ? "AI: local model"
+              : "offline mode"}
         </Badge>
         <div className="flex items-center gap-2">
           <LanguageToggle value={language} onChange={onLanguage} disabled={busy} />

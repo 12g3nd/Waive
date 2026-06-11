@@ -29,6 +29,7 @@ type Phase =
       source: NoticeSource;
       suggestion: { domain: string; label: string } | null;
       classifying: boolean;
+      unrecognized: boolean;
     }
   | { kind: "decoding" }
   | { kind: "result"; result: PipelineResult; llm: LlmStatus; intake: IntakeQuestion[]; origin: Origin }
@@ -178,7 +179,7 @@ function AppPage() {
   // confirm before we analyze. Degrades to a plain confirm step when there's no model.
   const onFileSelected = useCallback(
     async (source: NoticeSource) => {
-      setPhase({ kind: "review", source, suggestion: null, classifying: true });
+      setPhase({ kind: "review", source, suggestion: null, classifying: true, unrecognized: false });
       try {
         const res = await fetch("/api/classify", {
           method: "POST",
@@ -194,7 +195,14 @@ function AppPage() {
           const pid = defaultPackIdForDomain(noticeTypes, data.domain);
           if (pid) setNoticePackId(pid);
           const suggestion = { domain: data.domain, label: data.label };
-          setPhase((p) => (p.kind === "review" ? { ...p, suggestion, classifying: false } : p));
+          setPhase((p) =>
+            p.kind === "review" ? { ...p, suggestion, unrecognized: false, classifying: false } : p,
+          );
+        } else if (data.available) {
+          // The model read the file but it isn't an SSA or debt notice.
+          setPhase((p) =>
+            p.kind === "review" ? { ...p, unrecognized: true, classifying: false } : p,
+          );
         } else {
           setPhase((p) => (p.kind === "review" ? { ...p, classifying: false } : p));
         }
@@ -246,9 +254,11 @@ function AppPage() {
               <p className="mt-1 text-sm text-muted-foreground">
                 {reviewPhase.classifying
                   ? "Reading your file to suggest the type…"
-                  : reviewPhase.suggestion
-                    ? "We've pre-selected our best guess, change it below if it's not right."
-                    : "Tell us what kind of notice this is so we apply the right rules."}
+                  : reviewPhase.unrecognized
+                    ? "We couldn't tell what kind of notice this is. Check the file, or pick a type below."
+                    : reviewPhase.suggestion
+                      ? "We've pre-selected our best guess, change it below if it's not right."
+                      : "Tell us what kind of notice this is so we apply the right rules."}
               </p>
             </div>
 
@@ -256,6 +266,21 @@ function AppPage() {
               <div className="flex items-start gap-2 rounded-xl border border-primary/30 bg-primary/[0.07] p-3 text-sm">
                 <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-foreground/85">This looks like {reviewPhase.suggestion.label}.</p>
+              </div>
+            )}
+
+            {reviewPhase.unrecognized && !reviewPhase.classifying && (
+              <div className="flex items-start gap-2 rounded-xl border border-warn/40 bg-warn/10 p-3 text-sm">
+                <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn" />
+                <div>
+                  <p className="font-semibold text-foreground">
+                    This doesn&apos;t look like a Social Security or debt notice.
+                  </p>
+                  <p className="mt-0.5 text-foreground/75">
+                    Double-check you uploaded the right file — upload a different one below, or pick a
+                    type and analyze anyway.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -275,7 +300,7 @@ function AppPage() {
                 Analyze this notice <ArrowRight />
               </Button>
               <Button variant="ghost" onClick={() => setPhase({ kind: "idle" })} disabled={busy}>
-                Use a different file
+                Upload a different file
               </Button>
             </div>
           </div>

@@ -30,9 +30,9 @@ export const EXTRACTION_SCHEMA = {
   required: ["issuer", "claimType", "rawText"],
 } as const;
 
-const SYSTEM_PROMPT = `You are a careful document-reading assistant for a legal-aid tool. You READ an official notice and transcribe what it says into a fixed JSON schema. You do NOT give legal advice, draw legal conclusions, or invent facts. If a field is not present in the document, use null (or an empty object/array). Dates MUST be ISO format YYYY-MM-DD. For each field you fill, include a confidence from 0 to 1 in fieldConfidence reflecting how clearly the document supported it. Redact any full SSN to its last 4 digits.`;
+export const SYSTEM_PROMPT = `You are a careful document-reading assistant for a legal-aid tool. You READ an official notice and transcribe what it says into a fixed JSON schema. You do NOT give legal advice, draw legal conclusions, or invent facts. If a field is not present in the document, use null (or an empty object/array). Dates MUST be ISO format YYYY-MM-DD. For each field you fill, include a confidence from 0 to 1 in fieldConfidence reflecting how clearly the document supported it. Redact any full SSN to its last 4 digits.`;
 
-function userPrompt(domainHint: string): string {
+export function userPrompt(domainHint: string): string {
   return `This is a "${domainHint}" notice. Read it and fill the JSON schema:
 - issuer: the agency/court/company that sent it
 - recipientName: who it is addressed to (or null)
