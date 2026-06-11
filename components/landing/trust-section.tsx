@@ -86,12 +86,12 @@ export function TrustSection() {
         <div className="mb-14 grid grid-cols-2 divide-white/10 sm:grid-cols-4 sm:divide-x">
           {STATS.map((s, i) => (
             <div
-              key={s.label}
+              key={i}
               className={cn("px-4 py-3", inView ? "animate-fade-up" : "opacity-0")}
               style={inView ? { animationDelay: `${i * 80}ms` } : undefined}
             >
               <p className="font-display text-5xl font-semibold tabular-nums text-highlight">
-                {counts[i]}
+                {s.value}
                 {s.suffix}
               </p>
               <p className="mt-2 text-sm font-semibold text-primary-foreground">{s.label}</p>
