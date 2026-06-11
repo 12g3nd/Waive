@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   try {
     const registry = buildRegistry();
     const cfg = readLlmConfig();
-    const { llm, status } = await getLlm(cfg);
+    const { llm, status } = await getLlm(cfg, body.provider);
 
     let input: PipelineInput;
     let packId: string;

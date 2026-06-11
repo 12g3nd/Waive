@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 
 interface ClassifyBody {
   source?: NoticeSource;
+  provider?: "anthropic" | "ollama";
 }
 
 const DOMAIN_LABEL: Record<string, string> = {
@@ -39,9 +40,10 @@ export async function POST(req: Request) {
   if (cfg.forceOffline || !source) {
     return NextResponse.json({ available: false });
   }
+  const provider = body.provider ?? cfg.provider;
 
   // Claude path — reads images and PDFs.
-  if (cfg.provider === "anthropic" && cfg.anthropicApiKey) {
+  if (provider === "anthropic" && cfg.anthropicApiKey) {
     try {
       const domain = await classifyNoticeWithAnthropic(cfg, source);
       return NextResponse.json({

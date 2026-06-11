@@ -1,5 +1,5 @@
 import { DeterministicFallbackLlm, type LlmPort } from "@/engine";
-import { readLlmConfig, type LlmConfig } from "./config";
+import { readLlmConfig, type LlmConfig, type LlmProvider } from "./config";
 import { OllamaLlm } from "./client";
 import { AnthropicLlm } from "./anthropic";
 import { ollamaAvailable } from "./ollama";
@@ -27,6 +27,7 @@ export interface LlmStatus {
  */
 export async function getLlm(
   cfg: LlmConfig = readLlmConfig(),
+  requested?: LlmProvider,
 ): Promise<{ llm: LlmPort; status: LlmStatus }> {
   if (cfg.forceOffline) {
     return {
@@ -39,7 +40,9 @@ export async function getLlm(
     };
   }
 
-  if (cfg.provider === "anthropic" && cfg.anthropicApiKey) {
+  // The person can override the env default per request (the model picker).
+  const provider = requested ?? cfg.provider;
+  if (provider === "anthropic" && cfg.anthropicApiKey) {
     return {
       llm: new AnthropicLlm(cfg),
       status: {
@@ -65,7 +68,7 @@ export async function getLlm(
       llm: new DeterministicFallbackLlm("unreachable"),
       status: {
         mode: "offline",
-        reason: cfg.provider === "anthropic"
+        reason: provider === "anthropic"
           ? "ANTHROPIC_API_KEY is not set and Ollama is unreachable; using deterministic fallback"
           : `Ollama not reachable at ${cfg.baseUrl}; using deterministic fallback`,
         config: ollamaConfig,

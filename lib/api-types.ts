@@ -5,7 +5,7 @@ import type {
   PipelineResult,
   UserFacts,
 } from "@/engine";
-import type { LlmStatus } from "@/lib/llm";
+import type { LlmStatus, LlmProvider } from "@/lib/llm";
 
 /** What the sample board renders (no precomputed extraction leaks to the client). */
 export interface SampleCard {
@@ -23,14 +23,23 @@ export type AnalyzeSource =
   | { kind: "extraction"; extraction: NoticeExtraction };
 
 export type AnalyzeRequest =
-  | { mode: "sample"; sampleId: string; language?: string }
+  | { mode: "sample"; sampleId: string; language?: string; provider?: LlmProvider }
   | {
       mode: "notice";
       packId: string;
       userFacts: UserFacts;
       language?: string;
       source: AnalyzeSource;
+      provider?: LlmProvider;
     };
+
+/** A selectable AI engine for the model picker. */
+export interface ProviderOption {
+  id: LlmProvider;
+  label: string; // the real model, e.g. "Claude Haiku 4.5"
+  description: string; // what it's good for
+  available: boolean; // configured/reachable right now
+}
 
 export interface AnalyzeOk {
   ok: true;
