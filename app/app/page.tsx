@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import type { IntakeQuestion, NoticeExtraction, NoticeSource, PipelineResult } from "@/engine";
-import type { LlmStatus } from "@/lib/llm";
-import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
+import type { LlmStatus, LlmProvider } from "@/lib/llm";
+import type { AnalyzeRequest, AnalyzeResponse, ProviderOption, SampleCard } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
 import { Wordmark } from "@/components/wordmark";
@@ -16,6 +16,7 @@ import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
 import { IntakeRefine } from "@/components/intake-refine";
 import { NoticeTypePicker } from "@/components/notice-type-picker";
+import { ModelPicker } from "@/components/model-picker";
 import type { NoticeType } from "@/lib/notice-types";
 
 type Origin =
@@ -74,6 +75,8 @@ function AppPage() {
   const [samples, setSamples] = useState<SampleCard[]>([]);
   const [noticeTypes, setNoticeTypes] = useState<NoticeType[]>([]);
   const [noticePackId, setNoticePackId] = useState("benefits");
+  const [providers, setProviders] = useState<ProviderOption[]>([]);
+  const [provider, setProvider] = useState<LlmProvider | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
@@ -90,6 +93,16 @@ function AppPage() {
       .then((r) => r.json())
       .then((d: { noticeTypes: NoticeType[] }) => setNoticeTypes(d.noticeTypes))
       .catch(() => setNoticeTypes([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/providers")
+      .then((r) => r.json())
+      .then((d: { providers: ProviderOption[]; default: LlmProvider }) => {
+        setProviders(d.providers);
+        setProvider(d.default);
+      })
+      .catch(() => setProviders([]));
   }, []);
 
   const run = useCallback(
@@ -130,8 +143,12 @@ function AppPage() {
 
   const pickSample = useCallback(
     (sampleId: string) =>
-      run({ mode: "sample", sampleId, language }, { type: "sample", sampleId }, { showDecoding: true }),
-    [run, language],
+      run(
+        { mode: "sample", sampleId, language, provider },
+        { type: "sample", sampleId },
+        { showDecoding: true },
+      ),
+    [run, language, provider],
   );
 
   const analyzeNotice = useCallback(
@@ -145,6 +162,7 @@ function AppPage() {
           userFacts: { answers: {} },
           language,
           source,
+          provider,
         });
         if (data.ok) {
           setPhase({
@@ -172,7 +190,7 @@ function AppPage() {
         setBusy(false);
       }
     },
-    [language, noticePackId],
+    [language, noticePackId, provider],
   );
 
   // On upload, ask the model (if available) to guess the type, then let the person
@@ -184,7 +202,7 @@ function AppPage() {
         const res = await fetch("/api/classify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ source }),
+          body: JSON.stringify({ source, provider }),
         });
         const data = (await res.json()) as {
           available: boolean;
@@ -210,13 +228,13 @@ function AppPage() {
         setPhase((p) => (p.kind === "review" ? { ...p, classifying: false } : p));
       }
     },
-    [noticeTypes],
+    [noticeTypes, provider],
   );
 
   const rerun = useCallback(
     (origin: Origin, lang: string, facts?: { answers: Record<string, string | number | boolean> }) => {
       if (origin.type === "sample") {
-        return run({ mode: "sample", sampleId: origin.sampleId, language: lang }, origin, {
+        return run({ mode: "sample", sampleId: origin.sampleId, language: lang, provider }, origin, {
           showDecoding: false,
         });
       }
@@ -229,12 +247,13 @@ function AppPage() {
           userFacts,
           language: lang,
           source: { kind: "extraction", extraction: origin.extraction },
+          provider,
         },
         nextOrigin,
         { showDecoding: false },
       );
     },
-    [run],
+    [run, provider],
   );
 
   function handleLanguage(lang: string) {
@@ -382,6 +401,12 @@ function AppPage() {
           </div>
         )}
 
+        <ModelPicker
+          options={providers}
+          value={provider}
+          onChange={setProvider}
+          disabled={busy}
+        />
         <UploadZone onSelect={onFileSelected} busy={busy} />
 
         <div className="my-8 flex items-center gap-3">
