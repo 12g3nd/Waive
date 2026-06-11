@@ -1,10 +1,10 @@
 import { DeterministicFallbackLlm, type LlmPort } from "@/engine";
-import { readLlmConfig, type LlmConfig, type LlmProvider } from "./config";
+import { readLlmConfig, localOllamaConfig, type LlmConfig, type LlmProvider } from "./config";
 import { OllamaLlm } from "./client";
 import { AnthropicLlm } from "./anthropic";
 import { ollamaAvailable } from "./ollama";
 
-export { readLlmConfig } from "./config";
+export { readLlmConfig, localOllamaConfig, LOCAL_OLLAMA_BASE_URL } from "./config";
 export type { LlmConfig, LlmProvider } from "./config";
 export { OllamaLlm } from "./client";
 export { AnthropicLlm } from "./anthropic";
@@ -57,26 +57,39 @@ export async function getLlm(
     };
   }
 
+  // "ollama-local" points at the person's own machine; "ollama" (Waive API) uses the
+  // hosted server. Everything downstream is identical — just a different connection.
+  const isLocal = provider === "ollama-local";
+  const effective = isLocal ? localOllamaConfig(cfg) : cfg;
   const ollamaConfig = {
-    baseUrl: cfg.baseUrl,
-    modelExtract: cfg.modelExtract,
-    modelDraft: cfg.modelDraft,
+    baseUrl: effective.baseUrl,
+    modelExtract: effective.modelExtract,
+    modelDraft: effective.modelDraft,
   };
-  const up = await ollamaAvailable(cfg);
+  const up = await ollamaAvailable(effective);
   if (!up) {
     return {
       llm: new DeterministicFallbackLlm("unreachable"),
       status: {
         mode: "offline",
-        reason: provider === "anthropic"
-          ? "ANTHROPIC_API_KEY is not set and Ollama is unreachable; using deterministic fallback"
-          : `Ollama not reachable at ${cfg.baseUrl}; using deterministic fallback`,
+        reason:
+          provider === "anthropic"
+            ? "ANTHROPIC_API_KEY is not set and Ollama is unreachable; using deterministic fallback"
+            : isLocal
+              ? `No local Ollama detected at ${effective.baseUrl}; using deterministic fallback`
+              : `Waive Ollama API not reachable at ${effective.baseUrl}; using deterministic fallback`,
         config: ollamaConfig,
       },
     };
   }
   return {
-    llm: new OllamaLlm(cfg),
-    status: { mode: "ollama", reason: `Ollama reachable at ${cfg.baseUrl}`, config: ollamaConfig },
+    llm: new OllamaLlm(effective),
+    status: {
+      mode: "ollama",
+      reason: isLocal
+        ? `Local Ollama reachable at ${effective.baseUrl}`
+        : `Waive Ollama API reachable at ${effective.baseUrl}`,
+      config: ollamaConfig,
+    },
   };
 }

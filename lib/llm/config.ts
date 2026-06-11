@@ -1,12 +1,19 @@
 /**
- * LLM configuration. Two providers are supported:
- *  - "ollama"    — a vision/text model, local by default; point `baseUrl` at
- *                  https://ollama.com and set `apiKey` for Ollama Cloud (same API).
- *  - "anthropic" — Claude via the Anthropic API, for an online deploy with no local
- *                  model. Selected automatically when ANTHROPIC_API_KEY is set, or
- *                  forced with LLM_PROVIDER.
+ * LLM configuration. Three providers are offered (all free to the user — Waive
+ * supplies the keys/servers):
+ *  - "ollama"       — the Waive Ollama API: an Ollama server Waive hosts, reached via
+ *                     `baseUrl` (+ `apiKey`). Private — nothing is stored or collected.
+ *                     This is the DEFAULT.
+ *  - "anthropic"    — Claude via the Anthropic API. Faster and more accurate, but runs
+ *                     through a third-party service.
+ *  - "ollama-local" — the person's OWN Ollama on this machine (`localhost:11434`). For
+ *                     the privacy-conscious and technical; only works if it's detected.
+ * Force one explicitly with LLM_PROVIDER.
  */
-export type LlmProvider = "ollama" | "anthropic";
+export type LlmProvider = "ollama" | "anthropic" | "ollama-local";
+
+/** The person's own Ollama runs here by definition — not configurable. */
+export const LOCAL_OLLAMA_BASE_URL = "http://localhost:11434";
 
 export interface LlmConfig {
   provider: LlmProvider;
@@ -31,12 +38,14 @@ export function readLlmConfig(
 ): LlmConfig {
   const timeout = Number(env.LLM_TIMEOUT_MS);
   const anthropicApiKey = env.ANTHROPIC_API_KEY || undefined;
+  // The Waive Ollama API is the default; the picker still offers Claude and local
+  // Ollama when available. Override the default explicitly with LLM_PROVIDER.
   const provider: LlmProvider =
-    env.LLM_PROVIDER === "anthropic" || env.LLM_PROVIDER === "ollama"
+    env.LLM_PROVIDER === "anthropic" ||
+    env.LLM_PROVIDER === "ollama" ||
+    env.LLM_PROVIDER === "ollama-local"
       ? env.LLM_PROVIDER
-      : anthropicApiKey
-        ? "anthropic"
-        : "ollama";
+      : "ollama";
   return {
     provider,
     baseUrl: (env.OLLAMA_BASE_URL || "http://localhost:11434").replace(/\/+$/, ""),
@@ -50,4 +59,13 @@ export function readLlmConfig(
     // ANTHROPIC_MODEL=claude-haiku-4-5 (cheaper) or claude-sonnet-4-6.
     anthropicModel: env.ANTHROPIC_MODEL || "claude-opus-4-8",
   };
+}
+
+/**
+ * The same config pointed at the person's OWN Ollama (localhost, no auth) instead of
+ * the Waive-hosted server — for the "ollama-local" provider. Everything else (models,
+ * timeout) is shared.
+ */
+export function localOllamaConfig(cfg: LlmConfig): LlmConfig {
+  return { ...cfg, baseUrl: LOCAL_OLLAMA_BASE_URL, apiKey: "" };
 }
