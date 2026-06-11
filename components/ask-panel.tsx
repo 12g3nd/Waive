@@ -18,10 +18,12 @@ interface AskPanelProps {
   suggestions: string[];
 }
 
+type AskAnswerSource = "llm" | "retrieval" | "smalltalk";
+
 interface AskResponse {
   ok: boolean;
   answer?: string;
-  source?: "llm" | "retrieval";
+  source?: AskAnswerSource;
   citations?: ResolvedCitation[];
   error?: string;
 }
@@ -30,7 +32,7 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const [answer, setAnswer] = useState<string | null>(null);
-  const [source, setSource] = useState<"llm" | "retrieval" | null>(null);
+  const [source, setSource] = useState<AskAnswerSource | null>(null);
   const [citations, setCitations] = useState<ResolvedCitation[]>([]);
 
   async function ask(question: string) {
@@ -86,7 +88,9 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
         </Button>
       </form>
 
-      {!answer && (
+      {/* Suggestions: shown before any answer, and again after a smalltalk reply to
+          point the person at real questions. Hidden while an answer is computing. */}
+      {(!answer || source === "smalltalk") && !busy && (
         <div className="flex flex-wrap gap-1.5">
           {suggestions.map((s) => (
             <button
@@ -108,7 +112,34 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
         </div>
       )}
 
-      {answer && (
+      {/* Skeleton while the answer is computing — a placeholder shaped like the result. */}
+      {busy && (
+        <div
+          className="space-y-2 rounded-xl border border-border bg-secondary/25 p-3.5"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="sr-only">Finding an answer in your sources…</span>
+          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+            <Loader2 className="size-3.5 animate-spin" aria-hidden />
+            Reading your sources…
+          </div>
+          <div className="space-y-1.5 pt-1" aria-hidden>
+            <div className="h-3 w-full animate-pulse rounded bg-foreground/10" />
+            <div className="h-3 w-[94%] animate-pulse rounded bg-foreground/10 [animation-delay:120ms]" />
+            <div className="h-3 w-[88%] animate-pulse rounded bg-foreground/10 [animation-delay:240ms]" />
+            <div className="h-3 w-[60%] animate-pulse rounded bg-foreground/10 [animation-delay:360ms]" />
+          </div>
+        </div>
+      )}
+
+      {answer && !busy && source === "smalltalk" && (
+        <div className="rounded-xl border border-border bg-secondary/25 p-3.5">
+          <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">{answer}</p>
+        </div>
+      )}
+
+      {answer && !busy && source !== "smalltalk" && (
         <div className="space-y-2 rounded-xl border border-border bg-secondary/25 p-3.5">
           <div className="flex items-center justify-between">
             <Badge variant={source === "llm" ? "primary" : "outline"}>

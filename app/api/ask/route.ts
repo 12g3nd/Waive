@@ -3,6 +3,8 @@ import { ollamaAvailable, ollamaChat, readLlmConfig } from "@/lib/llm";
 import {
   buildAskMessages,
   composeOfflineAnswer,
+  composeSmalltalkReply,
+  isSmalltalk,
   relevantSources,
   retrieveForQuestion,
   toResolved,
@@ -33,6 +35,18 @@ export async function POST(req: Request) {
   if (!question) {
     return NextResponse.json({ ok: false, error: "Ask a question first." }, { status: 400 });
   }
+
+  // A greeting or filler ("hi", "thanks", "test") is not a question about the notice —
+  // answer it as smalltalk and steer back on-topic, never with unprompted legal advice.
+  if (isSmalltalk(question)) {
+    return NextResponse.json({
+      ok: true,
+      answer: composeSmalltalkReply(),
+      source: "smalltalk",
+      citations: [],
+    });
+  }
+
   const language = body.language ?? "en";
 
   // Lexical matches power the citation chips; `broad` is a never-empty source set so

@@ -39,6 +39,63 @@ const SYNONYMS: Record<string, string[]> = {
   prove: ["assignment", "standing"],
 };
 
+// Greetings, acknowledgements, and noise. When a message is made up of ONLY these
+// (plus the connective filler below), it's smalltalk, not a question about the notice.
+const SMALLTALK = new Set([
+  "hi", "hii", "hiii", "hey", "heya", "hiya", "hello", "helo", "hullo", "yo", "sup",
+  "wassup", "whatsup", "greeting", "greetings", "howdy", "morning", "afternoon",
+  "evening", "night", "gm", "gn", "thank", "thanks", "thankyou", "thx", "ty", "cheers",
+  "cheer", "welcome", "ok", "okay", "okey", "kk", "cool", "nice", "great", "good",
+  "awesome", "fine", "alright", "lol", "lmao", "rofl", "haha", "hah", "hehe", "wow",
+  "yay", "test", "testing", "ping", "pong", "hmm", "hmmm", "yep", "yup", "yeah", "nope",
+  "nah", "bye", "goodbye", "cya", "ttyl", "yes", "no", "sure", "maybe", "idk", "dunno",
+]);
+
+// Connective filler that often trails a greeting ("thank you", "hey there"). These
+// don't make a message a question on their own, so they're allowed alongside greetings.
+const FILLER = new Set([
+  "a", "an", "the", "you", "youre", "u", "ur", "your", "me", "my", "mine", "i", "im",
+  "we", "our", "us", "to", "of", "for", "please", "pls", "just", "so", "there", "here",
+  "now", "again", "this", "that", "it", "and", "but", "well", "hi",
+]);
+
+// Words that signal an actual question — if any appear (or there's a "?"), it's a real
+// question we should answer, even if it's otherwise vague ("what should I do").
+const QUESTION_WORDS = new Set([
+  "what", "whats", "how", "hows", "why", "when", "where", "who", "whom", "whose",
+  "which", "can", "cant", "could", "do", "does", "did", "should", "would", "will",
+  "shall", "is", "are", "am", "was", "were", "has", "have", "had", "may", "might",
+  "must", "if", "need", "explain", "tell", "mean", "means", "deadline", "happen",
+]);
+
+function rawWords(text: string): string[] {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+/**
+ * Is this actually a question about the notice, or just a greeting / acknowledgement /
+ * noise like "hi", "thanks", or "test"? The Q&A feature should answer real questions —
+ * even vague ones like "what should I do" — but a friendly "hi" must NOT trigger legal
+ * advice. A message is smalltalk when it's empty/punctuation, or made up entirely of
+ * greetings + filler AND shows no sign of being a question.
+ */
+export function isSmalltalk(question: string): boolean {
+  const words = rawWords(question);
+  if (words.length === 0) return true; // "??", "...", emoji-only
+  if (question.includes("?")) return false; // explicitly a question
+  if (words.some((w) => QUESTION_WORDS.has(w))) return false; // phrased as a question
+  return words.every((w) => SMALLTALK.has(w) || FILLER.has(w));
+}
+
+/** A warm nudge back on-topic for smalltalk, instead of unprompted legal advice. */
+export function composeSmalltalkReply(): string {
+  return "Hi! I can only answer questions about this specific notice — your deadline, the remedy you're routed to, and the rules behind them. Try one of the example questions below, or ask me something like “What is my deadline?” or “What happens if I do nothing?”";
+}
+
 function tokenize(text: string): string[] {
   return text
     .toLowerCase()

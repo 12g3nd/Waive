@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { composeOfflineAnswer, relevantSources, retrieveForQuestion } from "@/lib/qa";
+import {
+  composeOfflineAnswer,
+  isSmalltalk,
+  relevantSources,
+  retrieveForQuestion,
+} from "@/lib/qa";
 
 describe("grounded Q&A retrieval", () => {
   it("routes a benefits 'can it be cancelled' question to the waiver rule", () => {
@@ -36,5 +41,19 @@ describe("grounded Q&A retrieval", () => {
     const s = relevantSources("answer", "what should i do");
     expect(s.length).toBeGreaterThan(0);
     expect(s.every((e) => e.domain === "answer")).toBe(true);
+  });
+});
+
+describe("smalltalk gating (no unprompted legal advice)", () => {
+  it("treats greetings, thanks, and noise as smalltalk", () => {
+    for (const q of ["hi", "Hi!", "hello", "hey there", "yo", "thanks", "thank you", "ok", "lol", "test", "good morning", "??"]) {
+      expect(isSmalltalk(q), q).toBe(true);
+    }
+  });
+
+  it("treats real questions — even short or vague ones — as answerable", () => {
+    for (const q of ["What is my deadline?", "can this be cancelled", "what should i do", "am I at fault?", "is this debt too old"]) {
+      expect(isSmalltalk(q), q).toBe(false);
+    }
   });
 });
