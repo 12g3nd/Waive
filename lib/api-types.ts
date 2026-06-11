@@ -56,3 +56,10 @@ export interface AnalyzeErr {
 }
 
 export type AnalyzeResponse = AnalyzeOk | AnalyzeErr;
+
+/** A trimmed source the "Ask about your notice" feature grounds its answer in. */
+export interface AskSource {
+  topic: string;
+  summary: string;
+  cite: string; // official citation
+}

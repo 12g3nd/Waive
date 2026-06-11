@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { composeOfflineAnswer, retrieveForQuestion } from "@/lib/qa";
+import { composeOfflineAnswer, relevantSources, retrieveForQuestion } from "@/lib/qa";
 
 describe("grounded Q&A retrieval", () => {
   it("routes a benefits 'can it be cancelled' question to the waiver rule", () => {
@@ -28,5 +28,13 @@ describe("grounded Q&A retrieval", () => {
     const answer = composeOfflineAnswer(top);
     expect(answer).toMatch(/not legal advice/i);
     expect(answer.length).toBeGreaterThan(40);
+  });
+
+  it("relevantSources always returns material, even for a vague question", () => {
+    // "what should I do" is all stopwords — retrieval would be empty, but the model
+    // path must still get sources to ground its answer in.
+    const s = relevantSources("answer", "what should i do");
+    expect(s.length).toBeGreaterThan(0);
+    expect(s.every((e) => e.domain === "answer")).toBe(true);
   });
 });
