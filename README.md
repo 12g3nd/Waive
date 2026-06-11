@@ -107,7 +107,7 @@ interface; the LLM only translates and drafts.
 /public/samples  watermarked "SAMPLE — NOT A REAL NOTICE" notice artwork
 /lib/llm      Ollama client: vision extraction, grounded translation/drafting, offline fallback
 /components   UI: clock, reveal panels, sample board, upload, intake
-/tests        unit + golden tests for the deterministic modules (70 tests)
+/tests        unit + golden tests for the deterministic modules (92 tests)
 ```
 
 ---
@@ -118,7 +118,7 @@ interface; the LLM only translates and drafts.
 npm install
 cp .env.example .env       # adjust Ollama model names if you want live extraction
 npm run dev                # http://localhost:3000
-npm test                   # 70 deterministic unit + golden tests
+npm test                   # 92 deterministic unit + golden tests
 npm run build              # production build
 ```
 
