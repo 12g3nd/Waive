@@ -103,12 +103,14 @@ describe("OllamaLlm graceful fallback (no server)", () => {
 
   it("returns the deterministic explanation when Ollama is unreachable", async () => {
     const llm = new OllamaLlm({
+      provider: "ollama",
       baseUrl: "http://127.0.0.1:9", // nothing listening — connection refused
       apiKey: "",
       modelExtract: "x",
       modelDraft: "x",
       timeoutMs: 1_000,
       forceOffline: false,
+      anthropicModel: "claude-opus-4-8",
     });
     const result = await llm.explain(explainReq());
     expect(result.source).toBe("deterministic-fallback");

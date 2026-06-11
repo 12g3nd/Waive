@@ -94,7 +94,7 @@ const benefitsSamples: Sample[] = [
 ];
 
 // ─── Debt samples (one per jurisdiction — the cross-domain + cross-jurisdiction reveal)
-const DEBT_META: Record<DebtJurisdiction["id"], { defendant: string; blurb: string; badge: string; image: string }> = {
+const DEBT_META: Record<DebtJurisdiction["id"], { defendant: string; blurb: string; badge: string; image?: string }> = {
   ON: {
     defendant: "Priya Sharma",
     blurb: "A debt buyer sues on a 3-year-old debt. Ontario: 20 days to file a Defence; the 2-year limit can end the case.",
@@ -112,6 +112,12 @@ const DEBT_META: Record<DebtJurisdiction["id"], { defendant: string; blurb: stri
     blurb: "The SAME engine, U.S. rules: 30 days to Answer; 4-year limit; California's Fair Debt Buying Practices Act.",
     badge: "USA · California",
     image: "/samples/debt-claim-california.svg",
+  },
+  QC: {
+    defendant: "Geneviève Tremblay",
+    blurb: "The SAME engine, Quebec rules: 15 days to answer the summons; 3-year prescription; make the buyer prove the assignment.",
+    badge: "Canada · Quebec",
+    image: "/samples/debt-claim-quebec.svg",
   },
 };
 

@@ -1,5 +1,6 @@
 import { InMemoryCitationResolver, type CitationEntry, type ResolvedCitation } from "@/engine";
 import { allCitations } from "@/corpus";
+import type { AskSource } from "@/lib/api-types";
 
 /**
  * Grounded Q&A retrieval over the citation corpus.
@@ -86,6 +87,21 @@ export function retrieveForQuestion(
     .slice(0, k);
 }
 
+/**
+ * Sources to hand the model for a question — lexically ranked, but NEVER empty:
+ * when nothing matches (e.g. a vague "what should I do?"), it still returns the
+ * domain's key entries so the model always has material to ground its answer in.
+ */
+export function relevantSources(domain: string, question: string, k = 6): RetrievedEntry[] {
+  const resolver = new InMemoryCitationResolver(allCitations);
+  const pool = resolver.list().filter((e) => e.domain === domain);
+  const qTokens = expand(tokenize(question));
+  return pool
+    .map((e) => ({ ...e, relevance: qTokens.length ? score(e, qTokens) : 0 }))
+    .sort((a, b) => b.relevance - a.relevance)
+    .slice(0, k);
+}
+
 /** Turn retrieved entries into citations for the UI (resolved, with usage context). */
 export function toResolved(entries: RetrievedEntry[]): ResolvedCitation[] {
   return entries.map((e) => ({ ...e, usedFor: ["Answer to your question"] }));
@@ -102,26 +118,26 @@ export function composeOfflineAnswer(entries: RetrievedEntry[]): string {
   )}\n\nThis is information, not legal advice.`;
 }
 
-/** Build the grounded prompt for a local model to answer in plain language. */
+/** Build the grounded prompt for the model to interpret + answer in plain language. */
 export function buildAskMessages(
   question: string,
   grounding: string,
-  entries: RetrievedEntry[],
+  sources: AskSource[],
   language: string,
 ) {
   const langName = language === "es" ? "Spanish (Español)" : "English";
-  const sources = entries
-    .map((e, i) => `[${i + 1}] ${e.topic} — ${e.summary} (${e.officialCitation})`)
+  const sourceText = sources
+    .map((s, i) => `[${i + 1}] ${s.topic} — ${s.summary}${s.cite ? ` (${s.cite})` : ""}`)
     .join("\n");
   return [
     {
       role: "system" as const,
       content:
-        "You are a careful legal-aid explainer. Answer the person's question in plain language using ONLY the provided sources and case facts. Do NOT state any legal rule, deadline, form, or number that is not in the sources. If the answer isn't covered, say so plainly and suggest a legal-aid clinic. Keep it under 110 words. This is information, not legal advice.",
+        "You are a careful legal-aid explainer. The person's question may be short, casual, or vague — work out what they mean and answer it directly in plain language. Use ONLY the case facts and the sources below: point them to their deadline and recommended next step, and name the rule that backs it up. Never state a rule, date, dollar amount, form, or number that is not in the case facts or sources. If the question truly isn't covered by them, say so plainly and suggest a free legal-aid clinic. Keep it under 120 words. This is information, not legal advice.",
     },
     {
       role: "user" as const,
-      content: `Write the answer in ${langName}.\n\nQuestion: ${question}\n\nThe person's case facts:\n${grounding}\n\nSources you may use (and nothing else):\n${sources}`,
+      content: `Answer in ${langName}.\n\nQuestion: ${question}\n\nThe person's case (already worked out):\n${grounding}\n\nSources you may use and cite (and nothing else):\n${sourceText}`,
     },
   ];
 }

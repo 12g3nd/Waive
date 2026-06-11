@@ -6,6 +6,7 @@ import type { PipelineResult } from "@/engine";
 import { diffDays, humanDate } from "@/engine/dates";
 import { formatMoney } from "@/engine/format";
 import type { LlmStatus } from "@/lib/llm";
+import { engineLabel } from "@/lib/llm/model-label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -115,8 +116,8 @@ export function ResultView({
     <div lang={language} className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8 sm:px-6">
       {/* Controls */}
       <div className="flex items-center justify-between gap-3">
-        <Badge variant={llm.mode === "ollama" ? "primary" : "outline"}>
-          {llm.mode === "ollama" ? "local model: on" : "offline mode"}
+        <Badge variant={llm.mode === "offline" ? "outline" : "primary"}>
+          {engineLabel(llm.mode, llm.config)}
         </Badge>
         <div className="flex items-center gap-2">
           <LanguageToggle value={language} onChange={onLanguage} disabled={busy} />
@@ -175,7 +176,10 @@ export function ResultView({
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           <div className="animate-fade-up" style={delay(2)}>
-            <ExplanationPanel explanation={result.explanation} />
+            <ExplanationPanel
+              explanation={result.explanation}
+              engine={engineLabel(llm.mode, llm.config)}
+            />
           </div>
           <div className="animate-fade-up" style={delay(3)}>
             <RemedyPanel remedy={result.remedy} citations={result.citations} />
@@ -194,6 +198,11 @@ export function ResultView({
               domain={result.domain}
               language={language}
               grounding={buildGrounding(result)}
+              caseSources={result.citations.map((c) => ({
+                topic: c.topic,
+                summary: c.summary,
+                cite: c.officialCitation,
+              }))}
               suggestions={ASK_SUGGESTIONS[result.domain] ?? ["What does this mean?", "What is my deadline?"]}
             />
           </div>
@@ -207,7 +216,7 @@ export function ResultView({
           </div>
           <p className="px-1 text-xs leading-relaxed text-muted-foreground">
             Waive is <strong>information and document preparation, not legal advice</strong>. It is a
-            force-multiplier for legal-aid orgs and advocates — not a lawyer. When in doubt, have a
+            force-multiplier for legal-aid orgs and advocates, not a lawyer. When in doubt, have a
             clinic review your case.
           </p>
         </div>

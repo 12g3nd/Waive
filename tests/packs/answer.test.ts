@@ -49,6 +49,13 @@ describe("answer deadlines per jurisdiction (golden)", () => {
     expect(r.deadlines[0]?.rule).toMatch(/30 days/);
   });
 
+  it("Quebec: 15 days to answer the summons", () => {
+    // 2026-05-04 (Mon) + 15 = 2026-05-19 (Tue), a court day.
+    const r = pack("answer-qc").computeDeadlines(claim());
+    expect(r.deadlines[0]?.dateISO).toBe("2026-05-19");
+    expect(r.deadlines[0]?.rule).toMatch(/15 days/);
+  });
+
   it("returns no deadline with no service/notice date", () => {
     const r = answerPack.computeDeadlines(claim({ serviceOrReceiptDate: null, noticeDate: null }));
     expect(r.deadlines).toHaveLength(0);
@@ -107,8 +114,18 @@ describe("answer corpus integrity (all jurisdictions)", () => {
     }
   });
 
-  it("ships three jurisdictions across Canada and the U.S.", () => {
-    expect(answerPacks.map((p) => p.id).sort()).toEqual(["answer-bc", "answer-ca", "answer-on"]);
-    expect(answerPacks.map((p) => p.jurisdiction).sort()).toEqual(["CA-BC", "CA-ON", "US-CA"]);
+  it("ships four jurisdictions across Canada and the U.S.", () => {
+    expect(answerPacks.map((p) => p.id).sort()).toEqual([
+      "answer-bc",
+      "answer-ca",
+      "answer-on",
+      "answer-qc",
+    ]);
+    expect(answerPacks.map((p) => p.jurisdiction).sort()).toEqual([
+      "CA-BC",
+      "CA-ON",
+      "CA-QC",
+      "US-CA",
+    ]);
   });
 });

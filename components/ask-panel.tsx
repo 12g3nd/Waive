@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MessagesSquare, Send, Loader2 } from "lucide-react";
 import type { ResolvedCitation } from "@/engine";
+import type { AskSource } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CitationChip } from "@/components/citation-chip";
@@ -12,6 +13,8 @@ interface AskPanelProps {
   domain: string;
   language: string;
   grounding: string;
+  /** The case's own citations, so answers ground in jurisdiction-correct rules. */
+  caseSources: AskSource[];
   suggestions: string[];
 }
 
@@ -23,7 +26,7 @@ interface AskResponse {
   error?: string;
 }
 
-export function AskPanel({ domain, language, grounding, suggestions }: AskPanelProps) {
+export function AskPanel({ domain, language, grounding, caseSources, suggestions }: AskPanelProps) {
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const [answer, setAnswer] = useState<string | null>(null);
@@ -39,7 +42,7 @@ export function AskPanel({ domain, language, grounding, suggestions }: AskPanelP
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ domain, language, grounding, question: text }),
+        body: JSON.stringify({ domain, language, grounding, question: text, caseSources }),
       });
       const data = (await res.json()) as AskResponse;
       setAnswer(data.ok ? (data.answer ?? "") : (data.error ?? "Something went wrong."));
@@ -61,7 +64,7 @@ export function AskPanel({ domain, language, grounding, suggestions }: AskPanelP
         <h3 className="font-display text-base font-semibold">Ask about your notice</h3>
       </div>
       <p className="text-sm text-muted-foreground">
-        Answers come only from the verified sources on this page — never invented.
+        Answers come only from the verified sources on this page, never invented.
       </p>
 
       <form
@@ -109,7 +112,7 @@ export function AskPanel({ domain, language, grounding, suggestions }: AskPanelP
         <div className="space-y-2 rounded-xl border border-border bg-secondary/25 p-3.5">
           <div className="flex items-center justify-between">
             <Badge variant={source === "llm" ? "primary" : "outline"}>
-              {source === "llm" ? "local model · grounded" : "from your sources"}
+              {source === "llm" ? "Ollama · grounded" : "from your sources"}
             </Badge>
             <button
               type="button"

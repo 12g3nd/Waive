@@ -133,6 +133,7 @@ describe("hardening — escalation & edge cases", () => {
       "answer-bc",
       "answer-ca",
       "answer-on",
+      "answer-qc",
       "benefits",
     ]);
     expect(benefitsPack.jurisdiction).toBe("US-SSA");

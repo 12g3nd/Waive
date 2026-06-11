@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
 import type { IntakeQuestion, NoticeExtraction, NoticeSource, PipelineResult } from "@/engine";
-import type { LlmStatus } from "@/lib/llm";
-import type { AnalyzeRequest, AnalyzeResponse, SampleCard } from "@/lib/api-types";
+import type { LlmStatus, LlmProvider } from "@/lib/llm";
+import type { AnalyzeRequest, AnalyzeResponse, ProviderOption, SampleCard } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/upload-zone";
 import { Wordmark } from "@/components/wordmark";
@@ -16,6 +16,7 @@ import { DecodingState } from "@/components/decoding-state";
 import { ResultView } from "@/components/result-view";
 import { IntakeRefine } from "@/components/intake-refine";
 import { NoticeTypePicker } from "@/components/notice-type-picker";
+import { ModelPicker } from "@/components/model-picker";
 import type { NoticeType } from "@/lib/notice-types";
 
 type Origin =
@@ -29,6 +30,7 @@ type Phase =
       source: NoticeSource;
       suggestion: { domain: string; label: string } | null;
       classifying: boolean;
+      unrecognized: boolean;
     }
   | { kind: "decoding" }
   | { kind: "result"; result: PipelineResult; llm: LlmStatus; intake: IntakeQuestion[]; origin: Origin }
@@ -73,6 +75,8 @@ function AppPage() {
   const [samples, setSamples] = useState<SampleCard[]>([]);
   const [noticeTypes, setNoticeTypes] = useState<NoticeType[]>([]);
   const [noticePackId, setNoticePackId] = useState("benefits");
+  const [providers, setProviders] = useState<ProviderOption[]>([]);
+  const [provider, setProvider] = useState<LlmProvider | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
@@ -89,6 +93,16 @@ function AppPage() {
       .then((r) => r.json())
       .then((d: { noticeTypes: NoticeType[] }) => setNoticeTypes(d.noticeTypes))
       .catch(() => setNoticeTypes([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/providers")
+      .then((r) => r.json())
+      .then((d: { providers: ProviderOption[]; default: LlmProvider }) => {
+        setProviders(d.providers);
+        setProvider(d.default);
+      })
+      .catch(() => setProviders([]));
   }, []);
 
   const run = useCallback(
@@ -129,8 +143,12 @@ function AppPage() {
 
   const pickSample = useCallback(
     (sampleId: string) =>
-      run({ mode: "sample", sampleId, language }, { type: "sample", sampleId }, { showDecoding: true }),
-    [run, language],
+      run(
+        { mode: "sample", sampleId, language, provider },
+        { type: "sample", sampleId },
+        { showDecoding: true },
+      ),
+    [run, language, provider],
   );
 
   const analyzeNotice = useCallback(
@@ -144,6 +162,7 @@ function AppPage() {
           userFacts: { answers: {} },
           language,
           source,
+          provider,
         });
         if (data.ok) {
           setPhase({
@@ -171,19 +190,19 @@ function AppPage() {
         setBusy(false);
       }
     },
-    [language, noticePackId],
+    [language, noticePackId, provider],
   );
 
   // On upload, ask the model (if available) to guess the type, then let the person
   // confirm before we analyze. Degrades to a plain confirm step when there's no model.
   const onFileSelected = useCallback(
     async (source: NoticeSource) => {
-      setPhase({ kind: "review", source, suggestion: null, classifying: true });
+      setPhase({ kind: "review", source, suggestion: null, classifying: true, unrecognized: false });
       try {
         const res = await fetch("/api/classify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ source }),
+          body: JSON.stringify({ source, provider }),
         });
         const data = (await res.json()) as {
           available: boolean;
@@ -194,7 +213,14 @@ function AppPage() {
           const pid = defaultPackIdForDomain(noticeTypes, data.domain);
           if (pid) setNoticePackId(pid);
           const suggestion = { domain: data.domain, label: data.label };
-          setPhase((p) => (p.kind === "review" ? { ...p, suggestion, classifying: false } : p));
+          setPhase((p) =>
+            p.kind === "review" ? { ...p, suggestion, unrecognized: false, classifying: false } : p,
+          );
+        } else if (data.available) {
+          // The model read the file but it isn't an SSA or debt notice.
+          setPhase((p) =>
+            p.kind === "review" ? { ...p, unrecognized: true, classifying: false } : p,
+          );
         } else {
           setPhase((p) => (p.kind === "review" ? { ...p, classifying: false } : p));
         }
@@ -202,13 +228,13 @@ function AppPage() {
         setPhase((p) => (p.kind === "review" ? { ...p, classifying: false } : p));
       }
     },
-    [noticeTypes],
+    [noticeTypes, provider],
   );
 
   const rerun = useCallback(
     (origin: Origin, lang: string, facts?: { answers: Record<string, string | number | boolean> }) => {
       if (origin.type === "sample") {
-        return run({ mode: "sample", sampleId: origin.sampleId, language: lang }, origin, {
+        return run({ mode: "sample", sampleId: origin.sampleId, language: lang, provider }, origin, {
           showDecoding: false,
         });
       }
@@ -221,12 +247,13 @@ function AppPage() {
           userFacts,
           language: lang,
           source: { kind: "extraction", extraction: origin.extraction },
+          provider,
         },
         nextOrigin,
         { showDecoding: false },
       );
     },
-    [run],
+    [run, provider],
   );
 
   function handleLanguage(lang: string) {
@@ -246,9 +273,11 @@ function AppPage() {
               <p className="mt-1 text-sm text-muted-foreground">
                 {reviewPhase.classifying
                   ? "Reading your file to suggest the type…"
-                  : reviewPhase.suggestion
-                    ? "We've pre-selected our best guess — change it below if it's not right."
-                    : "Tell us what kind of notice this is so we apply the right rules."}
+                  : reviewPhase.unrecognized
+                    ? "We couldn't tell what kind of notice this is. Check the file, or pick a type below."
+                    : reviewPhase.suggestion
+                      ? "We've pre-selected our best guess, change it below if it's not right."
+                      : "Tell us what kind of notice this is so we apply the right rules."}
               </p>
             </div>
 
@@ -256,6 +285,21 @@ function AppPage() {
               <div className="flex items-start gap-2 rounded-xl border border-primary/30 bg-primary/[0.07] p-3 text-sm">
                 <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-foreground/85">This looks like {reviewPhase.suggestion.label}.</p>
+              </div>
+            )}
+
+            {reviewPhase.unrecognized && !reviewPhase.classifying && (
+              <div className="flex items-start gap-2 rounded-xl border border-warn/40 bg-warn/10 p-3 text-sm">
+                <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn" />
+                <div>
+                  <p className="font-semibold text-foreground">
+                    This doesn&apos;t look like a Social Security or debt notice.
+                  </p>
+                  <p className="mt-0.5 text-foreground/75">
+                    Double-check you uploaded the right file — upload a different one below, or pick a
+                    type and analyze anyway.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -275,7 +319,7 @@ function AppPage() {
                 Analyze this notice <ArrowRight />
               </Button>
               <Button variant="ghost" onClick={() => setPhase({ kind: "idle" })} disabled={busy}>
-                Use a different file
+                Upload a different file
               </Button>
             </div>
           </div>
@@ -343,7 +387,7 @@ function AppPage() {
           <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground/90">
             <Sparkles className="mr-1 inline size-3.5 text-primary" />
             Deadlines and remedies are computed by tested code that shows its work. The model only
-            translates — it never decides your legal outcome.
+            translates, it never decides your legal outcome.
           </p>
         </header>
 
@@ -357,6 +401,12 @@ function AppPage() {
           </div>
         )}
 
+        <ModelPicker
+          options={providers}
+          value={provider}
+          onChange={setProvider}
+          disabled={busy}
+        />
         <UploadZone onSelect={onFileSelected} busy={busy} />
 
         <div className="my-8 flex items-center gap-3">
