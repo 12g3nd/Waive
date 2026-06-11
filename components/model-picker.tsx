@@ -22,7 +22,7 @@ export function ModelPicker({ options, value, onChange, disabled }: ModelPickerP
 
   return (
     <fieldset disabled={disabled} className="mb-6 space-y-2">
-      <legend className="text-sm font-medium text-foreground">Which AI should read it?</legend>
+      <legend className="text-sm font-medium text-foreground">Select Model:</legend>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {available.map((o) => {
           const active = o.id === value;
