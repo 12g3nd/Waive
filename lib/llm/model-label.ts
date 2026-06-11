@@ -37,7 +37,6 @@ export function engineLabel(
 ): string {
   if (mode === "offline") return "offline mode";
   if (mode === "anthropic") return modelLabel(config.modelDraft);
-  const tag = config.modelDraft ?? "";
-  const cloud = (config.baseUrl ?? "").includes("ollama.com") || tag.endsWith("-cloud");
-  return cloud ? "Ollama (cloud)" : "Ollama";
+  const tag = (config.modelDraft ?? "").replace(/-cloud$/, "").replace(/:/g, " ").trim();
+  return tag ? `Ollama: ${tag}` : "Ollama";
 }

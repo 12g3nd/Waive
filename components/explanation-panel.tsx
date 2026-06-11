@@ -6,9 +6,11 @@ import { ReadAloudButton } from "@/components/read-aloud-button";
 
 interface ExplanationPanelProps {
   explanation: PlainLanguageExplanation;
+  /** Friendly name of the engine that rephrased this (shown when a model ran). */
+  engine: string;
 }
 
-export function ExplanationPanel({ explanation }: ExplanationPanelProps) {
+export function ExplanationPanel({ explanation, engine }: ExplanationPanelProps) {
   const rows = [
     { icon: FileText, label: "What this is", text: explanation.whatThisIs, tone: "text-foreground" },
     {
@@ -28,7 +30,7 @@ export function ExplanationPanel({ explanation }: ExplanationPanelProps) {
           <h2 className="font-display text-xl font-semibold tracking-tight">In plain language</h2>
           <div className="flex items-center gap-2">
             <Badge variant={explanation.source === "llm" ? "primary" : "outline"}>
-              {explanation.source === "llm" ? "local model" : "plain text"}
+              {explanation.source === "llm" ? engine : "plain text"}
             </Badge>
             <ReadAloudButton text={fullText} language={explanation.language} />
           </div>

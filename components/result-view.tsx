@@ -176,7 +176,10 @@ export function ResultView({
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           <div className="animate-fade-up" style={delay(2)}>
-            <ExplanationPanel explanation={result.explanation} />
+            <ExplanationPanel
+              explanation={result.explanation}
+              engine={engineLabel(llm.mode, llm.config)}
+            />
           </div>
           <div className="animate-fade-up" style={delay(3)}>
             <RemedyPanel remedy={result.remedy} citations={result.citations} />
