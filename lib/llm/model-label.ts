@@ -25,3 +25,19 @@ export function modelLabel(id: string | null | undefined): string {
   // Ollama tag (e.g. "llama3.2-vision", "qwen3-vl:235b-cloud") — already clear enough.
   return id;
 }
+
+/**
+ * A friendly, non-technical label for the active engine. Claude shows the specific
+ * model ("Claude Haiku 4.5"); Ollama shows just "Ollama" (or "Ollama (cloud)") rather
+ * than the raw model tag, which is meaningless to most people.
+ */
+export function engineLabel(
+  mode: "anthropic" | "ollama" | "offline",
+  config: { baseUrl?: string; modelDraft?: string },
+): string {
+  if (mode === "offline") return "offline mode";
+  if (mode === "anthropic") return modelLabel(config.modelDraft);
+  const tag = config.modelDraft ?? "";
+  const cloud = (config.baseUrl ?? "").includes("ollama.com") || tag.endsWith("-cloud");
+  return cloud ? "Ollama (cloud)" : "Ollama";
+}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readLlmConfig, ollamaAvailable } from "@/lib/llm";
-import { modelLabel } from "@/lib/llm/model-label";
+import { engineLabel } from "@/lib/llm/model-label";
 import type { ProviderOption } from "@/lib/api-types";
 
 export const runtime = "nodejs";
@@ -17,13 +17,13 @@ export async function GET() {
   const providers: ProviderOption[] = [
     {
       id: "anthropic",
-      label: modelLabel(cfg.anthropicModel),
+      label: engineLabel("anthropic", { modelDraft: cfg.anthropicModel }),
       description: "Most accurate reading — best for photos, messy scans, and PDFs.",
       available: !cfg.forceOffline && !!cfg.anthropicApiKey,
     },
     {
       id: "ollama",
-      label: modelLabel(cfg.modelDraft),
+      label: engineLabel("ollama", { baseUrl: cfg.baseUrl, modelDraft: cfg.modelDraft }),
       description: "Faster and private — runs on your own Ollama, no per-use cost.",
       available: ollamaUp,
     },
