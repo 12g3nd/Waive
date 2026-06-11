@@ -6,6 +6,7 @@ import type { PipelineResult } from "@/engine";
 import { diffDays, humanDate } from "@/engine/dates";
 import { formatMoney } from "@/engine/format";
 import type { LlmStatus } from "@/lib/llm";
+import { modelLabel } from "@/lib/llm/model-label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,11 +117,7 @@ export function ResultView({
       {/* Controls */}
       <div className="flex items-center justify-between gap-3">
         <Badge variant={llm.mode === "offline" ? "outline" : "primary"}>
-          {llm.mode === "anthropic"
-            ? "AI: Claude"
-            : llm.mode === "ollama"
-              ? "AI: local model"
-              : "offline mode"}
+          {llm.mode === "offline" ? "offline mode" : modelLabel(llm.config.modelDraft)}
         </Badge>
         <div className="flex items-center gap-2">
           <LanguageToggle value={language} onChange={onLanguage} disabled={busy} />
