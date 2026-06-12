@@ -7,10 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CitationChip } from "@/components/citation-chip";
+import { t } from "@/lib/i18n";
 
 interface DocumentPreviewProps {
   doc: DraftedDocument;
   citations: ResolvedCitation[];
+  language: string;
 }
 
 function toPlainText(doc: DraftedDocument): string {
@@ -27,7 +29,7 @@ function toPlainText(doc: DraftedDocument): string {
   return lines.filter((l) => l !== undefined).join("\n");
 }
 
-export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
+export function DocumentPreview({ doc, citations, language }: DocumentPreviewProps) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -46,11 +48,12 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
         {/* Print-only letterhead — what a filed copy should carry, not the UI chrome. */}
         <div className="hidden print:block">
           <p className="font-display text-xl font-semibold tracking-tight">{doc.title}</p>
-          {doc.formNumber && <p className="text-sm">Form {doc.formNumber}</p>}
-          <p className="mt-1 text-xs leading-relaxed">
-            Prepared with Waive, information and document preparation, not legal advice. Check
-            every detail against your own notice before filing.
-          </p>
+          {doc.formNumber && (
+            <p className="text-sm">
+              {t(language, "doc.form")} {doc.formNumber}
+            </p>
+          )}
+          <p className="mt-1 text-xs leading-relaxed">{t(language, "doc.printDisclaimer")}</p>
           <hr className="mt-3 border-border" />
         </div>
 
@@ -59,10 +62,13 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
           <div className="flex items-center gap-2">
             <FileSignature className="size-5 text-primary" />
             <div>
-              <h2 className="font-display text-xl font-semibold tracking-tight">Your draft</h2>
+              <h2 className="font-display text-xl font-semibold tracking-tight">
+                {t(language, "doc.yourDraft")}
+              </h2>
               <p className="text-sm text-muted-foreground">
                 {doc.title}
-                {doc.source === "deterministic-fallback" && " · structured draft"}
+                {doc.source === "deterministic-fallback" &&
+                  ` · ${t(language, "doc.structuredDraft")}`}
               </p>
             </div>
           </div>
@@ -70,11 +76,11 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
             {doc.formNumber && <Badge variant="neutral">{doc.formNumber}</Badge>}
             <Button variant="outline" size="sm" onClick={copy}>
               {copied ? <Check /> : <ClipboardCopy />}
-              {copied ? "Copied" : "Copy"}
+              {copied ? t(language, "doc.copied") : t(language, "doc.copy")}
             </Button>
             <Button variant="outline" size="sm" onClick={() => window.print()}>
               <Printer />
-              Print / PDF
+              {t(language, "doc.print")}
             </Button>
           </div>
         </div>
@@ -98,7 +104,7 @@ export function DocumentPreview({ doc, citations }: DocumentPreviewProps) {
         <div>
           <div className="mb-2 flex items-center gap-2">
             <ListChecks className="size-4 text-primary" />
-            <h3 className="text-sm font-semibold">How &amp; where to file</h3>
+            <h3 className="text-sm font-semibold">{t(language, "doc.howToFile")}</h3>
           </div>
           <ol className="space-y-2">
             {doc.filingChecklist.map((c, i) => (

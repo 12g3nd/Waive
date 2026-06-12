@@ -62,19 +62,19 @@ interface ResultViewProps {
   refineSlot?: ReactNode;
 }
 
-function NoticeSummary({ result }: { result: PipelineResult }) {
+function NoticeSummary({ result, language }: { result: PipelineResult; language: string }) {
   const e = result.extraction;
   const facts = [
-    { icon: Building2, label: "From", value: e.issuer },
-    { icon: User, label: "For", value: e.recipientName ?? "—" },
+    { icon: Building2, label: t(language, "result.from"), value: e.issuer },
+    { icon: User, label: t(language, "result.for"), value: e.recipientName ?? "—" },
     {
       icon: CircleDollarSign,
-      label: "Amount",
+      label: t(language, "result.amount"),
       value: e.amount !== null ? formatMoney(e.amount, e.currency) : "—",
     },
     {
       icon: Hash,
-      label: "Reference",
+      label: t(language, "result.reference"),
       value: Object.values(e.identifiers)[0] ?? "—",
     },
   ];
@@ -145,7 +145,7 @@ export function ResultView({
         <div className="flex items-center gap-2">
           <LanguageToggle value={language} onChange={onLanguage} disabled={busy} />
           <Button variant="ghost" size="sm" onClick={onReset}>
-            <RotateCcw /> Start over
+            <RotateCcw /> {t(language, "common.startOver")}
           </Button>
         </div>
       </div>
@@ -162,14 +162,17 @@ export function ResultView({
                   description={deadlines.pauseWindow?.description}
                   windowDays={windowDays}
                   isProtected={primary.protected}
+                  language={language}
                 />
-                <AddToCalendar result={result} />
+                <AddToCalendar result={result} language={language} />
               </>
             ) : (
               <div className="max-w-xs text-center">
-                <p className="font-display text-2xl font-semibold text-urgent">No clock yet</p>
+                <p className="font-display text-2xl font-semibold text-urgent">
+                  {t(language, "result.noClock")}
+                </p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  We couldn&apos;t read a date to start the deadline from. See the review note below.
+                  {t(language, "result.noClockBody")}
                 </p>
               </div>
             )}
@@ -177,13 +180,13 @@ export function ResultView({
           <div className="space-y-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                {result.packDisplayName} · decoded
+                {result.packDisplayName} · {t(language, "result.decoded")}
               </p>
               <h1 className="font-display text-2xl font-bold tracking-tight">
                 {extraction.claimType}
               </h1>
             </div>
-            <NoticeSummary result={result} />
+            <NoticeSummary result={result} language={language} />
           </div>
         </CardContent>
       </Card>
@@ -191,7 +194,11 @@ export function ResultView({
       {/* The catch (jaw-drop) */}
       {result.presumptions.catches.length > 0 && (
         <div className="animate-fade-up" style={delay(1)}>
-          <PresumptionBanner presumptions={result.presumptions} citations={result.citations} />
+          <PresumptionBanner
+            presumptions={result.presumptions}
+            citations={result.citations}
+            language={language}
+          />
         </div>
       )}
 
@@ -202,13 +209,18 @@ export function ResultView({
             <ExplanationPanel
               explanation={result.explanation}
               engine={engineLabel(llm.mode, llm.config)}
+              language={language}
             />
           </div>
           <div className="animate-fade-up" style={delay(3)}>
-            <RemedyPanel remedy={result.remedy} citations={result.citations} />
+            <RemedyPanel remedy={result.remedy} citations={result.citations} language={language} />
           </div>
           <div className="animate-fade-up" style={delay(4)}>
-            <DocumentPreview doc={result.draftedDocument} citations={result.citations} />
+            <DocumentPreview
+              doc={result.draftedDocument}
+              citations={result.citations}
+              language={language}
+            />
           </div>
         </div>
 
@@ -238,9 +250,8 @@ export function ResultView({
             <CitationsPanel citations={result.citations} />
           </div>
           <p className="px-1 text-xs leading-relaxed text-muted-foreground">
-            Waive is <strong>information and document preparation, not legal advice</strong>. It is a
-            force-multiplier for legal-aid orgs and advocates, not a lawyer. When in doubt, have a
-            clinic review your case.
+            <strong>{t(language, "result.disclaimerLead")}</strong>{" "}
+            {t(language, "result.disclaimerRest")}
           </p>
         </div>
       </div>

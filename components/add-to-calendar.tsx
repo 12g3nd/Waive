@@ -4,9 +4,11 @@ import { CalendarPlus } from "lucide-react";
 import type { PipelineResult } from "@/engine";
 import { buildDeadlineICS } from "@/lib/calendar/ics";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 
 interface AddToCalendarProps {
   result: PipelineResult;
+  language: string;
 }
 
 /**
@@ -14,7 +16,7 @@ interface AddToCalendarProps {
  * (7/3/1 days before), so their own calendar warns them before the clock runs out.
  * Generated entirely in the browser — no upload, no account.
  */
-export function AddToCalendar({ result }: AddToCalendarProps) {
+export function AddToCalendar({ result, language }: AddToCalendarProps) {
   if (result.deadlines.deadlines.length === 0) return null;
 
   function download() {
@@ -38,7 +40,7 @@ export function AddToCalendar({ result }: AddToCalendarProps) {
       onClick={download}
       aria-label="Add your deadlines to your calendar, with reminders"
     >
-      <CalendarPlus /> Add to calendar
+      <CalendarPlus /> {t(language, "calendar.add")}
     </Button>
   );
 }

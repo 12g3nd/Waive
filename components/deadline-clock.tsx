@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Lock } from "lucide-react";
 import { daysUntilLocal, humanDate } from "@/engine/dates";
 import { cn } from "@/lib/utils";
+import { t } from "@/lib/i18n";
 
 interface DeadlineClockProps {
   dateISO: string;
@@ -12,6 +13,7 @@ interface DeadlineClockProps {
   /** Length of the protective window (days) used to scale the ring. */
   windowDays?: number;
   isProtected?: boolean;
+  language: string;
 }
 
 type Urgency = "safe" | "warn" | "urgent" | "expired";
@@ -36,6 +38,7 @@ export function DeadlineClock({
   description,
   windowDays = 30,
   isProtected,
+  language,
 }: DeadlineClockProps) {
   // Compute on the client so the countdown is live and never mismatches SSR.
   const [daysLeft, setDaysLeft] = useState<number | null>(null);
@@ -91,9 +94,11 @@ export function DeadlineClock({
             <span className="font-display text-2xl text-muted-foreground">…</span>
           ) : urgency === "expired" ? (
             <>
-              <span className={cn("font-display text-3xl font-bold", tone.text)}>Passed</span>
+              <span className={cn("font-display text-3xl font-bold", tone.text)}>
+                {t(language, "clock.passed")}
+              </span>
               <span className="mt-1 max-w-[8rem] text-xs text-muted-foreground">
-                act now, this may need urgent review
+                {t(language, "clock.passedBody")}
               </span>
             </>
           ) : (
@@ -102,7 +107,7 @@ export function DeadlineClock({
                 {days}
               </span>
               <span className="mt-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                {days === 1 ? "day left" : "days left"}
+                {days === 1 ? t(language, "clock.dayLeft") : t(language, "clock.daysLeft")}
               </span>
             </>
           )}
@@ -113,7 +118,7 @@ export function DeadlineClock({
         <div className="flex items-center justify-center gap-2">
           {isProtected && (
             <span className="inline-flex items-center gap-1 rounded-full bg-primary/12 px-2 py-0.5 text-[0.7rem] font-semibold text-primary">
-              <Lock className="size-3" /> Protected window
+              <Lock className="size-3" /> {t(language, "clock.protectedWindow")}
             </span>
           )}
           <span className="font-mono text-sm font-medium">{humanDate(dateISO)}</span>
