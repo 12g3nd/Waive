@@ -46,7 +46,7 @@ export default function HowTheAiWorksPage() {
       <header className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div aria-hidden className="h-0.5 bg-highlight" />
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3 sm:px-8">
-          <Link href="/" className="group inline-flex items-center gap-1.5" aria-label="Waive — home">
+          <Link href="/" className="group inline-flex items-center gap-1.5" aria-label="Waive home">
             <ArrowLeft className="size-3.5 text-muted-foreground" />
             <Wordmark className="text-lg" />
           </Link>

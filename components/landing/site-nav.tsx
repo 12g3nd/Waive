@@ -20,7 +20,7 @@ export function SiteNav() {
       {/* Highlighter hairline — the legal-pad rule that brands every page. */}
       <div aria-hidden className="h-0.5 bg-highlight" />
       <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-6 sm:px-10">
-        <Link href="/" className="group" aria-label="Waive — home">
+        <Link href="/" className="group" aria-label="Waive home">
           <Wordmark className="text-xl" />
         </Link>
         <div className="flex items-center gap-7">

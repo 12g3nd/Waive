@@ -32,7 +32,7 @@ export function buildNoticeTypes(): NoticeType[] {
       domain: "benefits",
       label: "Social Security overpayment",
       tips: [
-        "The notice date — your deadlines are counted from it.",
+        "The notice date (your deadlines are counted from it).",
         "The amount they say you were overpaid.",
         "Any mention of withholding part of your monthly benefit.",
         "A claim or notice number (often near the top).",
@@ -44,7 +44,7 @@ export function buildNoticeTypes(): NoticeType[] {
       domain: "answer",
       label: "Debt lawsuit",
       tips: [
-        "The date you were served — your deadline is counted from it.",
+        "The date you were served (your deadline is counted from it).",
         "The plaintiff's name (a debt-buyer name is a strong sign).",
         "The court name and the claim/file number.",
         "The date of your last payment (it sets the limitation clock).",

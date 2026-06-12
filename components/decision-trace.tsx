@@ -105,7 +105,7 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
             <p>
               {usedModel
                 ? "A local AI model turned the letter into structured fields. It never decides your outcome."
-                : "Structured fields from this sample — no model needed to run everything below."}
+                : "Structured fields from this sample. No model needed to run everything below."}
             </p>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 rounded-lg border border-border bg-secondary/30 p-3 text-xs">
               <Fact label="From" value={e.issuer} />

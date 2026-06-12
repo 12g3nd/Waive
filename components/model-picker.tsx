@@ -26,7 +26,7 @@ export function ModelPicker({ options, value, onChange, disabled }: ModelPickerP
   return (
     <fieldset disabled={disabled} className="mb-6 space-y-2">
       <legend className="text-sm font-medium text-foreground">Select Model:</legend>
-      <p className="text-xs text-muted-foreground">All free to use — Waive provides the APIs.</p>
+      <p className="text-xs text-muted-foreground">All free to use. Waive provides the APIs.</p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {options.map((o) => {
           const active = o.id === value;

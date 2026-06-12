@@ -1,258 +1,181 @@
 # Waive
 
-**The engine that stops people from losing by silence.**
+**Stop losing by silence.**
 
-An official notice + a short deadline + a hidden remedy the person never finds in
-time → automatic loss, by silence, before anyone reviews the merits. Waive reads
-the intimidating notice and routes the person to the escape hatch that already
-exists, **before their clock runs out**.
+Waive reads an intimidating official notice, finds the deadline buried inside it, and routes the person to the remedy that already exists in law, while there is still time to use it.
 
-The domain-blind engine behind Waive is codenamed **Backstop**. It is *one engine,
-not two apps*: a deterministic core plus pluggable **rule packs**. We demo it deep
-on Social Security overpayments, then run the *same code* on an Ontario debt
-lawsuit to prove it generalizes.
+[![Live demo](https://img.shields.io/badge/live%20demo-waivelegal.vercel.app-1a7f37?style=for-the-badge)](https://waivelegal.vercel.app)
 
-> **Information and document preparation, not legal advice.** Waive is a
-> force-multiplier for legal-aid orgs and advocates — not a lawyer.
+![Next.js](https://img.shields.io/badge/Next.js-App%20Router-000?logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![AI](https://img.shields.io/badge/AI-local%20Ollama-0a0a0a?logo=ollama&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-105%20passing-2ea44f)
+![Citations](https://img.shields.io/badge/legal%20claims-100%25%20cited-8a2be2)
 
----
+> **Information and document preparation, not legal advice.** Waive is a force-multiplier for legal-aid orgs and advocates, not a lawyer.
 
-## The one machine behind two injustices
-
-- **Benefit overpayments (`benefits` — the hero domain).** Social Security overpays
-  someone through *its own* error, then years later demands the money back. Miss the
-  short window and SSA claws it back automatically — for SSDI overpayment notices
-  issued on/after **April 25, 2025**, SSA withholds **50% of the monthly benefit**
-  until repaid unless the person acts (EM-25029 REV).
-- **Debt claims (`answer` — the proof-of-generality domain).** A person is sued
-  (often by a debt buyer on old debt), doesn't understand the claim or the deadline,
-  doesn't file a defence, and **loses by default** — then faces garnishment, even
-  when the debt was time-barred, paid, or not theirs. This build ships **three
-  jurisdictions across Canada and the U.S.** — **Ontario** (20-day Defence, 2-yr
-  limit), **British Columbia** (14-day Reply, 2-yr limit), and **California** (30-day
-  Answer, 4-yr limit) — each a verified *config profile*, not new code. Same engine,
-  same UI.
-
-Same shape every time: **notice + short deadline + hidden remedy → automatic loss by
-silence.** Adding a new injustice is **writing a new rule pack — config, not a
-rebuild.**
+<sub>This README doubles as our Devpost write-up. The "About the project" submission is everything from **Inspiration** onward.</sub>
 
 ---
 
-## Five design principles (this is how the project wins)
+## Inspiration
 
-1. **The high-stakes outputs are deterministic, not generated.** Deadlines, remedy
-   routing, and "do you auto-qualify" checks are computed by tested, pure functions
-   that **show their work**. The LLM never decides these.
-2. **The LLM is a translator, not an oracle.** It does exactly three jobs: read the
-   notice into a schema, explain in plain language / the user's language, and draft
-   form text. It never invents legal conclusions. (Here, the deterministic text is
-   built first and the model is only allowed to *rephrase and translate* it.)
-3. **Every legal claim carries a real citation, or it isn't shown.** Claims come from
-   deterministic rule evaluations mapped to a curated corpus by exact id. We **never
-   fabricate** a statute, POMS section, form number, or URL — unverified entries are
-   marked `TODO_CITATION` (see the list below).
-4. **Integrity over engagement.** If the facts say the person genuinely owes the
-   money or was at fault, Waive routes to the honest remedy and says so — no
-   frivolous waivers, no manufactured defences.
-5. **Information, not legal advice.** Low-confidence reads and genuine judgment calls
-   (e.g. SSA hardship) escalate to "have a legal-aid clinic review this".
+Every year, millions of people receive a letter from the Social Security Administration telling them they owe money, sometimes thousands of dollars.[^ssa] Most of them genuinely do. Many do not. Either way, the letter tells you only what you owe and when collection starts. That is it. The remedy you might qualify for, the [waiver][ssa-632] that can erase the debt, the [reconsideration][ssa-561] that can pause it, the short window in which any of it has to happen, none of that is on the page.
 
----
+We built Waive because the justice gap is not only about lawyers being expensive. It is about a letter sitting on a kitchen table that nobody can decode, with a deadline nobody knows about, for a person who has no idea they hold rights worth exercising. The law already wrote them an escape hatch. Almost nobody finds it in time.
 
-## Architecture — the domain-blind pipeline
+## What it does
 
-```
-upload → [LLM] extract to NoticeExtraction
-       → [deterministic] DeadlineEngine.compute(extraction, pack)
-       → [deterministic] RemedyRouter.route(extraction, userFacts, pack)
-       → [deterministic] PresumptionChecker.evaluate(extraction, userFacts, pack)
-       → [retrieval]     attach citations from corpus (exact id mapping)
-       → [LLM]           plain-language explanation + draft selected form/letter
-       → assemble Result (explanation, clock, routed remedy + alternatives,
-                          presumption catches, drafted doc, filing checklist,
-                          citations, confidence)
+You upload a photo or PDF of an official notice, for example a Social Security overpayment letter or a debt lawsuit. Waive then:
+
+1. **Reads it** into structured fields (who sent it, the amount, the dates, the claim type).
+2. **Computes your real deadline**, down to how many days you have left, accounting for weekends and holidays.
+3. **Explains it in plain language** (English or Spanish, with read-aloud), and tells you your options.
+4. **Drafts the form** you would actually file, ready to review and sign, when one applies.
+
+Every deadline and every option traces back to a real, cited statute or rule, so a person, a legal-aid worker, or a judge can verify it.
+
+> The law gave you a way out. Most people never find it. Waive makes the hidden remedy visible before the deadline passes.
+
+## How we built it
+
+Waive is one **domain-blind engine** (codenamed **Backstop**) plus pluggable **rule packs**. The engine never knows whether it is looking at an SSA overpayment or an Ontario debt claim. Each rule pack supplies all the legal logic behind a single, shared interface:
+
+```ts
+interface RulePack {
+  id: string;                                          // "benefits" | "answer"
+  computeDeadlines(e: NoticeExtraction): DeadlineResult;        // deterministic
+  routeRemedy(e: NoticeExtraction, f: UserFacts): RemedyDecision;     // deterministic
+  checkPresumptions(e: NoticeExtraction, f: UserFacts): PresumptionResult; // deterministic
+  intake: IntakeQuestion[];      // the guided questions
+  documents: DocumentSpec[];     // the templates the AI fills in
+  citationIndex: string[];       // every claim must resolve to a real source here
+}
 ```
 
-[`runPipeline`](engine/pipeline.ts) has **zero branches on pack id or domain**. The
-pack supplies all the legal logic through the [`RulePack`](engine/types.ts)
-interface; the LLM only translates and drafts.
+The pipeline runs the same way every time, with **zero branches on domain or jurisdiction**:
 
-### Where the boundary is enforced (in code structure)
+```text
+upload → [AI] read the notice into a structured schema
+       → [code] compute the deadline (pure date math, golden-tested)
+       → [code] route to the right remedy, with alternatives and "why not"
+       → [code] check auto-qualifying presumptions and defences
+       → [code] attach citations from the corpus by exact id
+       → [AI] explain in plain language + draft the form
+       → assemble: clock, routed remedy, catches, drafted doc, checklist, sources
+```
 
-| Module | Who does it | Where |
-|---|---|---|
-| Document → `NoticeExtraction` | **LLM (Ollama vision)** | [lib/llm/extraction.ts](lib/llm/extraction.ts) |
-| Deadline computation | **Deterministic** | [packs/*/deadlines.ts](packs/) — pure date math, unit-tested |
-| Remedy routing | **Deterministic** | [packs/*/router.ts](packs/) — decision tree, unit-tested |
-| Not-at-fault / defence presumptions | **Deterministic** | [packs/*/presumptions.ts](packs/), [packs/answer/defenses.ts](packs/answer/defenses.ts) |
-| Plain-language + translation | **LLM (grounded)** | [lib/llm/client.ts](lib/llm/client.ts) |
-| Form/letter drafting | **LLM (grounded)** | [lib/llm/client.ts](lib/llm/client.ts) |
-| Citation attachment | **Deterministic** | [engine/citations.ts](engine/citations.ts) — exact id map, no vector guessing |
+**The boundary is the whole design.** The AI reads and rephrases. The code decides anything that can hurt you if it is wrong.
+
+| Step | Who does it |
+| --- | --- |
+| Notice → structured fields | **AI** (vision model) |
+| Deadline computation | **Code** (pure date math, unit + golden tested) |
+| Remedy routing | **Code** (decision tree, tested) |
+| Not-at-fault / limitations defences | **Code** (tested) |
+| Plain-language explanation + translation | **AI** (grounded in the code's output) |
+| Form / letter drafting | **AI** (grounded, fills a fixed template) |
+| Citation attachment | **Code** (exact id map, no guessing) |
+
+### The deadlines are arithmetic, not opinions
+
+Every clock is a pure function with a "show your work" derivation. The anchor date (when the notice was issued or served) plus a statutory window, rolled forward off weekends and holidays:
+
+$$
+\text{due} \;=\; \mathrm{rollForwardToBusinessDay}\!\left(\text{anchorDate} + n\ \text{days},\ \text{holidays}\right)
+$$
+
+$$
+n =
+\begin{cases}
+30 & \text{SSA protected window (freeze collection)} \\
+20 & \text{Ontario defence} \\
+14 & \text{British Columbia reply} \\
+30 & \text{California answer}
+\end{cases}
+$$
+
+```ts
+const pauseRaw = addDays(notice, 30);
+const pauseDue = rollForwardToBusinessDay(pauseRaw, US_FEDERAL_HOLIDAYS);
+// → "Notice dated Jun 2, 2025 + 30 calendar days = Jul 2, 2025"
+```
+
+For SSA, that produces three dated events from one letter: a **30-day protected window**, a **60-day reconsideration** deadline (plus the 5-day mailing presumption under [20 CFR §404.909][cfr-909]), and the **90-day** clock on which, for notices dated on or after **April 25, 2025**, SSA's default is to withhold half the monthly benefit (EM-25029 REV):
+
+$$
+\text{withheld per month} \;=\; 0.50 \times (\text{monthly benefit}), \qquad \text{notice date} \ge \text{2025-04-25}
+$$
+
+The debt packs run the *same code* on a different injustice. A claim is **time-barred** when too much time has passed since the last activity on the account:
+
+$$
+\text{time-barred} \iff (\,t_{\text{claim}} - t_{\text{last activity}}\,) > L,
+\qquad
+L =
+\begin{cases}
+2\ \text{years} & \text{Ontario, British Columbia} \\
+4\ \text{years} & \text{California}
+\end{cases}
+$$
+
+Each jurisdiction is one verified profile (its own deadline, limitation period, court, and forms), turned into a rule pack by the same factory. Adding a new injustice or a new province is config, not a rebuild.
+
+### Sources, never guesses
+
+Every legal claim shown in the UI is mapped to a curated corpus entry by exact id, and each entry carries a **real, verified** citation: SSA forms ([SSA-632][ssa-632], [SSA-561][ssa-561]) and [20 CFR §404.510][cfr-510] / [§404.909][cfr-909]; Ontario's [Limitations Act, 2002][on-limit] and [Rules of the Small Claims Court][on-scc]; British Columbia's [Limitation Act][bc-limit]; California's [Code of Civil Procedure §412.20][ccp-412] and the [Fair Debt Buying Practices Act][ca-fdbpa]. Anything without a verified source is flagged `TODO_CITATION` and never rendered. A test enforces it.
+
+**Stack:** [Next.js][nextjs] (App Router) and [TypeScript][typescript] in strict mode, the deterministic engine covered by [Vitest][vitest] unit and golden tests, and a local [Ollama][ollama] model (or Waive's own hosted Ollama API) for the reading and rephrasing. The model is always optional: if none is reachable, the app falls back to deterministic, citation-grounded text and everything still works.
+
+## Challenges we ran into
+
+1. **Trusting AI with a high-stakes outcome.** The hardest decision was not *how* to use AI, but *whether* it should touch anything load-bearing at all. A model that confidently invents a wrong date could cost someone their benefits. We resolved it by drawing a hard line: the model reads and translates, and tested code computes every deadline, route, and qualification.
+2. **The Ollama dependency.** Running the model locally is excellent for privacy, but it asks the user to install Ollama, and that is a real barrier for the exact people Waive is for: elderly and low-income users who just need to read their letter. We answered it with a hosted **Waive Ollama API** as the private default (no install, nothing stored), keeping fully-local as an option for the privacy-conscious.
+3. **Making legal language human.** Legal text is precise by design and baffling in practice. Turning its logic into plain language that a non-lawyer can act on, without losing accuracy or accidentally giving advice, was harder than most of the engineering.
+
+## Accomplishments that we're proud of
+
+1. **We drew a hard line on AI.** Most legal AI tools let the model decide your outcome. We did not. There is a real, enforced boundary: the AI reads, the code analyzes and produces the answer, and every number can show its work.
+2. **It works for real people in real situations.** Waive is not a demo with mocked data. It draws on legitimate, cited sources a person can actually use. A judge, a legal-aid worker, or someone who just opened an SSA letter can run it right now and get a real, verifiable result.
+3. **We kept the language human.** Every label, explanation, and error message was written for someone receiving their first government letter, not for a lawyer. That took more effort than any single feature, and we think it shows.
+
+## What we learned
+
+1. **You don't need AI for everything.** AI is powerful, but a project does not have to revolve around it. We used it purely to make the notice readable and the output human, and we stopped asking "should we use AI for this?" in favour of "should AI even *touch* this?"
+2. **A cooperative team is the real engine.** We could not have built Waive without every member pulling their weight. With moral support and clear task ownership throughout, the work went smoothly. A team is only as strong as its weakest link, and ours held.
+
+## What's next for Waive
+
+1. **More languages.** Today Waive speaks English and Spanish. French is mandatory for Canadian federal notices, and millions of people facing these letters do not read English as a first language. Broadening language support is the top priority.
+2. **More injustices, more jurisdictions.** The engine is built to grow. Evictions, CRA notices, and EI denials fit the same "notice + deadline + hidden remedy" shape, and adding Alberta or New York is one more verified profile.
+3. **Closing the last access gap.** The hosted API already removed the install barrier; next is a deeper accessibility and low-bandwidth pass, and a path for legal-aid clinics to add their own rule packs.
 
 ---
 
-## Repo structure
+## References
 
-```
-/app          Next.js routes + UI (App Router) + /api/analyze + /api/samples
-/engine       Backstop — domain-blind core: types, pipeline, date math, citation resolver,
-              confidence grading, deterministic fallback. No domain logic. No `any`.
-/packs/benefits  SSA overpayment RulePack (built deep — the demo hero)
-/packs/answer    Debt-claim RulePack, generated per jurisdiction from a verified
-                 profile (Ontario, British Columbia, California) — proves generality
-                 across domains AND jurisdictions
-/corpus       citation-tagged rule snippets (JSON) + combined resolver
-/samples      judge's-choice synthetic notices (data; dates computed live)
-/public/samples  watermarked "SAMPLE — NOT A REAL NOTICE" notice artwork
-/lib/llm      Ollama client: vision extraction, grounded translation/drafting, offline fallback
-/components   UI: clock, reveal panels, sample board, upload, intake
-/tests        unit + golden tests for the deterministic modules (92 tests)
-```
+Load-bearing legal sources, verified against official publishers:
 
----
+- SSA, *Overpayments* and forms [SSA-632 (waiver)][ssa-632] and [SSA-561 (reconsideration)][ssa-561]; EM-25029 REV (50% Title II default withholding, effective 2025-04-25).
+- *20 CFR* [§404.510][cfr-510] (without-fault factors) and [§404.909][cfr-909] (reconsideration window), via Cornell LII.
+- Ontario: [Limitations Act, 2002][on-limit]; [Rules of the Small Claims Court (O. Reg. 258/98)][on-scc].
+- British Columbia: [Limitation Act, SBC 2012][bc-limit].
+- California: [Code of Civil Procedure §412.20][ccp-412]; [Fair Debt Buying Practices Act (Civ. Code §1788.50)][ca-fdbpa].
 
-## Running it locally
+Built with [Next.js][nextjs], [TypeScript][typescript], [Vitest][vitest], and [Ollama][ollama].
 
-```bash
-npm install
-cp .env.example .env       # adjust Ollama model names if you want live extraction
-npm run dev                # http://localhost:3000
-npm test                   # 92 deterministic unit + golden tests
-npm run build              # production build
-```
+[^ssa]: For SSDI overpayment notices issued on or after April 25, 2025, SSA's default is to withhold 50% of the monthly benefit until the debt is repaid, unless the person first requests a lower rate, reconsideration, or a waiver (SSA EM-25029 REV).
 
-Then open `http://localhost:3000` and pick a **judge's-choice sample** — the full
-pipeline runs live.
-
-### The LLM is local and optional
-
-Vision extraction, plain-language explanation, translation, and drafting run against
-a local [Ollama](https://ollama.com) server — **no paid cloud API**. Configure in
-`.env`:
-
-```bash
-OLLAMA_BASE_URL=http://localhost:11434
-MODEL_EXTRACT=llama3.2-vision   # any multimodal model: qwen2.5vl, llava, granite3.2-vision …
-MODEL_DRAFT=llama3.2            # any text model: qwen2.5, mistral …
-```
-
-To enable live uploads and model-polished text:
-
-```bash
-ollama pull llama3.2-vision     # reads an uploaded notice image
-ollama pull llama3.2            # explanation / translation / drafting
-ollama serve
-```
-
-**If Ollama is unreachable or a model is missing, the app still works.** The
-judge's-choice samples ship precomputed extractions, and explanation/drafting fall
-back to deterministic, citation-grounded text. Set `LLM_OFFLINE=1` to force this.
-Tests never touch a model.
-
-### Live demo (zero-setup, runs anywhere)
-
-Because of the offline fallback, Waive deploys to any Node host (e.g. Vercel) with a
-single env var and **no model** — the judge's-choice samples run end-to-end, the
-deterministic engine shows its work, and the grounded Q&A answers from the corpus.
-
-Deploy to Vercel:
-
-1. Import the repo at [vercel.com/new](https://vercel.com/new) (framework auto-detects
-   as Next.js — no extra config).
-2. Set one environment variable: **`LLM_OFFLINE=1`**.
-3. Deploy. The sample board, clock, remedy routing, citations, and "Ask about your
-   notice" all work. *(Live image upload, EN→ES translation, and model-polished text
-   need a local Ollama and so run only on a local machine.)*
-
-`npm run build` is the build command; nothing else is required.
-
----
-
-## The scalability story — add an injustice in ~5 files, zero engine changes
-
-The engine is domain-blind. To add a new injustice you implement the
-[`RulePack`](engine/types.ts) interface; you never touch `runPipeline`.
-
-1. **`packs/<id>/`** — implement `computeDeadlines`, `routeRemedy`,
-   `checkPresumptions`, the `intake` questions, and the `documents` templates.
-   Keep all legal logic deterministic and citation-tagged. Reuse the engine's date
-   math ([`addDays`](engine/dates.ts), `rollForwardToBusinessDay`, …).
-2. **`corpus/<id>.json`** — add a citation entry per rule snippet (paraphrased
-   summary in your own words, a **real verified** `officialCitation` + `sourceUrl`,
-   or a clearly-marked `TODO_CITATION`). Spread it into [corpus/index.ts](corpus/index.ts).
-3. **`packs/index.ts`** — `register(yourPack)`.
-4. **`samples/index.ts`** — add a judge's-choice sample (and watermarked artwork in
-   `public/samples/`).
-5. **`tests/packs/<id>.test.ts`** — golden tests for the deadline math and each
-   presumption/defence.
-
-That's the whole story the `answer` pack tells: a different **injustice** (a debt
-lawsuit) — and within it, three **jurisdictions** across two countries — run through
-the identical pipeline. Each jurisdiction is a `DebtJurisdiction` profile
-([packs/answer/jurisdictions.ts](packs/answer/jurisdictions.ts)) with its verified
-deadline, limitation period, court/forms, and citations; `makeDebtPack(profile)`
-turns it into a pack. Adding Alberta or New York is one more profile.
-
----
-
-## Testing & explainability
-
-```bash
-npm test
-```
-
-- The deterministic modules have real unit + **golden** tests (fixed input → fixed
-  expected derivation + citations) — the deadline engine and the presumption /
-  defence checkers especially.
-- Every deterministic output exposes a human-readable **derivation string**, so the
-  team can explain any number on stage. "How was this deadline computed?" is a test
-  case, and the UI shows the derivation under **"Show your work"**.
-- Integrity routing is tested: an at-fault SSDI claimant who can pay is **not** sent
-  to a waiver; an admitted Ontario debt is **not** given a manufactured defence.
-
----
-
-## Citation discipline & the `TODO_CITATION` list
-
-Every legal claim shown in the UI links to a real, verified source. We verified the
-load-bearing citations against official sources:
-
-- **SSA**: forms SSA-561 / SSA-632-BK / SSA-634 (ssa.gov), the 30-day collection
-  hold, EM-25029 REV (50% Title II default, eff. 2025-04-25), and 20 CFR
-  404.506–404.510 / 404.909 (the without-fault, fault, waiver, and reconsideration
-  rules).
-- **Ontario**: Limitations Act, 2002 (ss. 4, 5, 13), Rules of the Small Claims Court
-  O. Reg. 258/98 (r. 9.01 Defence, r. 11 default), and CLPA s. 53 (assignment).
-- **British Columbia**: Limitation Act, SBC 2012 (ss. 6, 24), Small Claims Rules
-  B.C. Reg. 261/93 (r. 3 Reply/default), and Law and Equity Act s. 36 (assignment).
-- **California**: Code of Civil Procedure §§ 412.20 (30-day response), 585 (default),
-  337 (4-yr limit), 360 (acknowledgment), and the Fair Debt Buying Practices Act
-  (Civ. Code §§ 1788.50–1788.52).
-
-**Outstanding `TODO_CITATION`: none.** Every citation rendered in the UI resolves to
-a real, verified source (a test enforces this — see
-[tests/packs/benefits.test.ts](tests/packs/benefits.test.ts) and
-[tests/packs/answer.test.ts](tests/packs/answer.test.ts)).
-
-Two items are correct but worth a domain-expert second look before real-world use:
-the COVID-19 "pandemic period" exact date bounds (`ssa-without-fault-pandemic`), and
-whether the local jurisdiction/venue (Small Claims vs. Superior Court) matches the
-served claim in `answer`. These are scope/precision caveats, not fabricated
-citations.
-
----
-
-## Status — built phase by phase, green after each
-
-- [x] Phase 0 — Scaffold
-- [x] Phase 1 — Engine core (domain-blind)
-- [x] Phase 2 — `benefits` pack (deterministic, citation-backed)
-- [x] Phase 3 — LLM layer (local Ollama, grounded, offline fallback)
-- [x] Phase 4 — UI / transformation reveal
-- [x] Phase 5 — Seed samples + judge's-choice board
-- [x] Phase 6 — `answer` pack (Ontario) + cross-domain reveal
-- [x] Phase 7 — Hardening + accessibility
-- [x] Phase 8 — Deliverables (this README, `DEMO_SCRIPT.md`)
-
-See [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) for the 2–3 minute walkthrough.
+[ssa-632]: https://www.ssa.gov/forms/ssa-632.html
+[ssa-561]: https://www.ssa.gov/forms/ssa-561.html
+[cfr-510]: https://www.law.cornell.edu/cfr/text/20/404.510
+[cfr-909]: https://www.law.cornell.edu/cfr/text/20/404.909
+[on-limit]: https://www.ontario.ca/laws/statute/02l24
+[on-scc]: https://www.ontario.ca/laws/regulation/980258
+[bc-limit]: https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/12013_01
+[ccp-412]: https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CCP&sectionNum=412.20
+[ca-fdbpa]: https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1788.50
+[nextjs]: https://nextjs.org
+[typescript]: https://www.typescriptlang.org
+[vitest]: https://vitest.dev
+[ollama]: https://ollama.com
