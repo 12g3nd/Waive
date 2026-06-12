@@ -37,18 +37,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Ask a question first." }, { status: 400 });
   }
 
+  const language = body.language ?? "en";
+
   // A greeting or filler ("hi", "thanks", "test") is not a question about the notice —
   // answer it as smalltalk and steer back on-topic, never with unprompted legal advice.
   if (isSmalltalk(question)) {
     return NextResponse.json({
       ok: true,
-      answer: composeSmalltalkReply(),
+      answer: composeSmalltalkReply(language),
       source: "smalltalk",
       citations: [],
     });
   }
-
-  const language = body.language ?? "en";
 
   // Build ONE ordered list of citations, used both as the numbered sources handed to
   // the model AND as what we return — so an inline [1]/[2] in the answer maps straight
@@ -97,7 +97,7 @@ export async function POST(req: Request) {
   // No model reachable → compose straight from the sources (still grounded, not generic).
   return NextResponse.json({
     ok: true,
-    answer: composeOfflineAnswer(retrieved.length ? retrieved : broad),
+    answer: composeOfflineAnswer(retrieved.length ? retrieved : broad, language),
     source: "retrieval",
     citations,
   });

@@ -1,6 +1,7 @@
 import { InMemoryCitationResolver, type CitationEntry, type ResolvedCitation } from "@/engine";
 import { allCitations } from "@/corpus";
 import type { AskSource } from "@/lib/api-types";
+import { t as tr } from "@/lib/i18n";
 
 /**
  * Grounded Q&A retrieval over the citation corpus.
@@ -92,8 +93,8 @@ export function isSmalltalk(question: string): boolean {
 }
 
 /** A warm nudge back on-topic for smalltalk, instead of unprompted legal advice. */
-export function composeSmalltalkReply(): string {
-  return "Hi! I can only answer questions about this specific notice — your deadline, the remedy you're routed to, and the rules behind them. Try one of the example questions below, or ask me something like “What is my deadline?” or “What happens if I do nothing?”";
+export function composeSmalltalkReply(language = "en"): string {
+  return tr(language, "ask.smalltalk");
 }
 
 function tokenize(text: string): string[] {
@@ -164,15 +165,20 @@ export function toResolved(entries: RetrievedEntry[]): ResolvedCitation[] {
   return entries.map((e) => ({ ...e, usedFor: ["Answer to your question"] }));
 }
 
-/** Offline answer: compose directly from the retrieved corpus summaries — no model. */
-export function composeOfflineAnswer(entries: RetrievedEntry[]): string {
+/**
+ * Offline answer: compose directly from the retrieved corpus summaries — no model.
+ * The framing sentences are localized; each rule's topic/summary stays as the verbatim
+ * (English) corpus text, since those are quoted sources.
+ */
+export function composeOfflineAnswer(entries: RetrievedEntry[], language = "en"): string {
   if (entries.length === 0) {
-    return "I couldn't match your question to a rule in our sources. For anything specific, have a legal-aid clinic review your notice — this is information, not legal advice.";
+    return tr(language, "ask.offlineEmpty");
   }
   const parts = entries.map((e) => `• ${e.topic}: ${e.summary}`);
-  return `Here is what the most relevant rules say about your notice:\n\n${parts.join(
-    "\n\n",
-  )}\n\nThis is information, not legal advice.`;
+  return `${tr(language, "ask.offlinePrefix")}\n\n${parts.join("\n\n")}\n\n${tr(
+    language,
+    "ask.offlineSuffix",
+  )}`;
 }
 
 /** Build the grounded prompt for the model to interpret + answer in plain language. */

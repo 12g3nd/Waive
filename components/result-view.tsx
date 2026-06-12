@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { RotateCcw, Building2, Hash, CircleDollarSign, User, Loader2 } from "lucide-react";
 import type { PipelineResult } from "@/engine";
-import { t } from "@/lib/i18n";
+import { t, askSuggestions } from "@/lib/i18n";
 import { diffDays, humanDate } from "@/engine/dates";
 import { formatMoney } from "@/engine/format";
 import type { LlmStatus } from "@/lib/llm";
@@ -22,19 +22,6 @@ import { CitationsPanel } from "@/components/citations-panel";
 import { ConfidencePanel } from "@/components/confidence-panel";
 import { AskPanel } from "@/components/ask-panel";
 import { LanguageToggle } from "@/components/language-toggle";
-
-const ASK_SUGGESTIONS: Record<string, string[]> = {
-  benefits: [
-    "Can this debt be cancelled?",
-    "What happens if I do nothing?",
-    "How do I know if I'm at fault?",
-  ],
-  answer: [
-    "Can this debt be too old to collect?",
-    "What if I miss the deadline?",
-    "Do they have to prove they own it?",
-  ],
-};
 
 function buildGrounding(result: PipelineResult): string {
   const e = result.extraction;
@@ -234,7 +221,7 @@ export function ResultView({
               language={language}
               grounding={buildGrounding(result)}
               caseSources={result.citations}
-              suggestions={ASK_SUGGESTIONS[result.domain] ?? ["What does this mean?", "What is my deadline?"]}
+              suggestions={askSuggestions(language, result.domain)}
             />
           </div>
           {refineSlot && (

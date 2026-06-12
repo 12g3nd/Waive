@@ -68,6 +68,12 @@ const en: Dict = {
   "ask.askAnother": "ask another",
   "ask.errorGeneric": "Something went wrong.",
   "ask.errorNetwork": "Couldn’t reach the server. Try again.",
+  "ask.smalltalk":
+    "Hi! I can only answer questions about this specific notice — your deadline, the remedy you’re routed to, and the rules behind them. Try one of the example questions below, or ask me something like “What is my deadline?” or “What happens if I do nothing?”",
+  "ask.offlineEmpty":
+    "I couldn’t match your question to a rule in our sources. For anything specific, have a legal-aid clinic review your notice — this is information, not legal advice.",
+  "ask.offlinePrefix": "Here is what the most relevant rules say about your notice:",
+  "ask.offlineSuffix": "This is information, not legal advice.",
 
   // Document preview
   "doc.yourDraft": "Your draft",
@@ -177,6 +183,12 @@ const es: Dict = {
   "ask.askAnother": "preguntar otra",
   "ask.errorGeneric": "Algo salió mal.",
   "ask.errorNetwork": "No se pudo conectar al servidor. Inténtalo de nuevo.",
+  "ask.smalltalk":
+    "¡Hola! Solo puedo responder preguntas sobre este aviso en particular: tu plazo, la opción a la que te dirigimos y las reglas detrás de ellas. Prueba una de las preguntas de ejemplo de abajo, o pregúntame algo como «¿Cuál es mi plazo?» o «¿Qué pasa si no hago nada?».",
+  "ask.offlineEmpty":
+    "No pude relacionar tu pregunta con una regla de nuestras fuentes. Para algo específico, pide a una clínica de ayuda legal que revise tu aviso: esto es información, no asesoría legal.",
+  "ask.offlinePrefix": "Esto es lo que dicen las reglas más relevantes sobre tu aviso:",
+  "ask.offlineSuffix": "Esto es información, no asesoría legal.",
 
   "doc.yourDraft": "Tu borrador",
   "doc.structuredDraft": "borrador estructurado",
@@ -281,6 +293,12 @@ const fr: Dict = {
   "ask.askAnother": "poser une autre",
   "ask.errorGeneric": "Une erreur est survenue.",
   "ask.errorNetwork": "Impossible de joindre le serveur. Réessayez.",
+  "ask.smalltalk":
+    "Bonjour ! Je ne peux répondre qu’aux questions sur cet avis précis : votre délai, l’option vers laquelle nous vous orientons et les règles qui les sous-tendent. Essayez une des questions d’exemple ci-dessous, ou demandez-moi par exemple « Quel est mon délai ? » ou « Que se passe-t-il si je ne fais rien ? ».",
+  "ask.offlineEmpty":
+    "Je n’ai pas pu relier votre question à une règle de nos sources. Pour tout cas précis, faites examiner votre avis par une clinique d’aide juridique : ceci est de l’information, pas un conseil juridique.",
+  "ask.offlinePrefix": "Voici ce que disent les règles les plus pertinentes sur votre avis :",
+  "ask.offlineSuffix": "Ceci est de l’information, pas un conseil juridique.",
 
   "doc.yourDraft": "Votre brouillon",
   "doc.structuredDraft": "brouillon structuré",
@@ -337,6 +355,60 @@ const fr: Dict = {
 };
 
 const DICTS: Record<string, Dict> = { en, es, fr };
+
+/**
+ * Example questions for the Ask panel, by language then domain. These are clickable
+ * prompts, so they need to read naturally in the chosen language — not just the answer.
+ * `_` is the fallback list for any domain without its own suggestions.
+ */
+const ASK_SUGGESTIONS: Record<string, Record<string, string[]>> = {
+  en: {
+    benefits: [
+      "Can this debt be cancelled?",
+      "What happens if I do nothing?",
+      "How do I know if I’m at fault?",
+    ],
+    answer: [
+      "Can this debt be too old to collect?",
+      "What if I miss the deadline?",
+      "Do they have to prove they own it?",
+    ],
+    _: ["What does this mean?", "What is my deadline?"],
+  },
+  es: {
+    benefits: [
+      "¿Se puede cancelar esta deuda?",
+      "¿Qué pasa si no hago nada?",
+      "¿Cómo sé si tengo la culpa?",
+    ],
+    answer: [
+      "¿Esta deuda puede ser demasiado antigua para cobrarla?",
+      "¿Qué pasa si no cumplo el plazo?",
+      "¿Tienen que probar que es suya?",
+    ],
+    _: ["¿Qué significa esto?", "¿Cuál es mi plazo?"],
+  },
+  fr: {
+    benefits: [
+      "Cette dette peut-elle être annulée ?",
+      "Que se passe-t-il si je ne fais rien ?",
+      "Comment savoir si je suis en faute ?",
+    ],
+    answer: [
+      "Cette dette est-elle trop ancienne pour être réclamée ?",
+      "Et si je manque le délai ?",
+      "Doivent-ils prouver qu’elle leur appartient ?",
+    ],
+    _: ["Qu’est-ce que cela signifie ?", "Quel est mon délai ?"],
+  },
+};
+
+/** Localized example questions for a domain, falling back to English then to a generic pair. */
+export function askSuggestions(language: string, domain: string): string[] {
+  const byDomain = ASK_SUGGESTIONS[language] ?? ASK_SUGGESTIONS.en!;
+  const fallback = ASK_SUGGESTIONS.en!;
+  return byDomain[domain] ?? byDomain._ ?? fallback[domain] ?? fallback._!;
+}
 
 /**
  * Look up a static UI string in the given language, falling back to English (then to
