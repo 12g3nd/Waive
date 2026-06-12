@@ -80,6 +80,9 @@ function AppPage() {
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [language, setLanguage] = useState("en");
   const [busy, setBusy] = useState(false);
+  // Distinct from `busy`: true only while re-running for a language switch, so the
+  // result view can show a "Translating…" signifier (and not for intake refines).
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     fetch("/api/samples")
@@ -262,9 +265,17 @@ function AppPage() {
     [run, provider],
   );
 
-  function handleLanguage(lang: string) {
+  async function handleLanguage(lang: string) {
+    if (lang === language) return;
     setLanguage(lang);
-    if (phase.kind === "result") void rerun(phase.origin, lang);
+    if (phase.kind === "result") {
+      setTranslating(true);
+      try {
+        await rerun(phase.origin, lang);
+      } finally {
+        setTranslating(false);
+      }
+    }
   }
 
   if (phase.kind === "review") {
@@ -365,6 +376,7 @@ function AppPage() {
           language={language}
           onLanguage={handleLanguage}
           busy={busy}
+          translating={translating}
           onReset={() => setPhase({ kind: "idle" })}
           refineSlot={refineSlot}
         />

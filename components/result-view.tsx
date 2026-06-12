@@ -1,8 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { RotateCcw, Building2, Hash, CircleDollarSign, User } from "lucide-react";
+import { RotateCcw, Building2, Hash, CircleDollarSign, User, Loader2 } from "lucide-react";
 import type { PipelineResult } from "@/engine";
+import { t } from "@/lib/i18n";
 import { diffDays, humanDate } from "@/engine/dates";
 import { formatMoney } from "@/engine/format";
 import type { LlmStatus } from "@/lib/llm";
@@ -55,6 +56,8 @@ interface ResultViewProps {
   language: string;
   onLanguage: (lang: string) => void;
   busy: boolean;
+  /** True only while re-translating after a language switch — drives the overlay. */
+  translating?: boolean;
   onReset: () => void;
   refineSlot?: ReactNode;
 }
@@ -100,6 +103,7 @@ export function ResultView({
   language,
   onLanguage,
   busy,
+  translating = false,
   onReset,
   refineSlot,
 }: ResultViewProps) {
@@ -113,7 +117,26 @@ export function ResultView({
   const delay = (i: number) => ({ animationDelay: `${i * 90}ms` });
 
   return (
-    <div lang={language} className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+    <div
+      lang={language}
+      className="relative mx-auto w-full max-w-5xl space-y-6 px-4 py-8 sm:px-6"
+      aria-busy={translating}
+    >
+      {/* While switching language the page re-translates in place — dim it and show a
+          clear spinner so the person knows it's working, not frozen. */}
+      {translating && (
+        <div
+          className="absolute inset-0 z-20 flex items-start justify-center bg-paper/70 backdrop-blur-[1px]"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="sticky top-24 mt-24 inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium shadow-lg">
+            <Loader2 className="size-4 animate-spin text-primary" aria-hidden />
+            {t(language, "common.translating")}
+          </div>
+        </div>
+      )}
+
       {/* Controls */}
       <div className="flex items-center justify-between gap-3">
         <Badge variant={llm.mode === "offline" ? "outline" : "primary"}>
