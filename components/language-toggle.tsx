@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 const LANGS = [
   { code: "en", label: "EN", full: "English" },
   { code: "es", label: "ES", full: "Español" },
+  { code: "fr", label: "FR", full: "Français" },
 ] as const;
 
 interface LanguageToggleProps {
