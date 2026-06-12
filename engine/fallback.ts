@@ -11,6 +11,7 @@ import type {
   PlainLanguageExplanation,
   PresumptionResult,
   RulePack,
+  TranslateRequest,
 } from "./types";
 
 export class LlmUnavailableError extends Error {
@@ -175,5 +176,10 @@ export class DeterministicFallbackLlm implements LlmPort {
 
   async draft(req: DraftRequest): Promise<DraftedDocument> {
     return buildDraft(req);
+  }
+
+  /** No model → keep the (English) source text. The pipeline never breaks on this. */
+  async translate(req: TranslateRequest): Promise<Record<string, string>> {
+    return req.strings;
   }
 }

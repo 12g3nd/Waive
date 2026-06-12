@@ -10,10 +10,12 @@ import {
   type NoticeExtraction,
   type PlainLanguageExplanation,
   type RulePack,
+  type TranslateRequest,
 } from "@/engine";
 import type { LlmConfig } from "./config";
 import { extractWithOllama } from "./extraction";
 import { ollamaChat, parseJsonLoose } from "./ollama";
+import { TRANSLATE_RULES, mergeTranslations } from "./translate";
 
 function languageName(code: string): string {
   const map: Record<string, string> = { en: "English", es: "Spanish (Español)", fr: "French (Français)" };
@@ -129,6 +131,31 @@ export class OllamaLlm implements LlmPort {
       };
     } catch {
       return base; // deterministic-fallback
+    }
+  }
+
+  async translate(req: TranslateRequest): Promise<Record<string, string>> {
+    if (req.language === "en" || Object.keys(req.strings).length === 0) return req.strings;
+    try {
+      const content = await ollamaChat(this.cfg, {
+        model: this.cfg.modelDraft,
+        format: "json",
+        timeoutMs: this.cfg.timeoutMs,
+        messages: [
+          { role: "system", content: TRANSLATE_RULES },
+          {
+            role: "user",
+            content: `Translate the values into ${languageName(req.language)}:\n${JSON.stringify(
+              req.strings,
+              null,
+              2,
+            )}`,
+          },
+        ],
+      });
+      return mergeTranslations(req.strings, parseJsonLoose(content));
+    } catch {
+      return req.strings; // keep the verified English on any failure
     }
   }
 }

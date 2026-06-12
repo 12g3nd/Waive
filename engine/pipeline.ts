@@ -1,7 +1,10 @@
 import { assessConfidence } from "./confidence";
 import type {
   CitationReference,
+  ConfidenceReport,
   DeadlineResult,
+  DraftedDocument,
+  LlmPort,
   NoticeExtraction,
   PipelineDeps,
   PipelineInput,
@@ -65,6 +68,20 @@ export async function runPipeline(
     pack,
   });
 
+  // 8. LOCALIZE the remaining engine-authored display strings — remedy, deadlines,
+  //    presumptions, the draft's headings/checklist, and the escalation note. The
+  //    explanation and draft prose are already written in `language`; this covers the
+  //    rest so the whole page reads in one language. English (or any failure) is a
+  //    no-op that keeps the verified English text.
+  const localized =
+    language === "en"
+      ? { remedy, deadlines, presumptions, confidence, draftedDocument }
+      : await localizeResult(
+          language,
+          { remedy, deadlines, presumptions, confidence, draftedDocument },
+          deps.llm,
+        );
+
   const generatedAt = (deps.now ?? new Date()).toISOString();
 
   return {
@@ -73,15 +90,132 @@ export async function runPipeline(
     domain: extraction.domain,
     language,
     extraction,
-    deadlines,
-    remedy,
-    presumptions,
+    deadlines: localized.deadlines,
+    remedy: localized.remedy,
+    presumptions: localized.presumptions,
     explanation,
-    draftedDocument,
+    draftedDocument: localized.draftedDocument,
     citations,
-    confidence,
+    confidence: localized.confidence,
     usedModel: usedModel || explanation.source === "llm" || draftedDocument.source === "llm",
     generatedAt,
+  };
+}
+
+interface LocalizableParts {
+  remedy: RemedyDecision;
+  deadlines: DeadlineResult;
+  presumptions: PresumptionResult;
+  confidence: ConfidenceReport;
+  draftedDocument: DraftedDocument;
+}
+
+/**
+ * Run the engine-authored display strings (which are deterministic English from the
+ * rule pack) through the model's translate boundary and stitch the translations back
+ * in. Keyed so order can't scramble it; every value falls back to its English source,
+ * so a partial or failed translation degrades to English rather than breaking. The
+ * legal logic is untouched — only display text changes. Citations stay verbatim
+ * (quoted sources), as does anything the translator leaves blank.
+ */
+async function localizeResult(
+  language: string,
+  parts: LocalizableParts,
+  llm: LlmPort,
+): Promise<LocalizableParts> {
+  const { remedy, deadlines, presumptions, confidence, draftedDocument } = parts;
+
+  const src: Record<string, string> = {};
+  const put = (key: string, value?: string) => {
+    if (value && value.trim()) src[key] = value;
+  };
+
+  put("r.label", remedy.selected.label);
+  put("r.why", remedy.selected.why);
+  put("r.note", remedy.integrityNote);
+  remedy.alternatives.forEach((a, i) => {
+    put(`r.alt.${i}.label`, a.label);
+    put(`r.alt.${i}.whyNot`, a.whyNot);
+  });
+  deadlines.deadlines.forEach((d, i) => {
+    put(`d.${i}.label`, d.label);
+    put(`d.${i}.rule`, d.rule);
+  });
+  put("pause.desc", deadlines.pauseWindow?.description);
+  presumptions.catches.forEach((c, i) => {
+    put(`p.${i}.headline`, c.headline);
+    put(`p.${i}.explanation`, c.explanation);
+  });
+  put("conf.reason", confidence.escalationReason);
+  put("doc.title", draftedDocument.title);
+  draftedDocument.body.forEach((s, i) => put(`doc.sec.${i}.heading`, s.heading));
+  draftedDocument.filingChecklist.forEach((c, i) => put(`doc.chk.${i}.text`, c.text));
+
+  if (Object.keys(src).length === 0) return parts;
+
+  let out: Record<string, string>;
+  try {
+    out = await llm.translate({ language, strings: src });
+  } catch {
+    return parts; // translation failed → keep the verified English
+  }
+  const g = (key: string, fallback: string) => {
+    const v = out[key];
+    return typeof v === "string" && v.trim() ? v : fallback;
+  };
+
+  return {
+    remedy: {
+      ...remedy,
+      selected: {
+        ...remedy.selected,
+        label: g("r.label", remedy.selected.label),
+        why: g("r.why", remedy.selected.why),
+      },
+      integrityNote: remedy.integrityNote ? g("r.note", remedy.integrityNote) : remedy.integrityNote,
+      alternatives: remedy.alternatives.map((a, i) => ({
+        ...a,
+        label: g(`r.alt.${i}.label`, a.label),
+        whyNot: g(`r.alt.${i}.whyNot`, a.whyNot),
+      })),
+    },
+    deadlines: {
+      ...deadlines,
+      deadlines: deadlines.deadlines.map((d, i) => ({
+        ...d,
+        label: g(`d.${i}.label`, d.label),
+        rule: g(`d.${i}.rule`, d.rule),
+      })),
+      pauseWindow: deadlines.pauseWindow
+        ? { ...deadlines.pauseWindow, description: g("pause.desc", deadlines.pauseWindow.description) }
+        : deadlines.pauseWindow,
+    },
+    presumptions: {
+      ...presumptions,
+      catches: presumptions.catches.map((c, i) => ({
+        ...c,
+        headline: g(`p.${i}.headline`, c.headline),
+        explanation: g(`p.${i}.explanation`, c.explanation),
+      })),
+    },
+    confidence: {
+      ...confidence,
+      escalationReason: confidence.escalationReason
+        ? g("conf.reason", confidence.escalationReason)
+        : confidence.escalationReason,
+    },
+    draftedDocument: {
+      ...draftedDocument,
+      title: g("doc.title", draftedDocument.title),
+      body: draftedDocument.body.map((s, i) => ({
+        ...s,
+        heading: g(`doc.sec.${i}.heading`, s.heading),
+      })),
+      filingChecklist: draftedDocument.filingChecklist.map((c, i) => ({
+        ...c,
+        text: g(`doc.chk.${i}.text`, c.text),
+      })),
+    },
   };
 }
 

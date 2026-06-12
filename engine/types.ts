@@ -214,6 +214,12 @@ export interface PlainLanguageExplanation {
   source: "llm" | "deterministic-fallback";
 }
 
+export interface TranslateRequest {
+  language: string;
+  /** Stable key -> already-vetted English display text. The model returns the same keys. */
+  strings: Record<string, string>;
+}
+
 export interface DraftedSection {
   id: string;
   heading: string;
@@ -239,6 +245,13 @@ export interface LlmPort {
   extract(req: ExtractionRequest, pack: RulePack): Promise<NoticeExtraction>;
   explain(req: ExplainRequest): Promise<PlainLanguageExplanation>;
   draft(req: DraftRequest): Promise<DraftedDocument>;
+  /**
+   * Translate a bag of already-vetted display strings into req.language, preserving
+   * keys and every number/date/form/citation verbatim. Returns key -> translated;
+   * callers fall back to the English source for any missing/blank key. Treated as
+   * fallible (returns source text on failure) and a no-op for English.
+   */
+  translate(req: TranslateRequest): Promise<Record<string, string>>;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

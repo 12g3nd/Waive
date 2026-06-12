@@ -12,10 +12,12 @@ import {
   type NoticeSource,
   type PlainLanguageExplanation,
   type RulePack,
+  type TranslateRequest,
 } from "@/engine";
 import type { LlmConfig } from "./config";
 import { SYSTEM_PROMPT, userPrompt, normalizeExtraction } from "./extraction";
 import { parseJsonLoose } from "./ollama";
+import { TRANSLATE_RULES, mergeTranslations } from "./translate";
 
 function languageName(code: string): string {
   const map: Record<string, string> = { en: "English", es: "Spanish (Español)", fr: "French (Français)" };
@@ -159,6 +161,30 @@ export class AnthropicLlm implements LlmPort {
       };
     } catch {
       return base; // deterministic-fallback
+    }
+  }
+
+  async translate(req: TranslateRequest): Promise<Record<string, string>> {
+    if (req.language === "en" || Object.keys(req.strings).length === 0) return req.strings;
+    try {
+      const msg = await this.client.messages.create({
+        model: this.cfg.anthropicModel,
+        max_tokens: 4000,
+        system: TRANSLATE_RULES,
+        messages: [
+          {
+            role: "user",
+            content: `Translate the values into ${languageName(req.language)}:\n${JSON.stringify(
+              req.strings,
+              null,
+              2,
+            )}`,
+          },
+        ],
+      });
+      return mergeTranslations(req.strings, parseJsonLoose(textOf(msg)));
+    } catch {
+      return req.strings; // keep the verified English on any failure
     }
   }
 }

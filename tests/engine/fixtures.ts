@@ -9,6 +9,7 @@ import type {
   NoticeExtraction,
   PlainLanguageExplanation,
   RulePack,
+  TranslateRequest,
 } from "@/engine";
 
 /**
@@ -183,5 +184,11 @@ export class FakeModelLlm implements LlmPort {
       filingChecklist: req.spec.filingChecklist,
       source: "llm",
     };
+  }
+  async translate(req: TranslateRequest): Promise<Record<string, string>> {
+    // Tag each value so a test can prove the translate boundary ran and was applied.
+    return Object.fromEntries(
+      Object.entries(req.strings).map(([k, v]) => [k, `[${req.language}] ${v}`]),
+    );
   }
 }

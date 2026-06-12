@@ -89,6 +89,49 @@ describe("runPipeline — domain-blind orchestration", () => {
     expect(result.extraction.rawText).toBe("extracted-by-fake-model");
   });
 
+  it("localizes engine-authored display strings through the translate boundary for non-English", async () => {
+    const result = await runPipeline(
+      {
+        packId: "fake",
+        userFacts: { answers: { flag: true, atFault: false } },
+        source: { kind: "extraction", extraction: highConfidenceExtraction() },
+        language: "es",
+      },
+      makeDeps({ llm: new FakeModelLlm() }),
+    );
+
+    // FakeModelLlm.translate tags each value "[es] …", so every engine-authored string
+    // the user sees must carry the tag — remedy, deadlines, presumption, draft heading,
+    // and the filing checklist (the exact spots that previously stayed English).
+    expect(result.remedy.selected.label).toMatch(/^\[es\] /);
+    expect(result.remedy.selected.why).toMatch(/^\[es\] /);
+    expect(result.remedy.alternatives[0]?.label).toMatch(/^\[es\] /);
+    expect(result.deadlines.deadlines[0]?.label).toMatch(/^\[es\] /);
+    expect(result.deadlines.deadlines[0]?.rule).toMatch(/^\[es\] /);
+    expect(result.deadlines.pauseWindow?.description).toMatch(/^\[es\] /);
+    expect(result.presumptions.catches[0]?.headline).toMatch(/^\[es\] /);
+    expect(result.draftedDocument.body[0]?.heading).toMatch(/^\[es\] /);
+    expect(result.draftedDocument.filingChecklist[0]?.text).toMatch(/^\[es\] /);
+
+    // The legal logic is untouched: ids, dates, and routing don't change.
+    expect(result.remedy.selected.id).toBe("fight");
+    expect(result.deadlines.deadlines[0]?.dateISO).toBe("2025-05-05");
+  });
+
+  it("leaves English untouched (no translate call) — the default path", async () => {
+    const result = await runPipeline(
+      {
+        packId: "fake",
+        userFacts: { answers: { flag: true, atFault: false } },
+        source: { kind: "extraction", extraction: highConfidenceExtraction() },
+        language: "en",
+      },
+      makeDeps({ llm: new FakeModelLlm() }),
+    );
+    expect(result.remedy.selected.label).toBe("Dispute it");
+    expect(result.deadlines.deadlines[0]?.label).toBe("Respond by");
+  });
+
   it("escalates when there is no anchor date to start the clock", async () => {
     const result = await runPipeline(
       {
