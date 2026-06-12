@@ -1,13 +1,15 @@
 import { BookMarked, ExternalLink, ShieldCheck, TriangleAlert } from "lucide-react";
 import type { ResolvedCitation } from "@/engine";
 import { Card, CardContent } from "@/components/ui/card";
+import { t } from "@/lib/i18n";
 
 interface CitationsPanelProps {
   citations: ResolvedCitation[];
+  language: string;
 }
 
 /** Every legal claim links to its real source. Unverified entries are flagged, not hidden. */
-export function CitationsPanel({ citations }: CitationsPanelProps) {
+export function CitationsPanel({ citations, language }: CitationsPanelProps) {
   if (citations.length === 0) return null;
   const verifiedCount = citations.filter((c) => c.verified).length;
 
@@ -17,10 +19,12 @@ export function CitationsPanel({ citations }: CitationsPanelProps) {
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <BookMarked className="size-5 text-primary" />
-            <h2 className="font-display text-xl font-semibold tracking-tight">Sources</h2>
+            <h2 className="font-display text-xl font-semibold tracking-tight">
+              {t(language, "citations.title")}
+            </h2>
           </div>
           <span className="text-xs text-muted-foreground">
-            {verifiedCount}/{citations.length} verified
+            {t(language, "citations.verifiedCount", { n: verifiedCount, m: citations.length })}
           </span>
         </div>
 
@@ -38,17 +42,17 @@ export function CitationsPanel({ citations }: CitationsPanelProps) {
                     {c.officialCitation}
                   </p>
                   <p className="text-[0.7rem] text-muted-foreground">
-                    Used for: {c.usedFor.join(" · ")}
+                    {t(language, "citations.usedFor")} {c.usedFor.join(" · ")}
                   </p>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1.5">
                   {c.verified ? (
                     <span className="inline-flex items-center gap-1 text-[0.7rem] font-semibold text-safe">
-                      <ShieldCheck className="size-3.5" /> verified
+                      <ShieldCheck className="size-3.5" /> {t(language, "citations.verified")}
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-[0.7rem] font-semibold text-warn">
-                      <TriangleAlert className="size-3.5" /> unverified
+                      <TriangleAlert className="size-3.5" /> {t(language, "citations.unverified")}
                     </span>
                   )}
                   {c.sourceUrl && (
@@ -58,7 +62,7 @@ export function CitationsPanel({ citations }: CitationsPanelProps) {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-[0.72rem] font-medium text-primary hover:underline"
                     >
-                      source <ExternalLink className="size-3" />
+                      {t(language, "citations.source")} <ExternalLink className="size-3" />
                     </a>
                   )}
                 </div>

@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CitationChip } from "@/components/citation-chip";
 import { cn } from "@/lib/utils";
+import { t } from "@/lib/i18n";
 
 type Actor = "model" | "code";
 
@@ -63,7 +64,14 @@ function Step({ icon: Icon, actor, actorLabel, title, last, children }: StepShel
 
 interface DecisionTraceProps {
   result: PipelineResult;
+  language: string;
 }
+
+const STRENGTH_KEY: Record<string, string> = {
+  automatic: "presumption.automatic",
+  likely: "presumption.likely",
+  possible: "presumption.possible",
+};
 
 /**
  * The deterministic pipeline, made visible. This is the project's core claim
@@ -71,7 +79,7 @@ interface DecisionTraceProps {
  * every number, route, and catch below is computed by tested code and carries a
  * real citation. "Show your work" promoted to a first-class, auditable panel.
  */
-export function DecisionTrace({ result }: DecisionTraceProps) {
+export function DecisionTrace({ result, language }: DecisionTraceProps) {
   const { extraction: e, deadlines, remedy, presumptions, citations, confidence, usedModel } =
     result;
   const anchorDate = e.noticeDate ?? e.serviceOrReceiptDate;
@@ -85,12 +93,9 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
           <Workflow className="mt-0.5 size-5 shrink-0 text-primary" />
           <div>
             <h2 className="font-display text-xl font-semibold tracking-tight">
-              How Waive reached this
+              {t(language, "trace.title")}
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              The model only reads your notice into fields. Every deadline, route, and catch below
-              is computed by tested code and traces to a real source, nothing here is guessed.
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{t(language, "trace.intro")}</p>
           </div>
         </div>
 
@@ -99,22 +104,18 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
           <Step
             icon={ScanLine}
             actor="model"
-            actorLabel={usedModel ? "AI · reads" : "Input · read"}
-            title="Read your notice into fields"
+            actorLabel={usedModel ? t(language, "trace.actorAiReads") : t(language, "trace.actorInputRead")}
+            title={t(language, "trace.step1Title")}
           >
-            <p>
-              {usedModel
-                ? "A local AI model turned the letter into structured fields. It never decides your outcome."
-                : "Structured fields from this sample. No model needed to run everything below."}
-            </p>
+            <p>{usedModel ? t(language, "trace.step1Model") : t(language, "trace.step1Sample")}</p>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 rounded-lg border border-border bg-secondary/30 p-3 text-xs">
-              <Fact label="From" value={e.issuer} />
-              <Fact label="Type" value={e.claimType} />
+              <Fact label={t(language, "result.from")} value={e.issuer} />
+              <Fact label={t(language, "trace.factType")} value={e.claimType} />
               <Fact
-                label="Amount"
+                label={t(language, "result.amount")}
                 value={e.amount !== null ? formatMoney(e.amount, e.currency) : "—"}
               />
-              <Fact label="Dated" value={anchorDate ? humanDate(anchorDate) : "—"} />
+              <Fact label={t(language, "trace.factDated")} value={anchorDate ? humanDate(anchorDate) : "—"} />
             </dl>
           </Step>
 
@@ -122,8 +123,8 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
           <Step
             icon={CalendarClock}
             actor="code"
-            actorLabel="Code · computes"
-            title="Computed your deadline"
+            actorLabel={t(language, "trace.step2Actor")}
+            title={t(language, "trace.step2Title")}
           >
             <ul className="space-y-2.5">
               {deadlines.deadlines.map((d) => (
@@ -133,7 +134,7 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
                       {d.label}
                       {d.id === deadlines.primaryDeadlineId && (
                         <Badge variant="primary" className="ml-2 align-middle">
-                          your clock
+                          {t(language, "trace.yourClock")}
                         </Badge>
                       )}
                     </span>
@@ -154,8 +155,8 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
           <Step
             icon={Signpost}
             actor="code"
-            actorLabel="Code · routes"
-            title="Routed your remedy"
+            actorLabel={t(language, "trace.step3Actor")}
+            title={t(language, "trace.step3Title")}
             last={!hasCatches}
           >
             <div className="rounded-lg border border-primary/25 bg-primary/[0.06] p-3">
@@ -170,7 +171,7 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
                 <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warn" />
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-warn">
-                    Integrity check
+                    {t(language, "remedy.integrityCheck")}
                   </p>
                   <p className="mt-0.5 text-sm text-foreground/80">{remedy.integrityNote}</p>
                 </div>
@@ -183,8 +184,8 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
             <Step
               icon={ShieldCheck}
               actor="code"
-              actorLabel="Code · checks"
-              title="Checked the catches"
+              actorLabel={t(language, "trace.step4Actor")}
+              title={t(language, "trace.step4Title")}
               last
             >
               <ul className="space-y-2">
@@ -193,7 +194,7 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-sm font-semibold">{c.headline}</span>
                       <Badge variant={c.strength === "automatic" ? "safe" : "neutral"}>
-                        {c.strength}
+                        {STRENGTH_KEY[c.strength] ? t(language, STRENGTH_KEY[c.strength]!) : c.strength}
                       </Badge>
                     </div>
                     <p className="mt-1 text-sm text-foreground/75">{c.explanation}</p>
@@ -211,12 +212,10 @@ export function DecisionTrace({ result }: DecisionTraceProps) {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4 text-sm">
           <span className="inline-flex items-center gap-1.5 font-medium text-foreground/80">
             <BookMarked className="size-4 text-primary" />
-            {verifiedCount} of {citations.length} sources verified
+            {t(language, "trace.sourcesVerified", { n: verifiedCount, m: citations.length })}
           </span>
           {confidence.escalate && (
-            <span className="text-muted-foreground">
-              Low-confidence read, flagged for a legal-aid clinic to review.
-            </span>
+            <span className="text-muted-foreground">{t(language, "trace.lowConfidence")}</span>
           )}
         </div>
       </CardContent>

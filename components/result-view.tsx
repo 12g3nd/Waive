@@ -226,7 +226,7 @@ export function ResultView({
 
         <div className="space-y-6">
           <div className="animate-fade-up" style={delay(2)}>
-            <ConfidencePanel confidence={result.confidence} />
+            <ConfidencePanel confidence={result.confidence} language={language} />
           </div>
           <div className="animate-fade-up" style={delay(3)}>
             <AskPanel
@@ -247,7 +247,7 @@ export function ResultView({
             </div>
           )}
           <div className="animate-fade-up" style={delay(4)}>
-            <CitationsPanel citations={result.citations} />
+            <CitationsPanel citations={result.citations} language={language} />
           </div>
           <p className="px-1 text-xs leading-relaxed text-muted-foreground">
             <strong>{t(language, "result.disclaimerLead")}</strong>{" "}
@@ -258,7 +258,7 @@ export function ResultView({
 
       {/* The audit layer: the whole deterministic chain, made visible. */}
       <div className="animate-fade-up" style={delay(5)}>
-        <DecisionTrace result={result} />
+        <DecisionTrace result={result} language={language} />
       </div>
     </div>
   );
