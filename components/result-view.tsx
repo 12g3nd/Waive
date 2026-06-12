@@ -198,11 +198,7 @@ export function ResultView({
               domain={result.domain}
               language={language}
               grounding={buildGrounding(result)}
-              caseSources={result.citations.map((c) => ({
-                topic: c.topic,
-                summary: c.summary,
-                cite: c.officialCitation,
-              }))}
+              caseSources={result.citations}
               suggestions={ASK_SUGGESTIONS[result.domain] ?? ["What does this mean?", "What is my deadline?"]}
             />
           </div>
