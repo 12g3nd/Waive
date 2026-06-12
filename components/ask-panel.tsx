@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { MessagesSquare, Send, Loader2 } from "lucide-react";
 import type { ResolvedCitation } from "@/engine";
-import type { AskSource } from "@/lib/api-types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CitationChip } from "@/components/citation-chip";
@@ -15,7 +14,7 @@ interface AskPanelProps {
   language: string;
   grounding: string;
   /** The case's own citations, so answers ground in jurisdiction-correct rules. */
-  caseSources: AskSource[];
+  caseSources: ResolvedCitation[];
   suggestions: string[];
 }
 
@@ -27,6 +26,20 @@ interface AskResponse {
   source?: AskAnswerSource;
   citations?: ResolvedCitation[];
   error?: string;
+}
+
+/** Render the answer, turning the model's inline [1]/[2] refs into clickable source chips. */
+function renderAnswer(text: string, citations: ResolvedCitation[]) {
+  return text.split(/(\[\d+\])/g).map((part, i) => {
+    const m = /^\[(\d+)\]$/.exec(part);
+    if (m) {
+      const c = citations[Number(m[1]) - 1];
+      return c ? (
+        <CitationChip key={i} id={c.id} citations={citations} compact className="mx-0.5" />
+      ) : null; // drop a dangling [N] that has no matching source
+    }
+    return part;
+  });
 }
 
 export function AskPanel({ domain, language, grounding, caseSources, suggestions }: AskPanelProps) {
@@ -152,7 +165,9 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
               {t(language, "ask.askAnother")}
             </button>
           </div>
-          <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">{answer}</p>
+          <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+            {renderAnswer(answer, citations)}
+          </p>
           {citations.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {citations.map((c) => (
