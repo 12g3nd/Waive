@@ -14,6 +14,8 @@ Waive reads an intimidating official notice, finds the deadline and other import
 
 > **Information and document preparation (not professional legal advice).** Waive is a force-multiplier for legal-aid orgs and advocates.
 
+Read our full AI-disclosure [here][https://waivelegal.vercel.app/how-the-ai-works].
+
 ---
 
 ## Inspiration
@@ -144,4 +146,4 @@ Built with [Next.js][nextjs], [TypeScript][typescript], [Vitest][vitest], and [O
 [nextjs]: https://nextjs.org
 [typescript]: https://www.typescriptlang.org
 [vitest]: https://vitest.dev
-[ollama]: https://ollama.com
+[ollama]: https://ollama.com[ollama]: https://ollama.com
