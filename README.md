@@ -2,7 +2,7 @@
 
 **Stop losing by silence.**
 
-Waive reads an intimidating official notice, finds the deadline buried inside it, and routes the person to the remedy that already exists in law, while there is still time to use it.
+Waive reads an intimidating official notice, finds the deadline and other important information buried inside it, and routes the person to the solution that already exists in law, while there is still time to use it. **Our thesis is essentially that we want people (regardless of their socioeconomic status) to have access to tools that are free and accessible. You shouldn't have to be rich or have immense resources to respond to government notices.**
 
 [![Live demo](https://img.shields.io/badge/live%20demo-waivelegal.vercel.app-1a7f37?style=for-the-badge)](https://waivelegal.vercel.app)
 
@@ -12,17 +12,15 @@ Waive reads an intimidating official notice, finds the deadline buried inside it
 ![Tests](https://img.shields.io/badge/tests-105%20passing-2ea44f)
 ![Citations](https://img.shields.io/badge/legal%20claims-100%25%20cited-8a2be2)
 
-> **Information and document preparation, not legal advice.** Waive is a force-multiplier for legal-aid orgs and advocates, not a lawyer.
-
-<sub>This README doubles as our Devpost write-up. The "About the project" submission is everything from **Inspiration** onward.</sub>
+> **Information and document preparation (not professional legal advice).** Waive is a force-multiplier for legal-aid orgs and advocates.
 
 ---
 
 ## Inspiration
 
-Every year, millions of people receive a letter from the Social Security Administration telling them they owe money, sometimes thousands of dollars.[^ssa] Most of them genuinely do. Many do not. Either way, the letter tells you only what you owe and when collection starts. That is it. The remedy you might qualify for, the [waiver][ssa-632] that can erase the debt, the [reconsideration][ssa-561] that can pause it, the short window in which any of it has to happen, none of that is on the page.
+Every year, millions of people receive a letter from the Social Security Administration telling them they owe money, sometimes thousands of dollars.[^ssa] Most of them genuinely do. Many do not. Either way, the letter tells you only what you owe and when collection starts. That is it. The remedy (i.e. solution) you might qualify for, the [waiver][ssa-632] that can erase the debt, the [reconsideration][ssa-561] that can pause it, the short window in which any of it has to happen, none of that is on the page by the current system.
 
-We built Waive because the justice gap is not only about lawyers being expensive. It is about a letter sitting on a kitchen table that nobody can decode, with a deadline nobody knows about, for a person who has no idea they hold rights worth exercising. The law already wrote them an escape hatch. Almost nobody finds it in time.
+We built Waive because the justice gap here is not only about lawyers being expensive. It is about a letter sitting on a kitchen counter that nobody can decode, with a deadline nobody knows about, for a person who has no idea they hold rights worth exercising. The law already wrote them an escape hatch. Almost nobody finds it in time because of the way the system is set-up.
 
 ## What it does
 
@@ -33,13 +31,11 @@ You upload a photo or PDF of an official notice, for example a Social Security o
 3. **Explains it in plain language** (English or Spanish, with read-aloud), and tells you your options.
 4. **Drafts the form** you would actually file, ready to review and sign, when one applies.
 
-Every deadline and every option traces back to a real, cited statute or rule, so a person, a legal-aid worker, or a judge can verify it.
-
-> The law gave you a way out. Most people never find it. Waive makes the hidden remedy visible before the deadline passes.
+Every deadline and every option traces back to a real, cited statute or rule, so a person, a legal-aid worker, or a judge can verify it if-needed.
 
 ## How we built it
 
-Waive is one **domain-blind engine** (codenamed **Backstop**) plus pluggable **rule packs**. The engine never knows whether it is looking at an SSA overpayment or an Ontario debt claim. Each rule pack supplies all the legal logic behind a single, shared interface:
+Waive in its pure form is one state-of-the-art **domain-blind engine** plus pluggable **rule packs**. The engine never knows whether it is looking at an SSA overpayment or an Ontario debt claim. Each rule pack supplies all the legal logic behind a single, shared interface:
 
 ```ts
 interface RulePack {
@@ -81,26 +77,6 @@ upload → [AI] read the notice into a structured schema
 
 Every clock is a pure function with a "show your work" derivation. The anchor date (when the notice was issued or served) plus a statutory window, rolled forward off weekends and holidays:
 
-$$
-\text{due} \;=\; \mathrm{rollForwardToBusinessDay}\!\left(\text{anchorDate} + n\ \text{days},\ \text{holidays}\right)
-$$
-
-$$
-n =
-\begin{cases}
-30 & \text{SSA protected window (freeze collection)} \\
-20 & \text{Ontario defence} \\
-14 & \text{British Columbia reply} \\
-30 & \text{California answer}
-\end{cases}
-$$
-
-```ts
-const pauseRaw = addDays(notice, 30);
-const pauseDue = rollForwardToBusinessDay(pauseRaw, US_FEDERAL_HOLIDAYS);
-// → "Notice dated Jun 2, 2025 + 30 calendar days = Jul 2, 2025"
-```
-
 For SSA, that produces three dated events from one letter: a **30-day protected window**, a **60-day reconsideration** deadline (plus the 5-day mailing presumption under [20 CFR §404.909][cfr-909]), and the **90-day** clock on which, for notices dated on or after **April 25, 2025**, SSA's default is to withhold half the monthly benefit (EM-25029 REV):
 
 $$
@@ -108,16 +84,6 @@ $$
 $$
 
 The debt packs run the *same code* on a different injustice. A claim is **time-barred** when too much time has passed since the last activity on the account:
-
-$$
-\text{time-barred} \iff (\,t_{\text{claim}} - t_{\text{last activity}}\,) > L,
-\qquad
-L =
-\begin{cases}
-2\ \text{years} & \text{Ontario, British Columbia} \\
-4\ \text{years} & \text{California}
-\end{cases}
-$$
 
 Each jurisdiction is one verified profile (its own deadline, limitation period, court, and forms), turned into a rule pack by the same factory. Adding a new injustice or a new province is config, not a rebuild.
 
@@ -129,25 +95,25 @@ Every legal claim shown in the UI is mapped to a curated corpus entry by exact i
 
 ## Challenges we ran into
 
-1. **Trusting AI with a high-stakes outcome.** The hardest decision was not *how* to use AI, but *whether* it should touch anything load-bearing at all. A model that confidently invents a wrong date could cost someone their benefits. We resolved it by drawing a hard line: the model reads and translates, and tested code computes every deadline, route, and qualification.
+1. **Trusting AI with a high-stakes outcome.** The hardest decision was not *how* to use AI, but *whether* it should touch anything load-bearing at all. A model that confidently invents a wrong date could cost someone their benefits, and that's something we could not live with. We resolved it by drawing a hard line: the model reads and translates, and tested code computes every deadline, route, and qualification.
 2. **The Ollama dependency.** Running the model locally is excellent for privacy, but it asks the user to install Ollama, and that is a real barrier for the exact people Waive is for: elderly and low-income users who just need to read their letter. We answered it with a hosted **Waive Ollama API** as the private default (no install, nothing stored), keeping fully-local as an option for the privacy-conscious.
-3. **Making legal language human.** Legal text is precise by design and baffling in practice. Turning its logic into plain language that a non-lawyer can act on, without losing accuracy or accidentally giving advice, was harder than most of the engineering.
+3. **Making legal language human.** Legal text is precise by design and baffling in practice. In order to cut-out the middle-man of hiring a lawyer, we decided on a system of turning its logic into plain language that a non-lawyer can act on, without losing accuracy or accidentally giving advice. In fact, this was harder than most of the engineering.
 
 ## Accomplishments that we're proud of
 
-1. **We drew a hard line on AI.** Most legal AI tools let the model decide your outcome. We did not. There is a real, enforced boundary: the AI reads, the code analyzes and produces the answer, and every number can show its work.
+1. **We drew a hard line on AI.** Most legal AI tools let the model decide your outcome. We did not. There is an enforced boundary: the AI reads, the code analyzes and produces the answer, and every number can show its work.
 2. **It works for real people in real situations.** Waive is not a demo with mocked data. It draws on legitimate, cited sources a person can actually use. A judge, a legal-aid worker, or someone who just opened an SSA letter can run it right now and get a real, verifiable result.
-3. **We kept the language human.** Every label, explanation, and error message was written for someone receiving their first government letter, not for a lawyer. That took more effort than any single feature, and we think it shows.
+3. **We kept the language human.** Every label, explanation, and error message was written for someone receiving their first government letter, not for a lawyer. That took more effort than any single feature, and we think it shows exceptionally well.
 
 ## What we learned
 
-1. **You don't need AI for everything.** AI is powerful, but a project does not have to revolve around it. We used it purely to make the notice readable and the output human, and we stopped asking "should we use AI for this?" in favour of "should AI even *touch* this?"
+1. **You don't need AI for everything.** AI is powerful, but a project does not have to revolve around it in every aspect. We used it purely to make the notice readable and the output human, and we stopped asking "should we use AI for this?" in favour of "should AI even *touch* this?"
 2. **A cooperative team is the real engine.** We could not have built Waive without every member pulling their weight. With moral support and clear task ownership throughout, the work went smoothly. A team is only as strong as its weakest link, and ours held.
 
 ## What's next for Waive
 
-1. **More languages.** Today Waive speaks English and Spanish. French is mandatory for Canadian federal notices, and millions of people facing these letters do not read English as a first language. Broadening language support is the top priority.
-2. **More injustices, more jurisdictions.** The engine is built to grow. Evictions, CRA notices, and EI denials fit the same "notice + deadline + hidden remedy" shape, and adding Alberta or New York is one more verified profile.
+1. **More languages.** Today Waive speaks English (*lingua franca* of the Western hemisphere), Spanish (common second language in the US), and French (official language of Canada). This is an accessibility concern we addressed as millions of people facing these letters do not read English as a first language. Broadening language support is the top priority.
+2. **More injustices, more jurisdictions.** The engine is built to grow. Evictions, CRA notices, and EI denials fit the same "notice + deadline + hidden remedy" shape, and adding Alberta or New York is one more verified profile (and the natural next step in our journey of scalability).
 3. **Closing the last access gap.** The hosted API already removed the install barrier; next is a deeper accessibility and low-bandwidth pass, and a path for legal-aid clinics to add their own rule packs.
 
 ---
