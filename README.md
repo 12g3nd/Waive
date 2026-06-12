@@ -24,11 +24,11 @@ We built Waive because the justice gap here is not only about lawyers being expe
 
 ## What it does
 
-You upload a photo or PDF of an official notice, for example a Social Security overpayment letter or a debt lawsuit. Waive then:
+You upload a photo or PDF of an official notice, for example a Social Security over-payment letter or a debt lawsuit. Waive then:
 
 1. **Reads it** into structured fields (who sent it, the amount, the dates, the claim type).
 2. **Computes your real deadline**, down to how many days you have left, accounting for weekends and holidays.
-3. **Explains it in plain language** (English or Spanish, with read-aloud), and tells you your options.
+3. **Explains it in plain language** (English/Spanish/French, with read-aloud), and tells you your options.
 4. **Drafts the form** you would actually file, ready to review and sign, when one applies.
 
 Every deadline and every option traces back to a real, cited statute or rule, so a person, a legal-aid worker, or a judge can verify it if-needed.
