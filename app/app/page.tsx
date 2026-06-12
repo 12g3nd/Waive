@@ -100,7 +100,13 @@ function AppPage() {
       .then((r) => r.json())
       .then((d: { providers: ProviderOption[]; default: LlmProvider }) => {
         setProviders(d.providers);
-        setProvider(d.default);
+        // Prefer the configured default, but only if it's actually usable right now;
+        // otherwise fall back to the first available engine so the picker never starts
+        // on a dead option.
+        const def = d.providers.find((p) => p.id === d.default && p.available)
+          ? d.default
+          : (d.providers.find((p) => p.available)?.id ?? d.default);
+        setProvider(def);
       })
       .catch(() => setProviders([]));
   }, []);

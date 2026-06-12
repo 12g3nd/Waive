@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NoticeSource } from "@/engine";
-import { ollamaAvailable, ollamaChat, readLlmConfig } from "@/lib/llm";
+import { ollamaAvailable, ollamaChat, readLlmConfig, localOllamaConfig } from "@/lib/llm";
+import type { LlmProvider } from "@/lib/llm";
 import { classifyNoticeWithAnthropic } from "@/lib/llm/anthropic";
 
 export const runtime = "nodejs";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 interface ClassifyBody {
   source?: NoticeSource;
-  provider?: "anthropic" | "ollama";
+  provider?: LlmProvider;
 }
 
 const DOMAIN_LABEL: Record<string, string> = {
@@ -56,13 +57,15 @@ export async function POST(req: Request) {
     }
   }
 
-  // Ollama path — images only.
-  if (source.kind !== "image" || !(await ollamaAvailable(cfg))) {
+  // Ollama path — images only. "ollama-local" reads from the person's own machine;
+  // "ollama" (Waive API) uses the hosted server.
+  const ollamaCfg = provider === "ollama-local" ? localOllamaConfig(cfg) : cfg;
+  if (source.kind !== "image" || !(await ollamaAvailable(ollamaCfg))) {
     return NextResponse.json({ available: false });
   }
   try {
-    const content = await ollamaChat(cfg, {
-      model: cfg.modelExtract,
+    const content = await ollamaChat(ollamaCfg, {
+      model: ollamaCfg.modelExtract,
       timeoutMs: cfg.timeoutMs,
       messages: [
         {

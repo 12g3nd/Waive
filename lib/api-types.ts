@@ -36,9 +36,13 @@ export type AnalyzeRequest =
 /** A selectable AI engine for the model picker. */
 export interface ProviderOption {
   id: LlmProvider;
-  label: string; // the real model, e.g. "Claude Haiku 4.5"
+  label: string; // the real model, e.g. "Claude Opus 4.8", or "Ollama (Waive API)"
   description: string; // what it's good for
   available: boolean; // configured/reachable right now
+  /** Optional "learn more" link — a privacy notice or a setup guide. */
+  link?: { label: string; href: string };
+  /** Short reason shown when this engine isn't currently usable. */
+  unavailableHint?: string;
 }
 
 export interface AnalyzeOk {

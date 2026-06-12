@@ -57,16 +57,20 @@ function explainReq(): ExplainRequest {
 }
 
 describe("readLlmConfig — provider selection", () => {
-  it("defaults to ollama when no key is present", () => {
+  it("defaults to the Waive Ollama API when no key is present", () => {
     expect(readLlmConfig({}).provider).toBe("ollama");
   });
-  it("selects anthropic when ANTHROPIC_API_KEY is set", () => {
-    expect(readLlmConfig({ ANTHROPIC_API_KEY: "sk-x" }).provider).toBe("anthropic");
+  it("still defaults to the Waive Ollama API even when ANTHROPIC_API_KEY is set", () => {
+    // Claude is offered in the picker, but the private Ollama default is non-negotiable.
+    expect(readLlmConfig({ ANTHROPIC_API_KEY: "sk-x" }).provider).toBe("ollama");
   });
-  it("honors an explicit LLM_PROVIDER override", () => {
-    expect(readLlmConfig({ ANTHROPIC_API_KEY: "sk-x", LLM_PROVIDER: "ollama" }).provider).toBe(
-      "ollama",
+  it("honors an explicit LLM_PROVIDER override to anthropic", () => {
+    expect(readLlmConfig({ ANTHROPIC_API_KEY: "sk-x", LLM_PROVIDER: "anthropic" }).provider).toBe(
+      "anthropic",
     );
+  });
+  it("honors an explicit LLM_PROVIDER override to ollama-local", () => {
+    expect(readLlmConfig({ LLM_PROVIDER: "ollama-local" }).provider).toBe("ollama-local");
   });
   it("defaults the Claude model to claude-opus-4-8", () => {
     expect(readLlmConfig({}).anthropicModel).toBe("claude-opus-4-8");
