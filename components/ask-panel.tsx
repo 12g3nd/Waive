@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CitationChip } from "@/components/citation-chip";
 import { cn } from "@/lib/utils";
+import { t } from "@/lib/i18n";
 
 interface AskPanelProps {
   domain: string;
@@ -47,11 +48,11 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
         body: JSON.stringify({ domain, language, grounding, question: text, caseSources }),
       });
       const data = (await res.json()) as AskResponse;
-      setAnswer(data.ok ? (data.answer ?? "") : (data.error ?? "Something went wrong."));
+      setAnswer(data.ok ? (data.answer ?? "") : (data.error ?? t(language, "ask.errorGeneric")));
       setSource(data.source ?? null);
       setCitations(data.citations ?? []);
     } catch {
-      setAnswer("Couldn’t reach the server. Try again.");
+      setAnswer(t(language, "ask.errorNetwork"));
       setSource(null);
       setCitations([]);
     } finally {
@@ -63,11 +64,9 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
     <div className="space-y-3 rounded-2xl border border-border bg-card p-5">
       <div className="flex items-center gap-2">
         <MessagesSquare className="size-4 text-primary" />
-        <h3 className="font-display text-base font-semibold">Ask about your notice</h3>
+        <h3 className="font-display text-base font-semibold">{t(language, "ask.title")}</h3>
       </div>
-      <p className="text-sm text-muted-foreground">
-        Answers come only from the verified sources on this page, never invented.
-      </p>
+      <p className="text-sm text-muted-foreground">{t(language, "ask.subtitle")}</p>
 
       <form
         onSubmit={(e) => {
@@ -79,11 +78,11 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="e.g. Can this debt be cancelled?"
-          aria-label="Ask a question about your notice"
+          placeholder={t(language, "ask.placeholder")}
+          aria-label={t(language, "ask.aria")}
           className="min-w-0 flex-1 rounded-lg border border-border bg-background/60 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
-        <Button type="submit" size="icon" variant="primary" disabled={busy} aria-label="Ask">
+        <Button type="submit" size="icon" variant="primary" disabled={busy} aria-label={t(language, "ask.ask")}>
           {busy ? <Loader2 className="animate-spin" /> : <Send />}
         </Button>
       </form>
@@ -119,10 +118,10 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
           role="status"
           aria-live="polite"
         >
-          <span className="sr-only">Finding an answer in your sources…</span>
+          <span className="sr-only">{t(language, "ask.finding")}</span>
           <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <Loader2 className="size-3.5 animate-spin" aria-hidden />
-            Reading your sources…
+            {t(language, "ask.reading")}
           </div>
           <div className="space-y-1.5 pt-1" aria-hidden>
             <div className="h-3 w-full animate-pulse rounded bg-foreground/10" />
@@ -143,14 +142,14 @@ export function AskPanel({ domain, language, grounding, caseSources, suggestions
         <div className="space-y-2 rounded-xl border border-border bg-secondary/25 p-3.5">
           <div className="flex items-center justify-between">
             <Badge variant={source === "llm" ? "primary" : "outline"}>
-              {source === "llm" ? "Ollama · grounded" : "from your sources"}
+              {source === "llm" ? t(language, "ask.groundedBadge") : t(language, "ask.fromSources")}
             </Badge>
             <button
               type="button"
               onClick={() => setAnswer(null)}
               className="text-xs text-muted-foreground hover:text-foreground"
             >
-              ask another
+              {t(language, "ask.askAnother")}
             </button>
           </div>
           <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">{answer}</p>
