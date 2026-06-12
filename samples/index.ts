@@ -18,7 +18,7 @@ const benefitsSamples: Sample[] = [
   {
     id: "ssdi-not-at-fault",
     packId: "benefits",
-    title: "SSDI overpayment — not at fault",
+    title: "SSDI overpayment: not at fault",
     blurb:
       "SSA overpaid through its own error after the person reported their work. The waiver can cancel the debt entirely.",
     badge: "not-at-fault → waiver",
@@ -56,7 +56,7 @@ const benefitsSamples: Sample[] = [
   {
     id: "ssdi-at-fault",
     packId: "benefits",
-    title: "SSDI overpayment — at fault, can repay",
+    title: "SSDI overpayment: at fault, can repay",
     blurb:
       "Same notice, different facts: the person didn't report and can afford it. Waive refuses the frivolous waiver and routes to the honest path.",
     badge: "integrity routing",
@@ -128,7 +128,7 @@ function makeDebtSample(j: DebtJurisdiction): Sample {
   return {
     id: `debt-${j.id.toLowerCase()}`,
     packId: j.packId,
-    title: `Debt lawsuit — ${j.label}`,
+    title: `Debt lawsuit: ${j.label}`,
     blurb: meta.blurb,
     badge: meta.badge,
     tone: "urgent",

@@ -5,7 +5,7 @@ import { Wordmark } from "@/components/wordmark";
 import { SiteFooter } from "@/components/landing/site-footer";
 
 export const metadata: Metadata = {
-  title: "Privacy notice — Ollama (Waive API)",
+  title: "Privacy notice: Ollama (Waive API)",
   description:
     "How the Waive Ollama API handles your notice: nothing is stored, logged, or collected. Processed in memory, then discarded.",
 };
@@ -24,7 +24,7 @@ const PROMISES = [
   {
     icon: Server,
     title: "Waive's own server",
-    body: "The Waive Ollama API runs on infrastructure Waive controls — not a third-party AI vendor. Your notice is not sent to Anthropic, OpenAI, or anyone else on this option.",
+    body: "The Waive Ollama API runs on infrastructure Waive controls, not a third-party AI vendor. Your notice is not sent to Anthropic, OpenAI, or anyone else on this option.",
   },
 ];
 
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
       <header className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div aria-hidden className="h-0.5 bg-highlight" />
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3 sm:px-8">
-          <Link href="/" className="group inline-flex items-center gap-1.5" aria-label="Waive — home">
+          <Link href="/" className="group inline-flex items-center gap-1.5" aria-label="Waive home">
             <ArrowLeft className="size-3.5 text-muted-foreground" />
             <Wordmark className="text-lg" />
           </Link>
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
               </h2>
               <p className="mt-2 leading-relaxed text-foreground/80">
                 Choose <strong>Ollama (Local)</strong> instead and the model runs on your own
-                computer — your notice never leaves your machine, not even to Waive. See the{" "}
+                computer. Your notice never leaves your machine, not even to Waive. See the{" "}
                 <Link href="/ollama-setup" className="font-semibold text-primary hover:underline">
                   set-up guide
                 </Link>
@@ -91,7 +91,7 @@ export default function PrivacyPage() {
         </section>
 
         <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
-          Both Ollama options are free to use — Waive provides the server. This page describes data
+          Both Ollama options are free to use. Waive provides the server. This page describes data
           handling only; Waive is information and document preparation, not legal advice.
         </p>
       </main>

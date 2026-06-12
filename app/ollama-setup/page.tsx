@@ -5,9 +5,9 @@ import { Wordmark } from "@/components/wordmark";
 import { SiteFooter } from "@/components/landing/site-footer";
 
 export const metadata: Metadata = {
-  title: "Set up Ollama (Local) — run Waive's AI on your own computer",
+  title: "Set up Ollama (Local): run Waive's AI on your own computer",
   description:
-    "A short guide to installing Ollama and pulling a model so Waive's 'Ollama (Local)' option works — your notice never leaves your machine.",
+    "A short guide to installing Ollama and pulling a model so Waive's 'Ollama (Local)' option works, so your notice never leaves your machine.",
 };
 
 const STEPS = [
@@ -60,7 +60,7 @@ const STEPS = [
         <Link href="/app" className="font-semibold text-primary hover:underline">
           the tool
         </Link>
-        , and the <strong>Ollama (Local)</strong> option will switch from dimmed to selectable —
+        , and the <strong>Ollama (Local)</strong> option will switch from dimmed to selectable.
         Waive auto-detects the running server. Choose it and drop your notice in.
       </>
     ),
@@ -73,7 +73,7 @@ export default function OllamaSetupPage() {
       <header className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div aria-hidden className="h-0.5 bg-highlight" />
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3 sm:px-8">
-          <Link href="/" className="group inline-flex items-center gap-1.5" aria-label="Waive — home">
+          <Link href="/" className="group inline-flex items-center gap-1.5" aria-label="Waive home">
             <ArrowLeft className="size-3.5 text-muted-foreground" />
             <Wordmark className="text-lg" />
           </Link>
@@ -94,7 +94,7 @@ export default function OllamaSetupPage() {
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
           The <strong>Ollama (Local)</strong> option is for the privacy-conscious and technical: the
-          model runs entirely on your machine, so your notice never leaves it — not even to Waive.
+          model runs entirely on your machine, so your notice never leaves it, not even to Waive.
           It takes about five minutes to set up, and it's free.
         </p>
 

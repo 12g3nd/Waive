@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="border-t border-white/10 bg-ink px-6 py-10 sm:px-10">
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-start justify-between gap-8">
         <div>
-          <Link href="/" className="group" aria-label="Waive — home">
+          <Link href="/" className="group" aria-label="Waive home">
             <Wordmark tone="light" className="text-lg" />
           </Link>
           <p className="mt-1 text-sm text-white/40">Know your rights. Use them.</p>

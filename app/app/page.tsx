@@ -302,7 +302,7 @@ function AppPage() {
                     This doesn&apos;t look like a Social Security or debt notice.
                   </p>
                   <p className="mt-0.5 text-foreground/75">
-                    Double-check you uploaded the right file — upload a different one below, or pick a
+                    Double-check you uploaded the right file. Upload a different one below, or pick a
                     type and analyze anyway.
                   </p>
                 </div>

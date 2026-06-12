@@ -48,7 +48,7 @@ export function CitationChip({ id, citations, className }: CitationChipProps) {
         target="_blank"
         rel="noopener noreferrer"
         className={classes}
-        title={`${c.sourceTitle} — ${c.summary}`}
+        title={`${c.sourceTitle}: ${c.summary}`}
       >
         {Body}
       </a>

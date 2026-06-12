@@ -30,5 +30,6 @@ next-env.d.ts
 
 # local artifacts
 /.playwright-mcp/
+/.superpowers/
 dev-server.log
 *.local.png
