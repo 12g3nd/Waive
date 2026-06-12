@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 interface ReadAloudButtonProps {
   text: string;
-  language: string; // "en" | "es"
+  language: string; // "en" | "es" | "fr"
   label?: string;
 }
 
@@ -43,7 +43,7 @@ export function ReadAloudButton({ text, language, label = "Read aloud" }: ReadAl
     }
     synth.cancel();
     const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = language === "es" ? "es-ES" : "en-US";
+    utter.lang = language === "es" ? "es-ES" : language === "fr" ? "fr-FR" : "en-US";
     utter.rate = 0.98;
     utter.onend = () => setSpeaking(false);
     utter.onerror = () => setSpeaking(false);

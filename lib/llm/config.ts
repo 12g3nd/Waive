@@ -55,8 +55,7 @@ export function readLlmConfig(
     timeoutMs: Number.isFinite(timeout) && timeout > 0 ? timeout : 60_000,
     forceOffline: bool(env.LLM_OFFLINE),
     anthropicApiKey,
-    // Default to the most capable model. For a tight credit budget, set
-    // ANTHROPIC_MODEL=claude-haiku-4-5 (cheaper) or claude-sonnet-4-6.
+    // Default to the most capable model. Override with ANTHROPIC_MODEL=claude-sonnet-4-6 if needed.
     anthropicModel: env.ANTHROPIC_MODEL || "claude-opus-4-8",
   };
 }
