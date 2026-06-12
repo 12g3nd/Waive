@@ -28,7 +28,7 @@ const PRODUCT_JOBS = [
   {
     icon: Languages,
     title: "Explains & translates",
-    body: "The deterministic result is built first. The model is only allowed to rephrase it in plain language, or in another language (EN/ES). It cannot add or change a legal claim, deadline, or amount.",
+    body: "The deterministic result is built first. The model is only allowed to rephrase it in plain language, or in another language (EN/ES/FR). It cannot add or change a legal claim, deadline, or amount.",
     file: "lib/llm/client.ts",
   },
   {

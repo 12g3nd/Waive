@@ -182,7 +182,7 @@ export function buildAskMessages(
   sources: AskSource[],
   language: string,
 ) {
-  const langName = language === "es" ? "Spanish (Español)" : "English";
+  const langName = language === "es" ? "Spanish (Español)" : language === "fr" ? "French (Français)" : "English";
   const sourceText = sources
     .map((s, i) => `[${i + 1}] ${s.topic} — ${s.summary}${s.cite ? ` (${s.cite})` : ""}`)
     .join("\n");

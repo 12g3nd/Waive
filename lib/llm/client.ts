@@ -16,7 +16,7 @@ import { extractWithOllama } from "./extraction";
 import { ollamaChat, parseJsonLoose } from "./ollama";
 
 function languageName(code: string): string {
-  const map: Record<string, string> = { en: "English", es: "Spanish (Español)" };
+  const map: Record<string, string> = { en: "English", es: "Spanish (Español)", fr: "French (Français)" };
   return map[code] ?? code;
 }
 
