@@ -33,6 +33,20 @@ function bool(v: string | undefined): boolean {
   return v === "1" || v?.toLowerCase() === "true";
 }
 
+/**
+ * Read an env value, tolerating it being pasted as the whole `KEY=value` line — a
+ * common mistake in hosting dashboards (e.g. pasting `ANTHROPIC_MODEL=claude-opus-4-8`
+ * into the value field). Strips a leading `KEY=` and any surrounding quotes/whitespace
+ * so the model id (and badge) come out clean instead of literally `ANTHROPIC_MODEL=…`.
+ */
+function envValue(raw: string | undefined, key: string): string | undefined {
+  if (raw == null) return undefined;
+  let v = raw.trim();
+  if (v.startsWith(`${key}=`)) v = v.slice(key.length + 1).trim();
+  v = v.replace(/^["']|["']$/g, "").trim();
+  return v || undefined;
+}
+
 export function readLlmConfig(
   env: Record<string, string | undefined> = process.env,
 ): LlmConfig {
@@ -56,7 +70,7 @@ export function readLlmConfig(
     forceOffline: bool(env.LLM_OFFLINE),
     anthropicApiKey,
     // Default to the most capable model. Override with ANTHROPIC_MODEL=claude-sonnet-4-6 if needed.
-    anthropicModel: env.ANTHROPIC_MODEL || "claude-opus-4-8",
+    anthropicModel: envValue(env.ANTHROPIC_MODEL, "ANTHROPIC_MODEL") || "claude-opus-4-8",
   };
 }
 
