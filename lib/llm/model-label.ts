@@ -4,8 +4,8 @@
  * 4.8") instead of a generic "AI". Pure and client-safe (no server imports).
  */
 const KNOWN: Record<string, string> = {
-  "claude-opus-4-8": "Claude Opus 4.8",
-  "claude-sonnet-4-6": "Claude Sonnet 4.6",
+  "claude-opus-4-8": "Claude: Opus 4.8",
+  "claude-sonnet-4-6": "Claude: Sonnet 4.6",
 };
 
 const cap = (s: string) => (s ? s[0]!.toUpperCase() + s.slice(1) : s);
@@ -18,7 +18,8 @@ export function modelLabel(id: string | null | undefined): string {
     const parts = rest.split("-");
     const name = parts.filter((p) => !/^\d+$/.test(p)).map(cap).join(" ");
     const version = parts.filter((p) => /^\d+$/.test(p)).join(".");
-    return ["Claude", name, version].filter(Boolean).join(" ");
+    const tail = [name, version].filter(Boolean).join(" ");
+    return tail ? `Claude: ${tail}` : "Claude";
   }
   // Ollama tag (e.g. "llama3.2-vision", "qwen3-vl:235b-cloud") — already clear enough.
   return id;
