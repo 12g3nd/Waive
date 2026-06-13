@@ -13,6 +13,8 @@ export { normalizeExtraction, extractWithOllama, EXTRACTION_SCHEMA } from "./ext
 
 export interface LlmStatus {
   mode: "anthropic" | "ollama" | "offline";
+  /** The engine actually in use — distinguishes the Waive-hosted Ollama from a local one. */
+  provider: LlmProvider;
   reason: string;
   config: Pick<LlmConfig, "baseUrl" | "modelExtract" | "modelDraft">;
 }
@@ -29,24 +31,27 @@ export async function getLlm(
   cfg: LlmConfig = readLlmConfig(),
   requested?: LlmProvider,
 ): Promise<{ llm: LlmPort; status: LlmStatus }> {
+  // The person can override the env default per request (the model picker).
+  const provider = requested ?? cfg.provider;
+
   if (cfg.forceOffline) {
     return {
       llm: new DeterministicFallbackLlm("forced"),
       status: {
         mode: "offline",
+        provider,
         reason: "LLM_OFFLINE is set",
         config: { baseUrl: cfg.baseUrl, modelExtract: cfg.modelExtract, modelDraft: cfg.modelDraft },
       },
     };
   }
 
-  // The person can override the env default per request (the model picker).
-  const provider = requested ?? cfg.provider;
   if (provider === "anthropic" && cfg.anthropicApiKey) {
     return {
       llm: new AnthropicLlm(cfg),
       status: {
         mode: "anthropic",
+        provider: "anthropic",
         reason: `Using Claude (${cfg.anthropicModel})`,
         config: {
           baseUrl: "api.anthropic.com",
@@ -60,6 +65,7 @@ export async function getLlm(
   // "ollama-local" points at the person's own machine; "ollama" (Waive API) uses the
   // hosted server. Everything downstream is identical — just a different connection.
   const isLocal = provider === "ollama-local";
+  const ollamaProvider: LlmProvider = isLocal ? "ollama-local" : "ollama";
   const effective = isLocal ? localOllamaConfig(cfg) : cfg;
   const ollamaConfig = {
     baseUrl: effective.baseUrl,
@@ -72,6 +78,7 @@ export async function getLlm(
       llm: new DeterministicFallbackLlm("unreachable"),
       status: {
         mode: "offline",
+        provider: ollamaProvider,
         reason:
           provider === "anthropic"
             ? "ANTHROPIC_API_KEY is not set and Ollama is unreachable; using deterministic fallback"
@@ -86,6 +93,7 @@ export async function getLlm(
     llm: new OllamaLlm(effective),
     status: {
       mode: "ollama",
+      provider: ollamaProvider,
       reason: isLocal
         ? `Local Ollama reachable at ${effective.baseUrl}`
         : `Waive Ollama API reachable at ${effective.baseUrl}`,

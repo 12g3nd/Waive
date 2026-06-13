@@ -24,17 +24,26 @@ export function modelLabel(id: string | null | undefined): string {
   return id;
 }
 
+function isLocalBaseUrl(url?: string): boolean {
+  return /localhost|127\.0\.0\.1/.test(url ?? "");
+}
+
 /**
  * A friendly, non-technical label for the active engine. Claude shows the specific
- * model ("Claude Opus 4.8"); Ollama shows just "Ollama" (or "Ollama (cloud)") rather
- * than the raw model tag, which is meaningless to most people.
+ * model ("Claude Opus 4.8"). Ollama shows which connection is in use — "Ollama (Waive
+ * API)" for the hosted default or "Ollama (Local)" for the person's own machine —
+ * never the raw model tag, which is meaningless to most people. The `provider` is the
+ * reliable signal (the Waive default can also point at localhost); baseUrl is a
+ * fallback when it isn't supplied.
  */
 export function engineLabel(
   mode: "anthropic" | "ollama" | "offline",
   config: { baseUrl?: string; modelDraft?: string },
+  provider?: "ollama" | "anthropic" | "ollama-local",
 ): string {
   if (mode === "offline") return "offline mode";
   if (mode === "anthropic") return modelLabel(config.modelDraft);
-  const tag = (config.modelDraft ?? "").replace(/-cloud$/, "").replace(/:/g, " ").trim();
-  return tag ? `Ollama: ${tag}` : "Ollama";
+  const isLocal =
+    provider === "ollama-local" || (provider === undefined && isLocalBaseUrl(config.baseUrl));
+  return isLocal ? "Ollama (Local)" : "Ollama (Waive API)";
 }

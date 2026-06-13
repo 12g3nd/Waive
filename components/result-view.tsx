@@ -127,7 +127,7 @@ export function ResultView({
       {/* Controls */}
       <div className="flex items-center justify-between gap-3">
         <Badge variant={llm.mode === "offline" ? "outline" : "primary"}>
-          {engineLabel(llm.mode, llm.config)}
+          {engineLabel(llm.mode, llm.config, llm.provider)}
         </Badge>
         <div className="flex items-center gap-2">
           <LanguageToggle value={language} onChange={onLanguage} disabled={busy} />
@@ -195,7 +195,7 @@ export function ResultView({
           <div className="animate-fade-up" style={delay(2)}>
             <ExplanationPanel
               explanation={result.explanation}
-              engine={engineLabel(llm.mode, llm.config)}
+              engine={engineLabel(llm.mode, llm.config, llm.provider)}
               language={language}
             />
           </div>
